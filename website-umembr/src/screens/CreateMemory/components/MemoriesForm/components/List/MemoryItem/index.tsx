@@ -74,6 +74,7 @@ const MemoryItem: FC<any> = ({ item, palette }) => {
         border={`0.063rem solid ${palette.cardBorder}`}
         sx={{ backdropFilter: 'blur(1.5625rem)' }}>
         <Box position={'relative'} width={'100%'} height={'7.5rem'} marginBottom={'0.5rem'}>
+          {/* hello */}
           {item?.type === 'video' && !item?.preview_asset ? (
             <VideoPlayer url={imageUrl} width={'100%'} height={'7.5rem'} disabledVideo borderRadius={'0.5625rem'} />
           ) : (

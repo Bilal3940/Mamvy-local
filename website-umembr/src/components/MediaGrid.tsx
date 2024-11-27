@@ -422,20 +422,7 @@
 
 // export default MediaGrid;
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Box,
-  Paper,
-  Typography,
-  Button,
-  TextField,
-  Divider,
-  Link,
-  InputAdornment,
-  Avatar,
-  MenuItem,
-  Select,
-  ClickAwayListener,
-} from '@mui/material';
+import { Box, Paper, Typography, Button, TextField, Divider, Link, InputAdornment, Avatar, MenuItem, Select, ClickAwayListener , useMediaQuery} from '@mui/material';
 import Masonry from '@mui/lab/Masonry';
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -451,6 +438,7 @@ import { FilterDropdown, MuiIconButton, RtfComponent } from '@/components';
 import Image1Icon from '../../public/icons/image1';
 import Video1Icon from '../../public/icons/video1';
 import Text1Icon from '../../public/icons/test1';
+import { UseFirstRender, UseIntermitence } from '@/hooks';
 import Audio1Icon from '../../public/icons/audio1';
 import Search from '@/components/AppBar/Search';
 import { getCollaboratorsOptions, getPropmtsOptions } from '@/components/AppBar/constants';
@@ -458,6 +446,8 @@ import Wait1Icon from '../../public/icons/wait1';
 import GridIcon1 from '../../public/icons/gridicom';
 import EditIcon from '../../public/icons/editing1';
 import Audio2Icon from '../../public/icons/audioGradient';
+import { MemoryDetail } from '@/screens/Memories/components';
+import { Router, useRouter } from 'next/router';
 type MediaType = 'image' | 'audio' | 'video' | 'text';
 
 interface MediaItem {
@@ -486,10 +476,12 @@ interface MediaGridProps {
 const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const dispatch = useDispatch();
   const { memoriesLoaded } = useSelector(memorySelector);
-  const [avatarError, setAvatarError] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [search, setSearch] = useState('');
+   const [avatarError, setAvatarError] = useState(false);
+ const [openModal, setOpenModal] = useState(false);
+ const [search, setSearch] = useState('');
+ const router = useRouter();
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
+  const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();
   // Define state for filter and selected media item
   const [filter, setFilter] = useState('All');
   const { stories } = useSelector(homeSelector);
@@ -500,6 +492,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const [openNotification, setOpenNotification] = useState(false);
   const [openFilters, setOpenFilters] = useState(false);
   const [openPeople, setOpenPeople] = useState(false);
+  const { status, switchStatus } = UseIntermitence();
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
   const ITEMS_PER_PAGE = 10;
 
@@ -563,6 +556,34 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
 
     return types.filter((type) => memoriesLoaded?.includes(type.id));
   }, [memoriesLoaded?.length]);
+
+   UseFirstRender(() => {
+    console.log("I am query first",router.query)
+    if (router?.query?.memoryId && memoriesLoaded.current) {
+      const memory = memoriesLoaded.current
+        .getMemories()
+        .find((memory:any) => Number(memory?.id) === Number(router?.query?.memoryId));
+      setSelectedMedia(memory);
+      switchStatus();
+    }
+  }, [router?.query]);
+
+  useEffect(() => {
+    if (story?.url === router.query?.id)
+      router.push(
+        router?.query?.memoryId
+          ? `/app/story/${story?.url}?memoryId=${router?.query?.memoryId}`
+          : `/app/story/${story?.url}`,
+      );
+  }, [router.query?.id, story?.url]);
+
+
+console.log("I am query",router.query)
+  const closeMemory = () => {
+    setSelectedMedia(null);
+    router.push(`/app/story/${story?.url}`);
+    switchStatus();
+  };
 
   // const filteredMediaItems = memoriesLoaded?.filter(
   //   (item:any) => filter === 'All' || item.type === filter.toLowerCase()

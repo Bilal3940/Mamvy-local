@@ -239,6 +239,10 @@ interface PopupModalProps {
 }
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, Typography, useMediaQuery, Theme } from "@mui/material";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -275,6 +279,13 @@ const router = useRouter();
 const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
 const authData = useSelector(authSelector);
 const collaborator = useSelector(collaboratorSelector);
+
+
+const [showPassword, setShowPassword] = useState(false);
+
+const handleClickShowPassword = () => {
+  setShowPassword(!showPassword);
+};
 
 const [decodedUrl, setDecodedUrl] = useState({
   story: decodeBase64(
@@ -486,7 +497,7 @@ return (
               label="Password"
               variant="outlined"
               margin="normal"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               value={values.password}
               onChange={handleChange}
@@ -513,6 +524,22 @@ return (
                   fontSize: values.password ? '12px' : '16px',
                 },
               }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      sx={{
+                        color: 'black', // Icon color
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             {/* Confirm Password Input */}
@@ -521,7 +548,7 @@ return (
               label="Confirm Password"
               variant="outlined"
               margin="normal"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="confirmPassword"
               value={values.confirmPassword}
               onChange={handleChange}
@@ -547,6 +574,22 @@ return (
                   transform: values.confirmPassword ? 'translateY(0)' : 'translateY(-50%)',
                   fontSize: values.confirmPassword ? '12px' : '16px',
                 },
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      sx={{
+                        color: 'black', // Icon color
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
 

@@ -1,5 +1,8 @@
 import React, {useState} from "react";
-import CreateAccount from "@/components/CreateAccountPopup/CreateAccount";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // import Stepper from "./Stepper";
 import {
     Box,
@@ -25,6 +28,11 @@ import { theme } from "@/theme";
     const [password, setPassword] = useState<string>('');
     
     const [showSignup , setShowSignup]=useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => {
+      setShowPassword(!showPassword);
+    };
 
     function OpenSignup (){
   setShowSignup(true);
@@ -75,6 +83,10 @@ import { theme } from "@/theme";
       '& fieldset': {
         border: 'none', // Remove border
       },
+      '& input': {
+        color: 'white', // Change the text and password dots color to white
+      },
+
     },
     '& .MuiInputLabel-root': {
         color: '#EEEEEE', // Default label color
@@ -96,47 +108,63 @@ import { theme } from "@/theme";
 
     {/* Password Input */}
     <TextField
-  label="Password"
-  variant="outlined"
-  margin="normal"
-  type="password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  fullWidth
-  InputLabelProps={{
-    shrink: false, // Disable the default shrink behavior
-  }}
-  sx={{
-    paddingTop: '2px',
-    height: "50px",
-    marginTop: '5px',
-    backgroundColor: 'black',
-    border: "1px solid white",
-    borderRadius: '8px',
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        border: 'none', // Remove border
-      },
-      '& input': {
-        color: 'white', // Change the text and password dots color to white
-      },
-    },
-    '& .MuiInputLabel-root': {
-      color: '#EEEEEE', // Default label color
-      position: 'absolute',
-      left: '14px',
-      transition: 'all 0.2s ease-in-out',
-      top: password ? '1px' : '50%', // Position based on whether there's input
-      transform: password ? 'translateY(0)' : 'translateY(-50%)', // Adjust vertical alignment
-      fontSize: password ? '12px' : '16px', // Adjust size for shrunken state
-    },
-    '& .MuiOutlinedInput-root.Mui-focused': {
-      '& fieldset': {
-        border: 'none', // Ensure no border on focus
-      },
-    },
-  }}
-/>
+      label="Password"
+      variant="outlined"
+      margin="normal"
+      type={showPassword ? 'text' : 'password'} // Toggle between text and password type
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      fullWidth
+      InputLabelProps={{
+        shrink: false, // Disable the default shrink behavior
+      }}
+      sx={{
+        paddingTop: '2px',
+        height: '50px',
+        marginTop: '5px',
+        backgroundColor: 'black',
+        border: '1px solid white',
+        borderRadius: '8px',
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            border: 'none', // Remove border
+          },
+          '& input': {
+            color: 'white', // Set the text color to white
+          },
+        },
+        '& .MuiInputLabel-root': {
+          color: '#EEEEEE',
+          position: 'absolute',
+          left: '14px',
+          transition: 'all 0.2s ease-in-out',
+          top: password ? '1px' : '50%',
+          transform: password ? 'translateY(0)' : 'translateY(-50%)',
+          fontSize: password ? '12px' : '16px',
+        },
+        '& .MuiOutlinedInput-root.Mui-focused': {
+          '& fieldset': {
+            border: 'none', // Ensure no border on focus
+          },
+        },
+      }}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={handleClickShowPassword}
+              edge="end"
+              sx={{
+                color: 'white', // Icon color
+              }}
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+    />
 
 
 <Box sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}>
@@ -196,7 +224,7 @@ import { theme } from "@/theme";
 
   <Button
     fullWidth
-    endIcon={<img src='/images/apple.svg' />}
+    endIcon={<img src='/images/apple.svg' height={"22px"} width={"22px"}/>}
     sx={{
       color: 'white',
       height: '48px',

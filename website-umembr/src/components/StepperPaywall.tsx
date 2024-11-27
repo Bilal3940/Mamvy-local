@@ -102,7 +102,7 @@ import Typography from "@mui/material/Typography";
 import EmbeddedPaymentForm from "./StripeFields/EmbeddedPaymentForm";
 
 // Import your existing components
-import CreateAccount from "../pages/app/story/[id]/CreateAccount";
+import CreateAccount from "./CreateAccountPopup/CreateAccount";
 import Thankyou from "./Thankyou";
 import { Elements } from "@stripe/react-stripe-js";
 import stripePromise from "@/utils/stipe";
@@ -162,9 +162,7 @@ export default function IconBasedStepper() {
       {/* Render the component based on the current step */}
       <Box sx={{ mt: 1, mb: 1 }}>
         {activeStep === 0 && (
-          <CreateAccount open={false} onClose={function (): void {
-                      throw new Error("Function not implemented.");
-                  } } />
+          <CreateAccount />
         )}
         {activeStep === 1 && (
           <Elements stripe={stripePromise}>

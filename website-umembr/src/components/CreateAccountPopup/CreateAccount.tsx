@@ -278,6 +278,7 @@ import LoginForm from "@/components/LoginAccountPopup/LoginForm";
   variant='outlined'
   margin='normal'
   value={name} // Controlled value
+  fullWidth
    onChange={(e) => setName(e.target.value)} // Update email state
   
   InputLabelProps={{
@@ -318,6 +319,7 @@ import LoginForm from "@/components/LoginAccountPopup/LoginForm";
   variant='outlined'
   margin='normal'
   value={name} // Controlled value
+  fullWidth
    onChange={(e) => setName(e.target.value)} // Update email state
  
   InputLabelProps={{

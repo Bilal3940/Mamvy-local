@@ -242,6 +242,7 @@ import LoginForm from "@/components/LoginAccountPopup/LoginForm";
 
   const CreateAccount: React.FC<PopupModalProps> = ({open , onClose}) => {
     const [email, setEmail] = useState<string>('');
+    const [name, setName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [showLogin , setShowLogin]=useState(false);
@@ -270,7 +271,87 @@ import LoginForm from "@/components/LoginAccountPopup/LoginForm";
       },
     }}
   >
+  {/* First name last name*/ }
+<div style={{display:"flex", flexDirection:"row", gap:"5px"}}>
+  <TextField
+  label="First Name" // Show label only if email is empty
+  variant='outlined'
+  margin='normal'
+  value={name} // Controlled value
+   onChange={(e) => setName(e.target.value)} // Update email state
+  
+  InputLabelProps={{
+    shrink: false, // Disable the default shrink behavior
+  }}
+  sx={{
+    paddingTop: '2px',
+    marginTop: '5px',
+    backgroundColor: 'white',
+    height:"50px",
+    borderRadius: '8px',
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        border: 'none', // Remove border
+      },
+    },
+    '& .MuiInputLabel-root': {
+        color: 'rgba(0, 0, 0, 0.5)', // Default label color
+      position: 'absolute',
+      left: '14px',
+      transition: 'all 0.2s ease-in-out',
+      top: name ? '1px' : '50%', // Position based on whether there's input
+      transform: name ? 'translateY(0)' : 'translateY(-50%)', // Adjust vertical alignment
+      fontSize: name ? '12px' : '16px', // Adjust size for shrunken state
+    },
 
+    '& .MuiOutlinedInput-root.Mui-focused': {
+      '& fieldset': {
+        border: 'none', // Ensure no border on focus
+      },
+    },
+  }}
+/>
+
+
+<TextField
+  label="Last Name" // Show label only if email is empty
+  variant='outlined'
+  margin='normal'
+  value={name} // Controlled value
+   onChange={(e) => setName(e.target.value)} // Update email state
+ 
+  InputLabelProps={{
+    shrink: false, // Disable the default shrink behavior
+  }}
+  sx={{
+    paddingTop: '2px',
+    marginTop: '5px',
+    backgroundColor: 'white',
+    height:"50px",
+    borderRadius: '8px',
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        border: 'none', // Remove border
+      },
+    },
+    '& .MuiInputLabel-root': {
+        color: 'rgba(0, 0, 0, 0.5)', // Default label color
+      position: 'absolute',
+      left: '14px',
+      transition: 'all 0.2s ease-in-out',
+      top: name ? '1px' : '50%', // Position based on whether there's input
+      transform: name ? 'translateY(0)' : 'translateY(-50%)', // Adjust vertical alignment
+      fontSize: name ? '12px' : '16px', // Adjust size for shrunken state
+    },
+
+    '& .MuiOutlinedInput-root.Mui-focused': {
+      '& fieldset': {
+        border: 'none', // Ensure no border on focus
+      },
+    },
+  }}
+/>
+</div>
     {/* Email Input */}
     <TextField
   label="Email" // Show label only if email is empty
@@ -392,50 +473,31 @@ import LoginForm from "@/components/LoginAccountPopup/LoginForm";
       }}
     />
   
-  <Typography style={{ display: 'flex', justifyContent: 'center', color: 'rgba(238, 238, 238, 1)', marginTop:"5px",fontWeight:"bold"}}>
-     or
-    </Typography>
+
     
 
   
     <Button
       
       fullWidth
-      startIcon={ <img src='/icons/devicon_google.svg'/>}
       sx={{
         marginTop: '12px',
         mb: 1,
         color:"white",
         height: '70px', 
-        backgroundColor: 'rgba(34, 34, 34, 0.8)', 
+        backgroundColor: '#BA0C2F', 
         '&:hover': {
           backgroundColor: 'rgba(34, 34, 34, 1)', 
         },
         borderRadius: '10px', 
         padding: '25px', 
       }}>
-      Continue with Google
+      Create Account
     </Button>
-    <Button
-      fullWidth
-      startIcon={ <img src='/icons/Vector.svg'/>}
-      sx={{
-        marginTop: '5px',
-        mb: 1,
-        color:"white",
-        height: '70px', 
-        backgroundColor: 'rgba(34, 34, 34, 0.8)',
-        '&:hover': {
-          backgroundColor: 'rgba(34, 34, 34, 1)', 
-        },
-        borderRadius: '10px', 
-        padding: '25px',
-      }}>
-      Continue with Facebook
-    </Button>
+ 
     <Typography style={{ display: 'flex', justifyContent: 'center', color: 'rgba(238, 238, 238, 1)', marginTop:"1px",fontWeight:"bold"}}>
       Already have an Account? 
-     <a onClick={onClose}>Log In</a>
+     <a onClick={onClose} style={{color:"#BA0C2F", cursor:"pointer"}}>Log In</a>
     </Typography>
   </CardContent>
 </Card>

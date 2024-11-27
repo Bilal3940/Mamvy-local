@@ -61,6 +61,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
   const query = router.pathname;
 
   console.log("query", query)
+  
 
   const setShowDropdown = (event: any) => {
     event.preventDefault();

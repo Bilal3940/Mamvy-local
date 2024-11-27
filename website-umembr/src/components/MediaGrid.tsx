@@ -51,8 +51,6 @@
 
 //    const { isDivider } = extendedPalette.isDividerCheck;
 
- 
-
 //   useEffect(() => {
 //     dispatch(getMemories(story?.id));
 //   }, [story, dispatch]);
@@ -71,7 +69,6 @@
 //     setOpenModal(false);
 //     setSelectedMedia(null);
 //   };
-
 
 //   const filteredMediaItems = memoriesLoaded?.filter(
 //     (item:any) => filter === 'All' || item.type === filter.toLowerCase()
@@ -128,13 +125,13 @@
 //         </Box>
 
 //         {/* Other Buttons */}
-//         <Box 
-//   sx={{ 
-//     display: 'flex', 
-//     alignItems: 'center', 
-//     gap: 0, 
-//     marginTop: { xs: 2, sm: 0 }, 
-//     justifyContent: { xs: 'center', sm: 'initial' } 
+//         <Box
+//   sx={{
+//     display: 'flex',
+//     alignItems: 'center',
+//     gap: 0,
+//     marginTop: { xs: 2, sm: 0 },
+//     justifyContent: { xs: 'center', sm: 'initial' }
 //   }}
 // >
 //   <Button
@@ -145,11 +142,11 @@
 //     </Button>
 //   <Button
 //   startIcon={
-//     <Image 
-//       src={'/icons/wait.svg'} 
-//       alt={'icon'} 
-//       width={22} 
-//       height={22} 
+//     <Image
+//       src={'/icons/wait.svg'}
+//       alt={'icon'}
+//       width={22}
+//       height={22}
 //       style={{ color: extendedPalette.buttonColorGrid }} // Set the color for the icon
 //     />
 //   }
@@ -163,7 +160,6 @@
 //     }}
 // >
 //   {/* Button content */}
-
 
 // </Button>
 
@@ -188,11 +184,11 @@
 //   />
 //  <Button
 //   startIcon={
-//     <Image 
-//       src={'/icons/editing.svg'} 
-//       alt={'icon'} 
-//       width={22} 
-//       height={22} 
+//     <Image
+//       src={'/icons/editing.svg'}
+//       alt={'icon'}
+//       width={22}
+//       height={22}
 //       style={{ color: extendedPalette.buttonColorGrid }} // Apply color to the icon directly
 //     />
 //   }
@@ -318,7 +314,7 @@
 //     >
 //       <Image src={'/icons/playbut.svg'} alt={'icon'} layout="responsive" width={50} height={50} />
 //     </div>
-    
+
 //     {/* Right image with responsive size */}
 //     <div
 //       style={{
@@ -420,13 +416,27 @@
 //       )}
 //     </Box>
 //     </div>
-    
+
 //   );
 // };
 
 // export default MediaGrid;
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Paper, Typography, Button, TextField, Divider, Link, InputAdornment, Avatar, MenuItem, Select, ClickAwayListener , useMediaQuery} from '@mui/material';
+import {
+  Box,
+  Paper,
+  Typography,
+  Button,
+  TextField,
+  Divider,
+  Link,
+  InputAdornment,
+  Avatar,
+  MenuItem,
+  Select,
+  ClickAwayListener,
+  useMediaQuery,
+} from '@mui/material';
 import Masonry from '@mui/lab/Masonry';
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -480,10 +490,10 @@ interface MediaGridProps {
 const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const dispatch = useDispatch();
   const { memoriesLoaded } = useSelector(memorySelector);
-   const [avatarError, setAvatarError] = useState(false);
- const [openModal, setOpenModal] = useState(false);
- const [search, setSearch] = useState('');
- const router = useRouter();
+  const [avatarError, setAvatarError] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [search, setSearch] = useState('');
+  const router = useRouter();
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();
   // Define state for filter and selected media item
@@ -492,25 +502,24 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const prompts = getPropmtsOptions(stories, story);
   const { user } = useSelector(authSelector);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [openFilters, setOpenFilters] = useState(false);
   const [openPeople, setOpenPeople] = useState(false);
   const { status, switchStatus } = UseIntermitence();
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
 
+  const ITEMS_PER_PAGE = 10;
+  const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE); // Number of items initially visible
 
-
-   const { isDivider } = extendedPalette.isDividerCheck.isDivider || true;
-
- 
+  const { isDivider } = extendedPalette.isDividerCheck.isDivider || true;
 
   useEffect(() => {
-    if(story?.id){
-    dispatch(getMemories(story?.id));
-  }
+    if (story?.id) {
+      dispatch(getMemories(story?.id));
+    }
   }, [story?.id, dispatch]);
-  console.log("i am the memory loded", memoriesLoaded)
+  console.log('i am the memory loded', memoriesLoaded);
 
   const handleClick = (filterType: string) => {
     setFilter(filterType);
@@ -520,14 +529,14 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
     setSelectedMedia(item);
     setOpenModal(true);
   };
-    const handleCloseFilters = () => {
+  const handleCloseFilters = () => {
     setOpenFilters(false);
   };
   const handleClosePeople = () => {
     setOpenPeople(false);
   };
-const setShowFilters = (event: any) => {
-    console.log("I am clicked")
+  const setShowFilters = (event: any) => {
+    console.log('I am clicked');
     event.preventDefault();
     event.stopPropagation();
     setOpenFilters((openFilters) => !openFilters);
@@ -539,7 +548,7 @@ const setShowFilters = (event: any) => {
     setOpenModal(false);
     setSelectedMedia(null);
   };
-    const types = useMemo(() => {
+  const types = useMemo(() => {
     const types = [
       {
         id: 'video',
@@ -562,12 +571,12 @@ const setShowFilters = (event: any) => {
     return types.filter((type) => memoriesLoaded?.includes(type.id));
   }, [memoriesLoaded?.length]);
 
-   UseFirstRender(() => {
-    console.log("I am query first",router.query)
+  UseFirstRender(() => {
+    console.log('I am query first', router.query);
     if (router?.query?.memoryId && memoriesLoaded.current) {
       const memory = memoriesLoaded.current
         .getMemories()
-        .find((memory:any) => Number(memory?.id) === Number(router?.query?.memoryId));
+        .find((memory: any) => Number(memory?.id) === Number(router?.query?.memoryId));
       setSelectedMedia(memory);
       switchStatus();
     }
@@ -582,8 +591,7 @@ const setShowFilters = (event: any) => {
       );
   }, [router.query?.id, story?.url]);
 
-
-console.log("I am query",router.query)
+  console.log('I am query', router.query);
   const closeMemory = () => {
     setSelectedMedia(null);
     router.push(`/app/story/${story?.url}`);
@@ -593,7 +601,7 @@ console.log("I am query",router.query)
   // const filteredMediaItems = memoriesLoaded?.filter(
   //   (item:any) => filter === 'All' || item.type === filter.toLowerCase()
   // );
- 
+
   // const filteredMediaItems = memoriesLoaded
   // ?.filter((item: any) => filter === 'All' || item.type === filter.toLowerCase())
   // ?.sort((a: any, b: any) => {
@@ -607,37 +615,41 @@ console.log("I am query",router.query)
   //       return 0;
   //   }
   // });
- const filteredMediaItems = memoriesLoaded
-  ?.filter((item: any) => 
-    (filter === 'All' || item.type === filter.toLowerCase()) &&
-    (!search || (search.length >= 3 && 
-      (item.title?.toLowerCase().includes(search.toLowerCase()) || 
-       item.username?.toLowerCase().includes(search.toLowerCase()))))
-  )
-  ?.sort((a: any, b: any) => {
-    if (!sortOrder) return 0; // No sorting
-    switch (sortOrder) {
-      case 'asc':
-        return a.title.localeCompare(b.title); // Title Ascending
-      case 'desc':
-        return b.title.localeCompare(a.title); // Title Descending
-      default:
-        return 0;
-    }
-  });
+  const filteredMediaItems = memoriesLoaded
+    ?.filter(
+      (item: any) =>
+        (filter === 'All' || item.type === filter.toLowerCase()) &&
+        (!search ||
+          (search.length >= 3 &&
+            (item.title?.toLowerCase().includes(search.toLowerCase()) ||
+              item.username?.toLowerCase().includes(search.toLowerCase())))),
+    )
+    ?.sort((a: any, b: any) => {
+      if (!sortOrder) return 0; // No sorting
+      switch (sortOrder) {
+        case 'asc':
+          return a.title.localeCompare(b.title); // Title Ascending
+        case 'desc':
+          return b.title.localeCompare(a.title); // Title Descending
+        default:
+          return 0;
+      }
+    });
 
-
-
-
+  const allItemsLoaded = visibleItems >= filteredMediaItems.length;
+  // loadmore button handler
+  const handleLoadMore = () => {
+    setVisibleItems((prev) => prev + ITEMS_PER_PAGE); // Load 10 more items on button click
+  };
 
   const getIcon = (type: string, color: string) => {
-  switch (type) {
-    case 'image':
-      return <Image1Icon color={color} />;
+    switch (type) {
+      case 'image':
+        return <Image1Icon color={color} />;
       case 'video':
         return <Video1Icon color={color} />;
       case 'audio':
-        return <Audio1Icon color={color}/>;
+        return <Audio1Icon color={color} />;
       case 'text':
         return <Text1Icon color={color} />;
       default:
@@ -646,311 +658,309 @@ console.log("I am query",router.query)
   };
 
   return (
-      <div >
-    {/* // <Box sx={{ maxWidth: '100%', margin: '0 auto', padding: 2 }}> */}
-    <Box sx={{ maxWidth: '100%', minheight:'100vh' , margin: '0 auto', paddingLeft: '20px', paddingRight: '20px', paddingTop: 2, paddingBottom: 2 }}>
-      {/* Search and Filter Controls */}
-     <Box sx={{ padding:'10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2,backgroundColor: extendedPalette.toolBarBackground? extendedPalette.toolBarBackground: null, flexDirection: { xs: 'column', sm: 'row' }, borderRadius: '16px' }}>
-        {/* Search Field */}
-        {/* <Search
+    <div>
+      {/* // <Box sx={{ maxWidth: '100%', margin: '0 auto', padding: 2 }}> */}
+      <Box
+        sx={{
+          maxWidth: '100%',
+          minheight: '100vh',
+          margin: '0 auto',
+          paddingLeft: '20px',
+          paddingRight: '20px',
+          paddingTop: 2,
+          paddingBottom: 2,
+        }}>
+        {/* Search and Filter Controls */}
+        <Box
+          sx={{
+            padding: '10px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+            backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
+            flexDirection: { xs: 'column', sm: 'row' },
+            borderRadius: '16px',
+          }}>
+          {/* Search Field */}
+          {/* <Search
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onClear={() => setSearch('')}
               sx={{ width: '16rem' }}
             /> */}
-            {/* Search Field */}
-         <TextField
-           value={search}
-           onChange={(e) => setSearch(e.target.value)}
-          // onClear={() => setSearch('')}
-           placeholder="Search"
-           size="small"
-           sx={{...extendedPalette.searchField}}
-           InputProps={{
-             startAdornment: (
-               <InputAdornment position="start">
-                 <Image src={'/icons/search.svg'} alt={'icon'} width={22} height={22} />
-               </InputAdornment>
-             ),
-           }}
-    />
-<Box
-  sx={{
-    display: 'flex',
-    justifyContent: 'center',
-    flexGrow: 1,
-    flexWrap: { xs: 'wrap', sm: 'nowrap' },
-  }}
->
-  {['All', 'Image', 'Video', 'Audio', 'Text'].map((label) => (
-    <Button
-      key={label}
-      variant="contained"
-      onClick={() => handleClick(label)}
-      sx={extendedPalette.filterButton(filter, label)}
-    >
-      {label}
-    </Button>
-  ))}
-
-  {/* Sort Dropdown */}
-      <MuiIconButton
-        icon='/icons/filter'
-        altIcon='filter'
-        background={extendedPalette.filterIconsColor}
-        borderColor={palette.black}
-        width={40}
-        height={40}
-        // padding={0}
-        iconHeight={12}
-        iconWidth={20}
-        method={(event: any) => setShowFilters(event)}// Toggle state on click
-      />
-                <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
-        <Box position={'relative'}>
-          <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators ,types]} />
-        </Box>
-      </ClickAwayListener>
-
-</Box>
-
-
-
-
-        {/* Other Buttons */}
-        <Box 
-  sx={{ 
-    display: 'flex', 
-    alignItems: 'center', 
-    gap: 0, 
-    marginTop: { xs: 2, sm: 0 }, 
-    justifyContent: { xs: 'center', sm: 'initial' } 
-  }}
->
-  <Button
-      size="small"
-      sx={extendedPalette.viewButton} // Apply style from extendedPalette
-    >
-      View
-    </Button>
-  <Button
-  startIcon={
-   <Wait1Icon color= {extendedPalette.filterIconsColor} className="img" />
-  }
-   sx={{
-      '&:hover': {
-         backgroundColor: extendedPalette.filterIconsHoverColor,
-        '& .img': {
-      filter: 'brightness(0) saturate(100%) invert(100%)', // Turn the image white+
-      // color:"white"
-    }, // Background hover color
-      },
-    }}
->
-  {/* Button content */}
-
-
-</Button>
-
- <Button
-  startIcon={
-   <GridIcon1 color= {extendedPalette.filterIconsColor} className="img" />
-  }
-   sx={{
-      '&:hover': {
-          backgroundColor: extendedPalette.filterIconsHoverColor,
-        '& .img': {
-      filter: 'brightness(0) saturate(100%) invert(100%)', // Turn the image white+
-      // color:"white"
-    }, // Background hover color
-      },
-    }}
->
-  {/* Button content */}
-
-
-</Button>
-<Button
-  startIcon={
-   <EditIcon color= {extendedPalette.filterIconsColor} className="img" />
-  }
-   sx={{
-      '&:hover': {
-        backgroundColor: extendedPalette.filterIconsHoverColor,
-        '& .img': {
-      filter: 'brightness(0) saturate(100%) invert(100%)', // Turn the image white+
-      // color:"white"
-    }, // Background hover color
-      },
-    }}
->
-  {/* Button content */}
-
-
-</Button>
-</Box>
-
-      </Box>
-
-      {/* <Divider   sx={styles.divider} /> */}
-        {isDivider && <Divider sx={styles.divider} />}
-
-      {/* Media Grid */}
-<Masonry  columns={{ xs: 2, sm: 3, md: 4 }} spacing={2} sx={{ margin: 0 }}>
-      {filteredMediaItems.map((item:any, index:any) => (
-        <Paper
-          key={index}
-          sx={{
-            borderRadius: 2,
-            overflow: 'hidden',
-            backgroundColor: extendedPalette.cardMediaBackground ,
-            color: extendedPalette.cardMediaColor,
-            display: 'flex',
-            flexDirection: 'column',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            cursor: 'pointer', // Add cursor style to indicate clickability
-          }}
-        >
-          {/* Card Header */}
+          {/* Search Field */}
+          <TextField
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            // onClear={() => setSearch('')}
+            placeholder='Search'
+            size='small'
+            sx={{ ...extendedPalette.searchField }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <Image src={'/icons/search.svg'} alt={'icon'} width={22} height={22} />
+                </InputAdornment>
+              ),
+            }}
+          />
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '8px 16px',
-              backgroundColor: extendedPalette.cardHeaderBackground,
-              color: extendedPalette.cardHeaderText,
-            }}
-          >
-            {/* Media Icon and Text */}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ mr: 1 }}>
-  {getIcon(item.type, extendedPalette.cardIconColor)}  {/* Example color passed */}
-</Box>
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontFamily: 'PolySans Trial, sans-serif',
-                    fontSize: '16px',
-                    fontWeight: 400,
-                    lineHeight: '19.2px',
-                    textAlign: 'left',
-                  }}
-                >
-                  {item.title}
-                </Typography>
+              justifyContent: 'center',
+              flexGrow: 1,
+              flexWrap: { xs: 'wrap', sm: 'nowrap' },
+            }}>
+            {['All', 'Image', 'Video', 'Audio', 'Text'].map((label) => (
+              <Button
+                key={label}
+                variant='contained'
+                onClick={() => handleClick(label)}
+                sx={extendedPalette.filterButton(filter, label)}>
+                {label}
+              </Button>
+            ))}
 
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontFamily: 'PolySans Trial, sans-serif',
-                    fontSize: '12px',
-                    fontWeight: 400,
-                    lineHeight: '14.4px',
-                    textAlign: 'left',
-                  }}
-                >
-                  {format(new Date(item.created_at), 'MMM dd, yyyy')}
-                </Typography>
+            {/* Sort Dropdown */}
+            <MuiIconButton
+              icon='/icons/filter'
+              altIcon='filter'
+              background={extendedPalette.filterIconsColor}
+              borderColor={palette.black}
+              width={40}
+              height={40}
+              // padding={0}
+              iconHeight={12}
+              iconWidth={20}
+              method={(event: any) => setShowFilters(event)} // Toggle state on click
+            />
+            <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
+              <Box position={'relative'}>
+                <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators, types]} />
               </Box>
-            </Box>
-
-            {/* User Avatar */}
-            {/* <Link href={`/user/${encodeURIComponent(item.username)}`} underline="none">
-              <Avatar src={item.userImage} alt={item.username} sx={{ width: 32, height: 32 }} />
-            </Link> */}
-            <Link href={`/user/${encodeURIComponent(item.username)}`} underline="none">
-      <Avatar
-        src={avatarError ? '/icons/image1.svg' : item.userImage} // Use dummy avatar if image fails
-        alt={item.username}
-        sx={{ width: 32, height: 32 }}
-        onError={() => setAvatarError(true)} // Set error state if image fails to load
-      />
-    </Link>
+            </ClickAwayListener>
           </Box>
 
-          {/* Media Content */}
-          {/* <Box sx={{ padding: '16px' }}
+          {/* Other Buttons */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0,
+              marginTop: { xs: 2, sm: 0 },
+              justifyContent: { xs: 'center', sm: 'initial' },
+            }}>
+            <Button
+              size='small'
+              sx={extendedPalette.viewButton} // Apply style from extendedPalette
+            >
+              View
+            </Button>
+            <Button
+              startIcon={<Wait1Icon color={extendedPalette.filterIconsColor} className='img' />}
+              sx={{
+                '&:hover': {
+                  backgroundColor: extendedPalette.filterIconsHoverColor,
+                  '& .img': {
+                    filter: 'brightness(0) saturate(100%) invert(100%)', // Turn the image white+
+                    // color:"white"
+                  }, // Background hover color
+                },
+              }}>
+              {/* Button content */}
+            </Button>
+
+            <Button
+              startIcon={<GridIcon1 color={extendedPalette.filterIconsColor} className='img' />}
+              sx={{
+                '&:hover': {
+                  backgroundColor: extendedPalette.filterIconsHoverColor,
+                  '& .img': {
+                    filter: 'brightness(0) saturate(100%) invert(100%)', // Turn the image white+
+                    // color:"white"
+                  }, // Background hover color
+                },
+              }}>
+              {/* Button content */}
+            </Button>
+            <Button
+              startIcon={<EditIcon color={extendedPalette.filterIconsColor} className='img' />}
+              sx={{
+                '&:hover': {
+                  backgroundColor: extendedPalette.filterIconsHoverColor,
+                  '& .img': {
+                    filter: 'brightness(0) saturate(100%) invert(100%)', // Turn the image white+
+                    // color:"white"
+                  }, // Background hover color
+                },
+              }}>
+              {/* Button content */}
+            </Button>
+          </Box>
+        </Box>
+
+        {/* <Divider   sx={styles.divider} /> */}
+        {isDivider && <Divider sx={styles.divider} />}
+
+        {/* Media Grid */}
+        <Masonry columns={{ xs: 2, sm: 3, md: 4 }} spacing={2} sx={{ margin: 0 }}>
+          {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
+            <Paper
+              key={index}
+              sx={{
+                borderRadius: 2,
+                overflow: 'hidden',
+                backgroundColor: extendedPalette.cardMediaBackground,
+                color: extendedPalette.cardMediaColor,
+                display: 'flex',
+                flexDirection: 'column',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                cursor: 'pointer', // Add cursor style to indicate clickability
+              }}>
+              {/* Card Header */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 16px',
+                  backgroundColor: extendedPalette.cardHeaderBackground,
+                  color: extendedPalette.cardHeaderText,
+                }}>
+                {/* Media Icon and Text */}
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ mr: 1 }}>
+                    {getIcon(item.type, extendedPalette.cardIconColor)} {/* Example color passed */}
+                  </Box>
+                  <Box>
+                    <Typography
+                      variant='body2'
+                      sx={{
+                        fontFamily: 'PolySans Trial, sans-serif',
+                        fontSize: '16px',
+                        fontWeight: 400,
+                        lineHeight: '19.2px',
+                        textAlign: 'left',
+                      }}>
+                      {item.title}
+                    </Typography>
+
+                    <Typography
+                      variant='caption'
+                      sx={{
+                        fontFamily: 'PolySans Trial, sans-serif',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        lineHeight: '14.4px',
+                        textAlign: 'left',
+                      }}>
+                      {format(new Date(item.created_at), 'MMM dd, yyyy')}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* User Avatar */}
+                {/* <Link href={`/user/${encodeURIComponent(item.username)}`} underline="none">
+              <Avatar src={item.userImage} alt={item.username} sx={{ width: 32, height: 32 }} />
+            </Link> */}
+                <Link href={`/user/${encodeURIComponent(item.username)}`} underline='none'>
+                  <Avatar
+                    src={avatarError ? '/icons/image1.svg' : item.userImage} // Use dummy avatar if image fails
+                    alt={item.username}
+                    sx={{ width: 32, height: 32 }}
+                    onError={() => setAvatarError(true)} // Set error state if image fails to load
+                  />
+                </Link>
+              </Box>
+
+              {/* Media Content */}
+              {/* <Box sx={{ padding: '16px' }}
            onClick={() => handleOpenModal(item)}
            > */}
-           <Box
-  sx={{ padding: '16px' }}
-    // Call your modal opening function if needed
-    // handleOpenModal(item);
-   onClick={()=>{
-    handleOpenModal(item)
-    window.history.pushState(
-      {},
-      '',
-      `/app/story/${story?.url}/?memoryId=${item?.id}`
-      )}}     
->
+              <Box
+                sx={{ padding: '16px' }}
+                // Call your modal opening function if needed
+                // handleOpenModal(item);
+                onClick={() => {
+                  handleOpenModal(item);
+                  window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
+                }}>
+                {/* {item.type === 'image' && <Image src={`${cdn_url}${item.asset}`} alt={item.title} width={100} height={100} />} */}
+                {item.type === 'image' && (
+                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <Image
+                      src={`${cdn_url}${item.asset}`}
+                      alt={item.title}
+                      layout='responsive'
+                      width={100}
+                      height={100}
+                    />
+                  </Box>
+                )}
+                {item.type === 'video' && <VideoThumbnail videoSrc={`${cdn_url}${item.asset}`} />}
+                {item.type === 'audio' && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      gap: '5px',
+                    }}>
+                    {/* Left image with responsive size */}
+                    <div
+                      style={{
+                        position: 'relative',
+                        cursor: 'pointer',
+                        width: '50px', // Default size for larger screens
+                        maxWidth: '15%', // Responsive width for smaller screens
+                      }}
+                      // onClick={() => handleOpenModal(item)}
+                    >
+                      <Image src={'/icons/playbut.svg'} alt={'icon'} layout='responsive' width={50} height={50} />
+                    </div>
 
-            {/* {item.type === 'image' && <Image src={`${cdn_url}${item.asset}`} alt={item.title} width={100} height={100} />} */}
-            {item.type === 'image' && (
-  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-    <Image src={`${cdn_url}${item.asset}`} alt={item.title} layout="responsive" width={100} height={100} />
-  </Box>
-)}
-            {item.type === 'video' && (
-              <VideoThumbnail videoSrc={`${cdn_url}${item.asset}`}/>
-            )}
-           {item.type === 'audio' && (
-  <div style={{ display: 'flex', alignItems: 'center',justifyContent:'center', width: '100%', gap: '5px' }}>
-    {/* Left image with responsive size */}
-    <div
-      style={{
-        position: 'relative',
-        cursor: 'pointer',
-        width: '50px',  // Default size for larger screens
-        maxWidth: '15%',  // Responsive width for smaller screens
-      }}
-      // onClick={() => handleOpenModal(item)}
-    >
-      <Image src={'/icons/playbut.svg'} alt={'icon'} layout="responsive" width={50} height={50} />
-    </div>
-    
-    {/* Right image with responsive size */}
-    <div
-      style={{
-        position: 'relative',
-        cursor: 'pointer',
-        flex: '1',
-        display: 'flex',
-        justifyContent: 'center',
-        maxWidth: '70%',  // Limits width for smaller screens
-      }}
-      
-    >
-      <Audio2Icon color= {extendedPalette.audioGradientColor1} color2={extendedPalette.audioGradientColor2} />
-      {/* <Image src={'/icons/audiolay.svg'} alt={'icon'} layout="responsive" width={199} height={55} /> */}
-    </div>
-  </div>
-)}
-            {item.type === 'text' && (
-  <Box
-  sx={{
-    maxHeight: { xs: '36px', sm: '39.6px', md: '43.2px' }, // Approximate height for 3 lines
-    width: { xs: '100%', sm: '100%', md: '100%' }, // Responsive width
-    overflow: 'hidden',
-    position: 'relative',
-    WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)', // Gradual fade effect
-    maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
-    maskSize: '100% 100%',
-    WebkitMaskSize: '100% 100%',
-    '&:after': {
-      content: '""',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      height: '15px',
-      background: 'linear-gradient(to bottom, rgba(43, 54, 114, 0))', // Enhances the blur effect
-    },
-  }}
->
-    {/* <Typography
+                    {/* Right image with responsive size */}
+                    <div
+                      style={{
+                        position: 'relative',
+                        cursor: 'pointer',
+                        flex: '1',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        maxWidth: '70%', // Limits width for smaller screens
+                      }}>
+                      <Audio2Icon
+                        color={extendedPalette.audioGradientColor1}
+                        color2={extendedPalette.audioGradientColor2}
+                      />
+                      {/* <Image src={'/icons/audiolay.svg'} alt={'icon'} layout="responsive" width={199} height={55} /> */}
+                    </div>
+                  </div>
+                )}
+                {item.type === 'text' && (
+                  <Box
+                    sx={{
+                      maxHeight: { xs: '36px', sm: '39.6px', md: '43.2px' }, // Approximate height for 3 lines
+                      width: { xs: '100%', sm: '100%', md: '100%' }, // Responsive width
+                      overflow: 'hidden',
+                      position: 'relative',
+                      WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)', // Gradual fade effect
+                      maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+                      maskSize: '100% 100%',
+                      WebkitMaskSize: '100% 100%',
+                      '&:after': {
+                        content: '""',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: '15px',
+                        background: 'linear-gradient(to bottom, rgba(43, 54, 114, 0))', // Enhances the blur effect
+                      },
+                    }}>
+                    {/* <Typography
       variant="body2"
       color="white"
       sx={{
@@ -965,31 +975,40 @@ console.log("I am query",router.query)
         overflow: 'hidden',
       }}
     > */}
-      <RtfComponent rtf={item?.type === 'text' ? JSON.parse(item?.asset) : ''} label={'p'} />
-    {/* </Typography> */}
-  </Box>
-)}
-
-          </Box>
-
-        </Paper>
-      ))}
-    </Masonry>
-    {/* {selectedMedia && (
+                    <RtfComponent rtf={item?.type === 'text' ? JSON.parse(item?.asset) : ''} label={'p'} />
+                    {/* </Typography> */}
+                  </Box>
+                )}
+              </Box>
+            </Paper>
+          ))}
+        </Masonry>
+        {/* {selectedMedia && (
         <MediaModal  extendedPalette={extendedPalette}  open={openModal} onClose={handleCloseModal} mediaContent={selectedMedia} />
       )} */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+          {!allItemsLoaded && (
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={handleLoadMore}
+              sx={{
+                textTransform: 'none', // To maintain consistent typography with primary styling
+                fontWeight: '500',
+              }}>
+              Load More
+            </Button>
+          )}
+        </Box>
+      </Box>
 
-
-    </Box>
-
- <MemoryDetail
+      <MemoryDetail
         open={Boolean(selectedMedia)}
         onClose={closeMemory}
         mediaContent={selectedMedia}
         method={switchDeleteMemory}
       />
     </div>
-    
   );
 };
 

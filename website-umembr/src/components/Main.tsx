@@ -358,6 +358,11 @@ console.log("i am story", story)
         color: filter === label ? palette.black : adminPalette.textColor,
       },
     }),
+    dividerColor:{
+      
+      color:'rgba(51, 51, 51, 1)',
+      opacity:0.9,
+    },
   
     viewButton: {
       textTransform: 'none',
@@ -459,12 +464,13 @@ console.log("i am story", story)
   createdDate={story?.created_at}
   description={story?.description}
   collaborators={[
-    { src: "/assets/Ellipse 51.png", alt: "Collaborator 1" },
-    { src: "/assets/Ellipse 52.png", alt: "Collaborator 2" },
-    { src: "/assets/Ellipse 56.png", alt: "Collaborator 3" },
-    { src: "/assets/Ellipse 54.png", alt: "Collaborator 4" },
+    // { src: "/assets/Ellipse 51.png", alt: "Collaborator 1" },
+    // { src: "/assets/Ellipse 52.png", alt: "Collaborator 2" },
+    // { src: "/assets/Ellipse 56.png", alt: "Collaborator 3" },
+    // { src: "/assets/Ellipse 54.png", alt: "Collaborator 4" },
   ]}
   onBackClick={handleBackClick}
+  userId={story?.user_id}
 />
 
 

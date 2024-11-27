@@ -36,7 +36,7 @@ import { theme } from "@/theme";
 
 <Card
   sx={{
-    padding: '12px',
+    padding: '2px',
     paddingTop:"4px",
     bgcolor: 'rgba(102, 102, 102, 1)',
     boxShadow: 'none',
@@ -108,18 +108,21 @@ import { theme } from "@/theme";
   }}
   sx={{
     paddingTop: '2px',
-    height:"50px",
+    height: "50px",
     marginTop: '5px',
     backgroundColor: 'black',
-    border:"1px solid white",
+    border: "1px solid white",
     borderRadius: '8px',
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
         border: 'none', // Remove border
       },
+      '& input': {
+        color: 'white', // Change the text and password dots color to white
+      },
     },
     '& .MuiInputLabel-root': {
-      color: ' #EEEEEE', // Default label color
+      color: '#EEEEEE', // Default label color
       position: 'absolute',
       left: '14px',
       transition: 'all 0.2s ease-in-out',
@@ -134,6 +137,7 @@ import { theme } from "@/theme";
     },
   }}
 />
+
 
 <Box sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}>
     {/* <button>Sign Up</button> */}
@@ -157,7 +161,7 @@ import { theme } from "@/theme";
     </Button>
     </Box>
     <Typography style={{ display: 'flex', justifyContent: 'center', color: 'rgba(238, 238, 238, 1)', marginTop:"5px"}}>
-    <Link style={{color:"#BA0C2F", cursor:"pointer" , fontWeight:"bold"}}> {""}Forgot Password?</Link>
+    <Link style={{color:"#BA0C2F", cursor:"pointer" , fontWeight:"bold", textDecoration:"none"}}> {""}Forgot Password?</Link>
     </Typography>
     <Typography style={{ display: 'flex', justifyContent: 'center', color: 'rgba(238, 238, 238, 1)', marginTop:"5px",fontWeight:"bold"}}>
      or
@@ -183,7 +187,28 @@ import { theme } from "@/theme";
         backgroundColor: 'rgba(34, 34, 34, 1)',
       },
       borderRadius: '8px',
-      padding: '25px',
+      padding: '0 15px',
+      lineHeight:"1.15"
+    }}
+  >
+    Continue with
+  </Button>
+
+  <Button
+    fullWidth
+    endIcon={<img src='/images/apple.svg' />}
+    sx={{
+      color: 'white',
+      height: '48px',
+    
+      border:"1px solid black",
+      backgroundColor: 'rgba(34, 34, 34, 0.8)',
+      '&:hover': {
+        backgroundColor: 'rgba(34, 34, 34, 1)',
+      },
+      borderRadius: '8px',
+     padding: '0 15px',
+      lineHeight:"1.15"
     }}
   >
     Continue with
@@ -200,7 +225,8 @@ import { theme } from "@/theme";
         backgroundColor: 'rgba(34, 34, 34, 1)',
       },
       borderRadius: '10px',
-      padding: '25px',
+      padding: '0 15px',
+      lineHeight:"1.15"
     }}
   >
     Continue with

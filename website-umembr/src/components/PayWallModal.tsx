@@ -39,6 +39,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
           <Paper
             sx={{
               width: '80%',
+              height:"80%",
               position: 'relative',
               maxWidth: '900px',
               padding: 3,
@@ -77,7 +78,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                 <Box
                   sx={{
                     width: 'auto',
-                    height: 'auto',
+                    height: '600px',
                     backgroundColor: '#222',
                     border: '1px',
                     color: '#fff',
@@ -86,6 +87,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                     borderRadius: '10px',
                     [theme.breakpoints.down('sm')]: {
                       padding: '10px',
+                      height:"auto"
                     },
                   }}>
                   <img src='/icons/Union.svg' />

@@ -1,0 +1,2 @@
+export const GET_UPLOAD_SIGNED_URL = 'GET_UPLOAD_SIGNED_URL';
+export const GET_SIGNED_URL = 'GET_SIGNED_URL';

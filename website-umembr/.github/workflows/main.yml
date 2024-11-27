@@ -1,0 +1,80 @@
+name: Deploy Memvy Website - Production
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn && yarn lint && yarn cy:run-ct-fast
+      - name: build image
+        uses: appleboy/ssh-action@master
+        env:
+          CI_REGISTRY_PASSWORD: ${{ secrets.SECRET_TOKEN }}
+          CI_REGISTRY: ghcr.io
+          CI_REGISTRY_USER: ${{ vars.CI_REGISTRY_USER }}
+          ENVIRONMENT: PRODUCTION
+          REPLICAS: 3
+          NETWORK: umembr-net
+        with:
+          username: dockeruser
+          host: engine.prd1.memvy.com
+          key: ${{ secrets.SSH_PRODUCTION_KEY }}
+          port: 22 # Defaults to 22
+          command_timeout: 120m
+          envs: GITHUB_REPOSITORY,GITHUB_SHA,CI_REGISTRY,CI_REGISTRY_USER,CI_REGISTRY_PASSWORD,ENVIRONMENT,REPLICAS,NETWORK
+          script: |
+            if [ ! -d "website-umembr-main" ]; then
+              git clone https://$CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD@github.com/umembr/website-umembr  --branch main --single-branch website-umembr-main
+            fi
+            cd website-umembr-main
+            git fetch && git reset --hard origin/main
+            chmod +x -R ./scripts
+            ./scripts/build.sh
+      - name: deploy image
+        uses: appleboy/ssh-action@master
+        env:
+          CI_REGISTRY_PASSWORD: ${{ secrets.SECRET_TOKEN }}
+          CI_REGISTRY: ghcr.io
+          CI_REGISTRY_USER: ${{ vars.CI_REGISTRY_USER }}
+          ENVIRONMENT: PRODUCTION
+          REPLICAS: 3
+          NETWORK: umembr-net
+        with:
+          username: dockeruser
+          host: engine.prd1.memvy.com
+          key: ${{ secrets.SSH_PRODUCTION_KEY }}
+          port: 22 # Defaults to 22
+          command_timeout: 120m
+          envs: GITHUB_REPOSITORY,GITHUB_SHA,CI_REGISTRY,CI_REGISTRY_USER,CI_REGISTRY_PASSWORD,ENVIRONMENT,REPLICAS,NETWORK
+          script: |
+            cd website-umembr-main
+            chmod +x -R ./scripts
+            ./scripts/deploy.sh
+            cd ..
+            if [ -d "website-umembr-main" ]; then rm -rf website-umembr-main; fi
+            exit
+            exit

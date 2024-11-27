@@ -1,0 +1,977 @@
+import React from 'react';
+import { mount } from '@cypress/react18';
+import { Home } from '@/screens';
+import AppContainer from '../components/AppContainer';
+import configureStore from 'redux-mock-store';
+
+const mockStore = configureStore([]);
+
+describe('Home Screen', () => {
+  const store: any = mockStore({
+    home: {
+      criterias: {
+        search: '',
+      },
+
+      stories: {
+        draftStories: [
+          {
+            id: 2,
+            user_id: 3,
+            title: 'testing',
+            description: 'esto es una pruea probando el pruebado para probar todo lo demandado',
+            url: 'testing-1',
+            private: false,
+            password: ' ',
+            cover_image: 'stories/testing/JOKER.png',
+            story_details: {
+              prompts: {},
+              general_info: {
+                class_purpose: {
+                  purpose_of_class: [
+                    {
+                      name_of_class: '',
+                      description_of_event: '',
+                    },
+                  ],
+                  general_notes_section: {
+                    general_information: '',
+                  },
+                },
+                class_information: {
+                  name_of_class: [
+                    {
+                      end_date: '',
+                      start_date: '',
+                      name_of_class: '',
+                    },
+                  ],
+                  associated_school: {
+                    city: '',
+                    state: '',
+                    street: '',
+                    province: '',
+                    zip_code: '',
+                    name_of_school: '',
+                  },
+                },
+                classmates_involved: {
+                  classmates_involved: [
+                    {
+                      name: '',
+                      suffix: '',
+                      lastname: '',
+                      maiden_name: '',
+                      second_name: '',
+                    },
+                  ],
+                },
+              },
+              type_of_story: 'classmates_story',
+            },
+            created_at: '2024-05-16T13:34:58.022Z',
+            updated_at: '2024-05-16T13:34:58.022Z',
+            status: 'draft',
+            invitationCode: [],
+            memories: [],
+          },
+          {
+            id: 4,
+            user_id: 3,
+            title: 'test joker',
+            description:
+              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It hajsjs",
+            url: 'test-joker-1',
+            private: false,
+            password: ' ',
+            cover_image: 'stories/test joker/HD-wallpaper-comics-joker-dc-comics.jpeg',
+            story_details: {
+              prompts: {
+                share_a_memory_fun: true,
+              },
+              general_info: {
+                class_purpose: {
+                  purpose_of_class: [
+                    {
+                      name_of_class: '',
+                      description_of_event: '',
+                    },
+                  ],
+                  general_notes_section: {
+                    general_information: '',
+                  },
+                },
+                class_information: {
+                  name_of_class: [
+                    {
+                      end_date: '',
+                      start_date: '',
+                      name_of_class: '',
+                    },
+                  ],
+                  associated_school: {
+                    city: '',
+                    state: '',
+                    street: '',
+                    province: '',
+                    zip_code: '',
+                    name_of_school: '',
+                  },
+                },
+                classmates_involved: {
+                  classmates_involved: [
+                    {
+                      name: '',
+                      suffix: '',
+                      lastname: '',
+                      maiden_name: '',
+                      second_name: '',
+                    },
+                  ],
+                },
+              },
+              type_of_story: 'classmates_story',
+            },
+            created_at: '2024-05-16T15:02:54.625Z',
+            updated_at: '2024-05-16T15:02:54.625Z',
+            status: 'draft',
+            invitationCode: [],
+            memories: [
+              {
+                id: 6,
+                user_id: 3,
+                story_id: 4,
+                title: 'test video ',
+                description:
+                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been tejdjdjdjdjdjdn jsjs hd dnkskwk jskdks jsjdhns hshsbks njcjcbdsk ncjcjudnej',
+                asset: 'stories/test joker/memories/3195394-uhd_3840_2160_25fps.mp4',
+                type: 'video',
+                asset_type: 'video/mp4',
+                preview_asset: null,
+                prompt: 'share_a_memory_fun',
+                memory_details: {},
+                created_at: '2024-05-16T15:06:24.187Z',
+                updated_at: '2024-05-16T15:06:24.187Z',
+                approved: true,
+              },
+              {
+                id: 7,
+                user_id: 3,
+                story_id: 4,
+                title: 'text massive rich ',
+                description: 'massive rich',
+                asset:
+                  '[{"type":"paragraph","children":[{"text":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum","fontSize":"12px"}]},{"type":"paragraph","children":[{"fontSize":"12px","text":""}]},{"type":"paragraph","children":[{"fontSize":"12px","text":"Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \\"de Finibus Bonorum et Malorum\\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \\"Lorem ipsum dolor sit amet..\\", comes from a line in section 1.10.32."}]},{"type":"paragraph","children":[{"fontSize":"12px","text":""}]},{"type":"paragraph","children":[{"fontSize":"12px","text":"The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \\"de Finibus Bonorum et Malorum\\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham."}]},{"type":"paragraph","children":[{"fontSize":"12px","text":""}]},{"type":"paragraph","children":[{"fontSize":"12px","text":"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."}]},{"type":"paragraph","children":[{"fontSize":"12px","text":""}]},{"type":"paragraph","children":[{"fontSize":"12px","text":"There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."}]}]',
+                type: 'text',
+                asset_type: 'text',
+                preview_asset: null,
+                prompt: 'share_a_memory_fun',
+                memory_details: {},
+                created_at: '2024-05-16T15:09:04.402Z',
+                updated_at: '2024-05-16T15:09:04.402Z',
+                approved: true,
+              },
+            ],
+          },
+        ],
+        publishedStories: [],
+        collaboratorStories: [],
+      },
+
+      storiesResult: [
+        {
+          id: 2,
+          user_id: 3,
+          title: 'testing',
+          description: 'esto es una pruea probando el pruebado para probar todo lo demandado',
+          url: 'testing-1',
+          private: false,
+          password: ' ',
+          cover_image: 'stories/testing/JOKER.png',
+          story_details: {
+            prompts: {},
+            general_info: {
+              class_purpose: {
+                purpose_of_class: [
+                  {
+                    name_of_class: '',
+                    description_of_event: '',
+                  },
+                ],
+                general_notes_section: {
+                  general_information: '',
+                },
+              },
+              class_information: {
+                name_of_class: [
+                  {
+                    end_date: '',
+                    start_date: '',
+                    name_of_class: '',
+                  },
+                ],
+                associated_school: {
+                  city: '',
+                  state: '',
+                  street: '',
+                  province: '',
+                  zip_code: '',
+                  name_of_school: '',
+                },
+              },
+              classmates_involved: {
+                classmates_involved: [
+                  {
+                    name: '',
+                    suffix: '',
+                    lastname: '',
+                    maiden_name: '',
+                    second_name: '',
+                  },
+                ],
+              },
+            },
+            type_of_story: 'classmates_story',
+          },
+          created_at: '2024-05-16T13:34:58.022Z',
+          updated_at: '2024-05-16T13:34:58.022Z',
+          status: 'draft',
+          invitationCode: [],
+        },
+        {
+          id: 4,
+          user_id: 3,
+          title: 'test joker',
+          description:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It hajsjs",
+          url: 'test-joker-1',
+          private: false,
+          password: ' ',
+          cover_image: 'stories/test joker/HD-wallpaper-comics-joker-dc-comics.jpeg',
+          story_details: {
+            prompts: {
+              share_a_memory_fun: true,
+            },
+            general_info: {
+              class_purpose: {
+                purpose_of_class: [
+                  {
+                    name_of_class: '',
+                    description_of_event: '',
+                  },
+                ],
+                general_notes_section: {
+                  general_information: '',
+                },
+              },
+              class_information: {
+                name_of_class: [
+                  {
+                    end_date: '',
+                    start_date: '',
+                    name_of_class: '',
+                  },
+                ],
+                associated_school: {
+                  city: '',
+                  state: '',
+                  street: '',
+                  province: '',
+                  zip_code: '',
+                  name_of_school: '',
+                },
+              },
+              classmates_involved: {
+                classmates_involved: [
+                  {
+                    name: '',
+                    suffix: '',
+                    lastname: '',
+                    maiden_name: '',
+                    second_name: '',
+                  },
+                ],
+              },
+            },
+            type_of_story: 'classmates_story',
+          },
+          created_at: '2024-05-16T15:02:54.625Z',
+          updated_at: '2024-05-16T15:02:54.625Z',
+          status: 'draft',
+          invitationCode: [],
+        },
+      ],
+    },
+    intermitence: {
+      loading: false,
+    },
+    auth: {
+      user: {
+        id: 3,
+        name: 'gerard',
+        lastname: 'ijiojio',
+        email: 'mauricemiot18@gmail.com',
+        phonenumber: '04211279301',
+        address_city: 'tu address',
+        address_country: null,
+        address_line_1: null,
+        address_line_2: null,
+        address_postal_code: null,
+        address_state: 'FL',
+        picture: 'userClient=3/test11.jpg',
+        description: 'about me',
+        recover_code: '999556',
+        created_at: '2024-05-16T13:21:31.987Z',
+        updated_at: '2024-08-07T14:28:56.401Z',
+        facebookAccessToken: null,
+        googleAccessToken:
+          'ya29.a0AXooCgtuGyCwH8MQBmeNa7rYWDP0r_EXZy1o_rrGwXOe51LFAls2mk4BNPxdCRrlCIQR0LBuT-TVqmhoYQr-i0fzh-ERCc3MuAQiDlecUKR3a0vThePnZQoNPiZfONWKCPkw0pipRsU1ZAK_1RvxBDqIX-fRfZFdZnO1aCgYKAeQSARESFQHGX2MibN9lYuGkfrQfCTbz823Qfg0171',
+        appleuserAccessToken: null,
+        referalCode: ' JimyE',
+        referenceId: null,
+        viewMemories: [
+          6, 153, 93, 154, 86, 279, 7, 162, 283, 309, 416, 417, 419, 443, 447, 449, 448, 450, 442, 446, 451, 367, 489,
+          492, 490, 371, 391, 562, 263,
+        ],
+        referalsCodeId: null,
+        roles: [
+          {
+            role_id: 1,
+            user_id: 3,
+            created_at: '2024-05-16T13:21:31.990Z',
+            updated_at: '2024-05-16T13:21:31.990Z',
+            story_id: null,
+            id: 3,
+            validated: false,
+            user_type: null,
+            role: {
+              id: 1,
+              name: 'Client',
+              preset: true,
+              created_at: '2024-05-16T13:20:14.887Z',
+              updated_at: '2024-07-22T12:24:44.576Z',
+              permissions: [
+                {
+                  id: 1,
+                  name: 'CLIENT_STORY_CREATE',
+                  created_at: '2024-05-16T13:20:10.400Z',
+                  updated_at: '2024-05-16T13:20:10.400Z',
+                },
+                {
+                  id: 2,
+                  name: 'CLIENT_STORY_GET',
+                  created_at: '2024-05-16T13:20:10.650Z',
+                  updated_at: '2024-05-16T13:20:10.650Z',
+                },
+              ],
+            },
+          },
+          {
+            role_id: 2,
+            user_id: 3,
+            created_at: '2024-08-01T13:32:42.221Z',
+            updated_at: '2024-08-01T13:32:42.221Z',
+            story_id: null,
+            id: 336,
+            validated: false,
+            user_type: null,
+            role: {
+              id: 2,
+              name: 'Story_Owner',
+              preset: true,
+              created_at: '2024-05-16T13:20:15.133Z',
+              updated_at: '2024-05-16T13:20:15.133Z',
+              permissions: [
+                {
+                  id: 2,
+                  name: 'CLIENT_STORY_GET',
+                  created_at: '2024-05-16T13:20:10.650Z',
+                  updated_at: '2024-05-16T13:20:10.650Z',
+                },
+                {
+                  id: 3,
+                  name: 'CLIENT_STORY_UPDATE',
+                  created_at: '2024-05-16T13:20:10.806Z',
+                  updated_at: '2024-05-16T13:20:10.806Z',
+                },
+                {
+                  id: 4,
+                  name: 'CLIENT_STORY_DELETE',
+                  created_at: '2024-05-16T13:20:10.963Z',
+                  updated_at: '2024-05-16T13:20:10.963Z',
+                },
+                {
+                  id: 5,
+                  name: 'CLIENT_MEMORY_CREATE',
+                  created_at: '2024-05-16T13:20:11.124Z',
+                  updated_at: '2024-05-16T13:20:11.124Z',
+                },
+                {
+                  id: 6,
+                  name: 'CLIENT_MEMORY_GET',
+                  created_at: '2024-05-16T13:20:11.288Z',
+                  updated_at: '2024-05-16T13:20:11.288Z',
+                },
+                {
+                  id: 7,
+                  name: 'CLIENT_MEMORY_UPDATE',
+                  created_at: '2024-05-16T13:20:11.450Z',
+                  updated_at: '2024-05-16T13:20:11.450Z',
+                },
+                {
+                  id: 8,
+                  name: 'CLIENT_MEMORY_DELETE',
+                  created_at: '2024-05-16T13:20:11.615Z',
+                  updated_at: '2024-05-16T13:20:11.615Z',
+                },
+                {
+                  id: 9,
+                  name: 'CLIENT_COLLABORATOR_ADD',
+                  created_at: '2024-05-16T13:20:11.779Z',
+                  updated_at: '2024-05-16T13:20:11.779Z',
+                },
+                {
+                  id: 10,
+                  name: 'CLIENT_COLLABORATOR_REMOVE',
+                  created_at: '2024-05-16T13:20:11.942Z',
+                  updated_at: '2024-05-16T13:20:11.942Z',
+                },
+              ],
+            },
+          },
+        ],
+        token:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJtYXVyaWNlbWlvdDE4QGdtYWlsLmNvbSIsImlhdCI6MTcyMzE0NTQ3NiwiZXhwIjoxNzIzNzUwMjc2fQ.aeXTLQpXJy76BrhYGOKwPA222OyS-S6vIttKL9B5qJY',
+        password: '$2b$10$Y9J7H41Ri7vEvHRMmtoOrewaoniGRK5vZfegQ0EsIPSVXyS/EuYYm',
+        storyCount: 30,
+        collaboratorCount: 6,
+        collaborationsCount: 0,
+        collaborators: [
+          {
+            id: 95,
+            name: 'gerard',
+            lastname: 'miot',
+            email: 'gmiot@aimonkey.io',
+            phonenumber: '1223323223',
+            address_city: null,
+            address_country: null,
+            address_line_1: null,
+            address_line_2: null,
+            address_postal_code: null,
+            address_state: null,
+            picture: null,
+            description: 'sss',
+            recover_code: null,
+            created_at: '2024-06-25T11:39:27.060Z',
+            updated_at: '2024-06-25T11:39:27.060Z',
+            facebookAccessToken: null,
+            googleAccessToken: null,
+            appleuserAccessToken: null,
+            referalCode: null,
+            referenceId: null,
+            viewMemories: [],
+            referalsCodeId: null,
+            user_type: 'other',
+          },
+          {
+            id: 94,
+            name: 'gerard',
+            lastname: 'Miot',
+            email: 'anaelle.lesne&2@ibisdev.tech',
+            phonenumber: '1333333',
+            address_city: null,
+            address_country: null,
+            address_line_1: null,
+            address_line_2: null,
+            address_postal_code: null,
+            address_state: null,
+            picture: null,
+            description: 'ddd',
+            recover_code: null,
+            created_at: '2024-06-25T11:12:29.053Z',
+            updated_at: '2024-06-25T11:12:29.053Z',
+            facebookAccessToken: null,
+            googleAccessToken: null,
+            appleuserAccessToken: null,
+            referalCode: null,
+            referenceId: null,
+            viewMemories: [],
+            referalsCodeId: null,
+            user_type: 'other',
+          },
+          {
+            id: 6,
+            name: 'Loïc ',
+            lastname: 'Rafique',
+            email: 'memvytest2@yopmail.com',
+            phonenumber: '1222223252',
+            address_city: '',
+            address_country: null,
+            address_line_1: '',
+            address_line_2: null,
+            address_postal_code: null,
+            address_state: 'ID',
+            picture: null,
+            description:
+              'Test 🍓 ☀ 🌩 combien coûte une baguette bonjour combien coûtant une croissant une croissant une pizza bonjour merci combien coûte ',
+            recover_code: '335319',
+            created_at: '2024-05-16T15:52:37.915Z',
+            updated_at: '2024-08-07T15:55:37.364Z',
+            facebookAccessToken: null,
+            googleAccessToken: null,
+            appleuserAccessToken: null,
+            referalCode: ' XPQ6f',
+            referenceId: null,
+            viewMemories: [
+              250, 36, 38, 31, 40, 57, 343, 88, 39, 368, 35, 503, 283, 153, 221, 222, 216, 50, 507, 45, 32,
+            ],
+            referalsCodeId: null,
+            user_type: null,
+          },
+          {
+            id: 96,
+            name: 'maurice',
+            lastname: 'miot',
+            email: 'maurice.yggdrasil@gmail.com',
+            phonenumber: '',
+            address_city: '',
+            address_country: '',
+            address_line_1: '',
+            address_line_2: '',
+            address_postal_code: '',
+            address_state: '',
+            picture: null,
+            description: null,
+            recover_code: null,
+            created_at: '2024-06-25T16:18:19.715Z',
+            updated_at: '2024-06-25T16:18:19.715Z',
+            facebookAccessToken: null,
+            googleAccessToken:
+              'ya29.a0AXooCgtk6mCeLjT6T9EQPsWNHmQCRq4-5uIJMsVIYSmAZnnaQyuFKVW1-m1-fx60PSQUse_o3MJUzLdQrAJGN5fhZR8nWGK0ijYubz2G_4-YBQ-JPvFkZRdAi5-pUB0WC2H64gVmGsJ1xpyXLg3Kot9q6BCImynL2QaCgYKAX4SARMSFQHGX2Mi4KgYWaxKCgYZmY13NxsabQ0169',
+            appleuserAccessToken: null,
+            referalCode: null,
+            referenceId: null,
+            viewMemories: [],
+            referalsCodeId: null,
+            user_type: 'other',
+          },
+          {
+            id: 25,
+            name: 'gerard',
+            lastname: 'ijiojio',
+            email: 'gerard2@yopmail.com',
+            phonenumber: '04211279301',
+            address_city: null,
+            address_country: null,
+            address_line_1: null,
+            address_line_2: null,
+            address_postal_code: null,
+            address_state: null,
+            picture: null,
+            description:
+              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has su",
+            recover_code: null,
+            created_at: '2024-05-21T18:54:43.088Z',
+            updated_at: '2024-05-21T18:54:43.088Z',
+            facebookAccessToken: null,
+            googleAccessToken: null,
+            appleuserAccessToken: null,
+            referalCode: null,
+            referenceId: null,
+            viewMemories: [],
+            referalsCodeId: null,
+            user_type: 'other',
+          },
+          {
+            id: 97,
+            name: 'gerard',
+            lastname: 'miot',
+            email: 'gerard99@yopmail.com',
+            phonenumber: '133434334',
+            address_city: null,
+            address_country: null,
+            address_line_1: null,
+            address_line_2: null,
+            address_postal_code: null,
+            address_state: null,
+            picture: null,
+            description: '',
+            recover_code: null,
+            created_at: '2024-06-25T16:23:53.214Z',
+            updated_at: '2024-06-25T16:23:53.214Z',
+            facebookAccessToken: null,
+            googleAccessToken: null,
+            appleuserAccessToken: null,
+            referalCode: null,
+            referenceId: null,
+            viewMemories: [],
+            referalsCodeId: null,
+            user_type: 'other',
+          },
+        ],
+      },
+    },
+  });
+
+  it('Render Home', () => {
+    mount(
+      <AppContainer store={store}>
+        <Home />
+      </AppContainer>,
+    );
+    cy.stub(require('next/router'), 'useRouter');
+  });
+  it('Render Home Responsive', () => {
+    cy.viewport(414, 896);
+    mount(
+      <AppContainer store={store}>
+        <Home />
+      </AppContainer>,
+    );
+    cy.stub(require('next/router'), 'useRouter');
+  });
+
+  describe('Home Screen', () => {
+    const storeSearch: any = mockStore({
+      home: {
+        criterias: {
+          search: 'search',
+        },
+        stories: [
+          {
+            drafts: [],
+            collaborators: [],
+            publisheds: [],
+          },
+        ],
+        storiesResult: [],
+      },
+      intermitence: {
+        loading: false,
+      },
+      auth: {
+        user: {
+          id: 3,
+          name: 'gerard',
+          lastname: 'ijiojio',
+          email: 'mauricemiot18@gmail.com',
+          phonenumber: '04211279301',
+          address_city: 'tu address',
+          address_country: null,
+          address_line_1: null,
+          address_line_2: null,
+          address_postal_code: null,
+          address_state: 'FL',
+          picture: 'userClient=3/test11.jpg',
+          description: 'about me',
+          recover_code: '999556',
+          created_at: '2024-05-16T13:21:31.987Z',
+          updated_at: '2024-08-07T14:28:56.401Z',
+          facebookAccessToken: null,
+          googleAccessToken:
+            'ya29.a0AXooCgtuGyCwH8MQBmeNa7rYWDP0r_EXZy1o_rrGwXOe51LFAls2mk4BNPxdCRrlCIQR0LBuT-TVqmhoYQr-i0fzh-ERCc3MuAQiDlecUKR3a0vThePnZQoNPiZfONWKCPkw0pipRsU1ZAK_1RvxBDqIX-fRfZFdZnO1aCgYKAeQSARESFQHGX2MibN9lYuGkfrQfCTbz823Qfg0171',
+          appleuserAccessToken: null,
+          referalCode: ' JimyE',
+          referenceId: null,
+          viewMemories: [
+            6, 153, 93, 154, 86, 279, 7, 162, 283, 309, 416, 417, 419, 443, 447, 449, 448, 450, 442, 446, 451, 367, 489,
+            492, 490, 371, 391, 562, 263,
+          ],
+          referalsCodeId: null,
+          roles: [
+            {
+              role_id: 1,
+              user_id: 3,
+              created_at: '2024-05-16T13:21:31.990Z',
+              updated_at: '2024-05-16T13:21:31.990Z',
+              story_id: null,
+              id: 3,
+              validated: false,
+              user_type: null,
+              role: {
+                id: 1,
+                name: 'Client',
+                preset: true,
+                created_at: '2024-05-16T13:20:14.887Z',
+                updated_at: '2024-07-22T12:24:44.576Z',
+                permissions: [
+                  {
+                    id: 1,
+                    name: 'CLIENT_STORY_CREATE',
+                    created_at: '2024-05-16T13:20:10.400Z',
+                    updated_at: '2024-05-16T13:20:10.400Z',
+                  },
+                  {
+                    id: 2,
+                    name: 'CLIENT_STORY_GET',
+                    created_at: '2024-05-16T13:20:10.650Z',
+                    updated_at: '2024-05-16T13:20:10.650Z',
+                  },
+                ],
+              },
+            },
+            {
+              role_id: 2,
+              user_id: 3,
+              created_at: '2024-08-01T13:32:42.221Z',
+              updated_at: '2024-08-01T13:32:42.221Z',
+              story_id: null,
+              id: 336,
+              validated: false,
+              user_type: null,
+              role: {
+                id: 2,
+                name: 'Story_Owner',
+                preset: true,
+                created_at: '2024-05-16T13:20:15.133Z',
+                updated_at: '2024-05-16T13:20:15.133Z',
+                permissions: [
+                  {
+                    id: 2,
+                    name: 'CLIENT_STORY_GET',
+                    created_at: '2024-05-16T13:20:10.650Z',
+                    updated_at: '2024-05-16T13:20:10.650Z',
+                  },
+                  {
+                    id: 3,
+                    name: 'CLIENT_STORY_UPDATE',
+                    created_at: '2024-05-16T13:20:10.806Z',
+                    updated_at: '2024-05-16T13:20:10.806Z',
+                  },
+                  {
+                    id: 4,
+                    name: 'CLIENT_STORY_DELETE',
+                    created_at: '2024-05-16T13:20:10.963Z',
+                    updated_at: '2024-05-16T13:20:10.963Z',
+                  },
+                  {
+                    id: 5,
+                    name: 'CLIENT_MEMORY_CREATE',
+                    created_at: '2024-05-16T13:20:11.124Z',
+                    updated_at: '2024-05-16T13:20:11.124Z',
+                  },
+                  {
+                    id: 6,
+                    name: 'CLIENT_MEMORY_GET',
+                    created_at: '2024-05-16T13:20:11.288Z',
+                    updated_at: '2024-05-16T13:20:11.288Z',
+                  },
+                  {
+                    id: 7,
+                    name: 'CLIENT_MEMORY_UPDATE',
+                    created_at: '2024-05-16T13:20:11.450Z',
+                    updated_at: '2024-05-16T13:20:11.450Z',
+                  },
+                  {
+                    id: 8,
+                    name: 'CLIENT_MEMORY_DELETE',
+                    created_at: '2024-05-16T13:20:11.615Z',
+                    updated_at: '2024-05-16T13:20:11.615Z',
+                  },
+                  {
+                    id: 9,
+                    name: 'CLIENT_COLLABORATOR_ADD',
+                    created_at: '2024-05-16T13:20:11.779Z',
+                    updated_at: '2024-05-16T13:20:11.779Z',
+                  },
+                  {
+                    id: 10,
+                    name: 'CLIENT_COLLABORATOR_REMOVE',
+                    created_at: '2024-05-16T13:20:11.942Z',
+                    updated_at: '2024-05-16T13:20:11.942Z',
+                  },
+                ],
+              },
+            },
+          ],
+          token:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJtYXVyaWNlbWlvdDE4QGdtYWlsLmNvbSIsImlhdCI6MTcyMzE0NTQ3NiwiZXhwIjoxNzIzNzUwMjc2fQ.aeXTLQpXJy76BrhYGOKwPA222OyS-S6vIttKL9B5qJY',
+          password: '$2b$10$Y9J7H41Ri7vEvHRMmtoOrewaoniGRK5vZfegQ0EsIPSVXyS/EuYYm',
+          storyCount: 30,
+          collaboratorCount: 6,
+          collaborationsCount: 0,
+          collaborators: [
+            {
+              id: 95,
+              name: 'gerard',
+              lastname: 'miot',
+              email: 'gmiot@aimonkey.io',
+              phonenumber: '1223323223',
+              address_city: null,
+              address_country: null,
+              address_line_1: null,
+              address_line_2: null,
+              address_postal_code: null,
+              address_state: null,
+              picture: null,
+              description: 'sss',
+              recover_code: null,
+              created_at: '2024-06-25T11:39:27.060Z',
+              updated_at: '2024-06-25T11:39:27.060Z',
+              facebookAccessToken: null,
+              googleAccessToken: null,
+              appleuserAccessToken: null,
+              referalCode: null,
+              referenceId: null,
+              viewMemories: [],
+              referalsCodeId: null,
+              user_type: 'other',
+            },
+            {
+              id: 94,
+              name: 'gerard',
+              lastname: 'Miot',
+              email: 'anaelle.lesne&2@ibisdev.tech',
+              phonenumber: '1333333',
+              address_city: null,
+              address_country: null,
+              address_line_1: null,
+              address_line_2: null,
+              address_postal_code: null,
+              address_state: null,
+              picture: null,
+              description: 'ddd',
+              recover_code: null,
+              created_at: '2024-06-25T11:12:29.053Z',
+              updated_at: '2024-06-25T11:12:29.053Z',
+              facebookAccessToken: null,
+              googleAccessToken: null,
+              appleuserAccessToken: null,
+              referalCode: null,
+              referenceId: null,
+              viewMemories: [],
+              referalsCodeId: null,
+              user_type: 'other',
+            },
+            {
+              id: 6,
+              name: 'Loïc ',
+              lastname: 'Rafique',
+              email: 'memvytest2@yopmail.com',
+              phonenumber: '1222223252',
+              address_city: '',
+              address_country: null,
+              address_line_1: '',
+              address_line_2: null,
+              address_postal_code: null,
+              address_state: 'ID',
+              picture: null,
+              description:
+                'Test 🍓 ☀ 🌩 combien coûte une baguette bonjour combien coûtant une croissant une croissant une pizza bonjour merci combien coûte ',
+              recover_code: '335319',
+              created_at: '2024-05-16T15:52:37.915Z',
+              updated_at: '2024-08-07T15:55:37.364Z',
+              facebookAccessToken: null,
+              googleAccessToken: null,
+              appleuserAccessToken: null,
+              referalCode: ' XPQ6f',
+              referenceId: null,
+              viewMemories: [
+                250, 36, 38, 31, 40, 57, 343, 88, 39, 368, 35, 503, 283, 153, 221, 222, 216, 50, 507, 45, 32,
+              ],
+              referalsCodeId: null,
+              user_type: null,
+            },
+            {
+              id: 96,
+              name: 'maurice',
+              lastname: 'miot',
+              email: 'maurice.yggdrasil@gmail.com',
+              phonenumber: '',
+              address_city: '',
+              address_country: '',
+              address_line_1: '',
+              address_line_2: '',
+              address_postal_code: '',
+              address_state: '',
+              picture: null,
+              description: null,
+              recover_code: null,
+              created_at: '2024-06-25T16:18:19.715Z',
+              updated_at: '2024-06-25T16:18:19.715Z',
+              facebookAccessToken: null,
+              googleAccessToken:
+                'ya29.a0AXooCgtk6mCeLjT6T9EQPsWNHmQCRq4-5uIJMsVIYSmAZnnaQyuFKVW1-m1-fx60PSQUse_o3MJUzLdQrAJGN5fhZR8nWGK0ijYubz2G_4-YBQ-JPvFkZRdAi5-pUB0WC2H64gVmGsJ1xpyXLg3Kot9q6BCImynL2QaCgYKAX4SARMSFQHGX2Mi4KgYWaxKCgYZmY13NxsabQ0169',
+              appleuserAccessToken: null,
+              referalCode: null,
+              referenceId: null,
+              viewMemories: [],
+              referalsCodeId: null,
+              user_type: 'other',
+            },
+            {
+              id: 25,
+              name: 'gerard',
+              lastname: 'ijiojio',
+              email: 'gerard2@yopmail.com',
+              phonenumber: '04211279301',
+              address_city: null,
+              address_country: null,
+              address_line_1: null,
+              address_line_2: null,
+              address_postal_code: null,
+              address_state: null,
+              picture: null,
+              description:
+                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has su",
+              recover_code: null,
+              created_at: '2024-05-21T18:54:43.088Z',
+              updated_at: '2024-05-21T18:54:43.088Z',
+              facebookAccessToken: null,
+              googleAccessToken: null,
+              appleuserAccessToken: null,
+              referalCode: null,
+              referenceId: null,
+              viewMemories: [],
+              referalsCodeId: null,
+              user_type: 'other',
+            },
+            {
+              id: 97,
+              name: 'gerard',
+              lastname: 'miot',
+              email: 'gerard99@yopmail.com',
+              phonenumber: '133434334',
+              address_city: null,
+              address_country: null,
+              address_line_1: null,
+              address_line_2: null,
+              address_postal_code: null,
+              address_state: null,
+              picture: null,
+              description: '',
+              recover_code: null,
+              created_at: '2024-06-25T16:23:53.214Z',
+              updated_at: '2024-06-25T16:23:53.214Z',
+              facebookAccessToken: null,
+              googleAccessToken: null,
+              appleuserAccessToken: null,
+              referalCode: null,
+              referenceId: null,
+              viewMemories: [],
+              referalsCodeId: null,
+              user_type: 'other',
+            },
+          ],
+        },
+      },
+    });
+    it('Render Home', () => {
+      mount(
+        <AppContainer store={storeSearch}>
+          <Home />
+        </AppContainer>,
+      );
+      cy.stub(require('next/router'), 'useRouter');
+    });
+    it('Render Home Responsive', () => {
+      cy.viewport(414, 896);
+      mount(
+        <AppContainer store={storeSearch}>
+          <Home />
+        </AppContainer>,
+      );
+      cy.stub(require('next/router'), 'useRouter');
+    });
+  });
+});

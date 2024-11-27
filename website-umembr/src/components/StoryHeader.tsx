@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AppBar, Toolbar, Button, Box, Typography, Avatar, AvatarGroup, ThemeProvider } from '@mui/material';
 import Image from 'next/image';
 import { createTheme } from '@mui/material/styles';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 import Link from 'next/link';
 
 interface StoryHeaderProps {
@@ -139,7 +139,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
           {title}
         </Typography>
         <Typography variant='h6' sx={{ ...extendedPalette.dateStyle }}>
-          Created {format(new Date(), 'MMM dd, yyyy')}
+          {/* Created {format(new Date(), 'MMM dd, yyyy')} */}
         </Typography>
 
         <Box

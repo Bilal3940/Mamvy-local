@@ -82,7 +82,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <AppBar position='relative' style={{ backgroundColor: 'inherit', marginTop: '5rem' }}>
+        <AppBar position='relative' style={{ backgroundColor: 'inherit', marginTop: '10rem' }}>
            {user.id === userId && (<Toolbar
             sx={{
               display: 'flex',

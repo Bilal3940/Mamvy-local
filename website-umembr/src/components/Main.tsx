@@ -275,7 +275,6 @@ console.log("i am story", story)
 
       backgroundColor= colors.storyBackgroundColor || '#333333'
       accentColor=colors.accentColor || 'rgba(228, 222, 255, 0.2)'
-      // Set the colors to the adminPalette state
       setAdminPalette({
         storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
         textColor: colors.textColor || '#fff', // Fallback

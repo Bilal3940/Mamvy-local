@@ -1,20 +1,15 @@
 import React, {useState} from "react";
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // import Stepper from "./Stepper";
 import {
     Box,
     Card,
     CardContent,
     Typography,
-    TextField,
     Button,
     Link,
   } from '@mui/material';
 import { theme } from "@/theme";
-import { MuiButton, MuiIconButton, MuiTextField } from '@/components';
+import { MuiIconButton, MuiTextField } from '@/components';
 
 import { UseFirstRender } from '@/hooks';
 import {
@@ -27,22 +22,22 @@ import {
   loginUserView,
   setStep,
 } from '@/store/actions';
-import { inviteAccepted, setGuest } from '@/store/collaborator/action';
+import {  setGuest } from '@/store/collaborator/action';
 import { authSelector, collaboratorSelector, intermitenceSelector } from '@/store/selectors';
-import { palette } from '@/theme/constants';
+
 import { face_client_id, google_client_id } from '@/utils';
 import {  Divider, Grid, Theme,  useMediaQuery } from '@mui/material';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useTranslation } from 'next-i18next';
-import Image from 'next/image';
+
 
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
 import AppleLogin from 'react-apple-login';
 import { useDispatch, useSelector } from 'react-redux';
-import ChevronLeftIconComponent from '../../../public/icons/components/chevron-left';
+
 import { FormikConfig } from './formik';
-import collaborator from '@/store/collaborator/reducer';
+
 
 declare let AppleID: any;
 
@@ -389,19 +384,29 @@ declare let AppleID: any;
      value={values.email}
      autoComplete='email'
      placeholder={t('email')}
-     label={'email'}
+    //  label={t('email')}
      isDarkTheme
      errorMessage={errors.email}
+     FormHelperTextProps={{
+      sx: {
+        fontSize: '16px', // Increase font size
+        color: 'orange', // Change error message color
+        marginTop: '2.2px',
+        fontWeight:"bold"
+      },
+    }}
   sx={{
     paddingTop: '2px',
     marginTop: '5px',
     height:"50px",
     border:"1px solid white",
+    color:"white",
     backgroundColor: 'black',
     borderRadius: '8px',
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
         border: 'none', // Remove border
+        color:"white"
       },
       '& input': {
         color: 'white', // Change the text and password dots color to white
@@ -414,6 +419,11 @@ declare let AppleID: any;
       '& fieldset': {
         border: 'none', // Ensure no border on focus
       },
+    },
+    '& input:-webkit-autofill': {
+      WebkitBoxShadow: '0 0 0 100px black inset', // Match the background color
+      WebkitTextFillColor: 'white', // Match the text color
+      transition: 'background-color 5000s ease-in-out 0s', // Prevent autofill background reset
     },
   }}
 />
@@ -430,7 +440,7 @@ declare let AppleID: any;
              value={values.password}
              autoComplete='current-password'
              placeholder={t('password')}
-             label={'password'}
+            //  label={'password'}
              isDarkTheme
              iconMethod={handleShowPassword}
              iconHeight={18}
@@ -439,10 +449,19 @@ declare let AppleID: any;
              endIcon={showPassword ? '/icons/eye-white.svg' : '/icons/eye-out-white.svg'}
              errorMessage={errors.password}
              status={changeInputStatus(values.password, errors.password && touched.password)}
+             FormHelperTextProps={{
+              sx: {
+                fontSize: '16px', // Increase font size
+                color: 'orange', // Change error message color
+                marginTop: '2.2px',
+                fontWeight:"bold"
+              },
+            }}
       sx={{
         paddingTop: '2px',
         height: '50px',
-        marginTop: '5px',
+        marginTop: '17px',
+        paddingBottom:"2px",
         backgroundColor: 'black',
         border: '1px solid white',
         borderRadius: '8px',
@@ -461,39 +480,26 @@ declare let AppleID: any;
           },
         },
       }}
-      // InputProps={{
-      //   endAdornment: (
-      //     <InputAdornment position="end">
-      //       <IconButton
-      //         aria-label="toggle password visibility"
-      //         onClick={handleClickShowPassword}
-      //         edge="end"
-      //         sx={{
-      //           color: 'white', // Icon color
-      //         }}
-      //       >
-      //         {showPassword ? <VisibilityOff /> : <Visibility />}
-      //       </IconButton>
-      //     </InputAdornment>
-      //   ),
-      // }}
+
     />
 
 
-<Box sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}>
+<Box sx={{ display: 'flex', justifyContent: 'center', color: 'black', cursor:"pointer" }}>
     {/* <button>Sign Up</button> */}
     <Button
       type='submit' disabled={!isValid || !dirty || loading}  
       fullWidth
+       
       sx={{
-        marginTop: '5px',
+        marginTop: '17px',
         mb: 1,
-        color:"black",
+        color:"black !important",
         border:"1px solid black",
         height: '50px', 
-        background: '#FFFF',
+        backgroundColor: 'white !important',
         '&:hover': {
-          backgroundColor: 'rgba(34, 34, 34, 1)', 
+          backgroundColor: '#BA0C2F', 
+          
         },
         borderRadius: '8px', 
         padding: '25px', 
@@ -525,6 +531,7 @@ declare let AppleID: any;
     sx={{
       color: 'white',
       height: '48px',
+      fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
       border:"1px solid black",
       backgroundColor: 'rgba(34, 34, 34, 0.8)',
       '&:hover': {
@@ -538,50 +545,69 @@ declare let AppleID: any;
     Continue with
   </Button>
 
-  {/* <Button
-    fullWidth
-    endIcon={<img src='/images/apple.svg' height={"22px"} width={"22px"}/>}
+
+<Box
+  sx={{
+    display: 'flex', // Flexbox for the container
+    alignItems: 'center', // Center content vertically
+    justifyContent: 'space-between', // Space between text and icon
+    color: 'white',
+    height: '48px',
+    border: '1px solid black',
+    backgroundColor: 'rgba(34, 34, 34, 0.8)',
+    '&:hover': {
+      backgroundColor: 'rgba(34, 34, 34, 1)',
+      color:"skyblue"
+    },
+    borderRadius: '8px',
+    padding: '0 15px',
+  }}
+>
+  {/* Text Container */}
+  <Box
     sx={{
-      color: 'white',
-      height: '48px',
-    
-      border:"1px solid black",
-      backgroundColor: 'rgba(34, 34, 34, 0.8)',
-      '&:hover': {
-        backgroundColor: 'rgba(34, 34, 34, 1)',
-      },
-      borderRadius: '8px',
-     padding: '0 15px',
-      lineHeight:"1.15"
+      display: 'flex',
+      fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+      flexDirection: 'column', // Stack "Continue" and "with" vertically
+      alignItems: 'flex-start', // Align text to the left
+      justifyContent: 'center',
+      cursor:"pointer"
     }}
   >
-    Continue with
-  </Button> */}
-    <AppleLogin
-            clientId='memvy-app-prod-service'
-            redirectURI={location}
-            usePopup={appleReady ? true : false}
-            callback={appleResponse}
-            scope='name email'
-            responseMode='form_post'
-            state='SignInUserAuthenticationRequest'
-            render={(renderProps) => (
-              <MuiIconButton
-                icon={'/images/apple'}
-                altIcon='apple'
-                background='transparent'
-                iconHeight={38}
-                iconWidth={38}
-                method={renderProps.onClick}
-              />
-            )}
-          />
+    <span style={{ fontSize: '15px' }}>Continue</span>
+    <span style={{ fontSize: '15px', paddingLeft:"10px" }}>with</span>
+  </Box>
+
+  {/* Icon */}
+  <AppleLogin
+    clientId="memvy-app-prod-service"
+    redirectURI={location}
+    usePopup={!!appleReady}
+    callback={appleResponse}
+    scope="name email"
+    responseMode="form_post"
+    state="SignInUserAuthenticationRequest"
+    render={(renderProps) => (
+      <MuiIconButton
+        icon={'/images/apple'}
+        altIcon="apple"
+        background="transparent"
+        iconHeight={24}
+        iconWidth={24}
+        method={renderProps.onClick}
+      />
+    )}
+  />
+</Box>
+
+
   <Button
     fullWidth
     endIcon={<img src='/icons/Vector.svg' />}
     onClick={handleFaceLogin}
     sx={{
       color: 'white',
+      fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
       height: '48px',
       border:"1px solid black",
       backgroundColor: 'rgba(34, 34, 34, 0.8)',

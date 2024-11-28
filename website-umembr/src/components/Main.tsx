@@ -120,7 +120,7 @@ const Main: React.FC = () => {
       );
   }, [router.query?.id, story?.url]);
   const ispaid= true;
-  const ispurchased = true;
+  const ispurchased = false;
   useEffect(() => {
     if(ispaid)
     { 

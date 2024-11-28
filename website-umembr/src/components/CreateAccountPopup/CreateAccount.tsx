@@ -26,12 +26,25 @@
 
 import {
    
-  TextField,
   Button,
 
 } from '@mui/material';
 // import LoginForm from "./LoginForm";
 import { theme } from "@/theme";
+
+import { MuiTextField } from '@/components';
+import { UseFirstRender, UseIntermitence } from '@/hooks';
+import { actualStory,  registerUser, registerUserView, setGuest } from '@/store/actions';
+import { authSelector, collaboratorSelector, intermitenceSelector } from '@/store/selectors';
+
+import { Grid, Theme, Typography, useMediaQuery } from '@mui/material';
+import { useTranslation } from 'next-i18next';
+
+
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { FormikConfig } from './formik';
 
 
 
@@ -40,25 +53,10 @@ interface PopupModalProps {
   open: boolean;
   onClose: () => void;
 }
-import React, { useEffect, useState } from "react";
-import { Card, CardContent, Typography, useMediaQuery, Theme } from "@mui/material";
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Formik, Form, Field, ErrorMessage } from "formik";
+
+import { Card, CardContent } from "@mui/material";
 import * as Yup from "yup";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
-import {
-  registerUser,
-  inviteAccepted,
-  actualStory,
-  setGuest,
-  registerUserView,
-} from "@/store/actions";
-import { authSelector, collaboratorSelector } from "@/store/selectors";
-import { UseFirstRender } from "@/hooks";
+
 
 // Decoding utility function
 const decodeBase64 = (encodedString: string) =>
@@ -77,109 +75,111 @@ const validationSchema = Yup.object({
 });
 
 const CreateAccount: React.FC<PopupModalProps> = ({open , onClose}) => {
-const dispatch = useDispatch();
-const router = useRouter();
-const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
-const authData = useSelector(authSelector);
-const collaborator = useSelector(collaboratorSelector);
+  const { t } = useTranslation();
+  const router = useRouter();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const { status: showPassword, switchStatus: switchShowPassword } = UseIntermitence();
+  const { status: showConfirmPassword, switchStatus: switchShowConfirmPassword } = UseIntermitence();
+  const authData = useSelector(authSelector);
+  const collaborator = useSelector(collaboratorSelector);
+  const decodeBase64 = (encodedString: any) => {
+    return Buffer.from(encodedString, 'base64').toString('utf-8');
+  };
+  const [decodedUrl, setDecodedUrl] = useState({
+    story: decodeBase64(
+      Array.isArray(router?.query?.story_id) ? router?.query?.story_id[0] : router?.query?.story_id || '',
+    ),
+    email: decodeBase64(Array.isArray(router?.query?.guest) ? router?.query?.guest[0] : router?.query?.guest || ''),
+    role: decodeBase64(Array.isArray(router?.query?.role) ? router?.query?.role[0] : router?.query?.role || ''),
+    notification: decodeBase64(
+      Array.isArray(router?.query?.notification) ? router.query?.notification[0] : router.query?.notification || '',
+    ),
+    type: decodeBase64(Array.isArray(router?.query?.type) ? router?.query?.type[0] : router.query?.type || ''),
+  });
 
+  const dispatch = useDispatch();
+  const { loading } = useSelector(intermitenceSelector);
 
-const [showPassword, setShowPassword] = useState(false);
+  
 
-const handleClickShowPassword = () => {
-  setShowPassword(!showPassword);
-};
-
-const [decodedUrl, setDecodedUrl] = useState({
-  story: decodeBase64(
-    Array.isArray(router?.query?.story_id)
-      ? router?.query?.story_id[0]
-      : router?.query?.story_id || ""
-  ),
-  email: decodeBase64(
-    Array.isArray(router?.query?.guest)
-      ? router?.query?.guest[0]
-      : router?.query?.guest || ""
-  ),
-  role: decodeBase64(
-    Array.isArray(router?.query?.role)
-      ? router?.query?.role[0]
-      : router?.query?.role || ""
-  ),
-});
-
-useEffect(() => {
-  if (authData?.isAuth && collaborator.roleUser.length > 0) {
-    if (collaborator.roleUser !== "inactive") {
-      dispatch(actualStory(decodedUrl.story));
-      dispatch(setGuest(decodedUrl.role));
-      if (decodedUrl.role === "Story_Viewer") {
-        router.push(`/app/story/${decodedUrl.story}`);
-      } else {
-        router.push(`/app/story/${decodedUrl.story}/memory/create`);
+  useEffect(() => {
+    if(authData?.isAuth &&collaborator.roleUser.length > 0){
+        if(collaborator.roleUser !== 'inactive'){
+        dispatch(actualStory(decodedUrl.story));
+        dispatch(setGuest(decodedUrl?.role));
+        if (decodedUrl?.role === 'Story_Viewer') {
+          router.push(`/app/story/${decodedUrl?.story}`);
+        } else {
+          router.push(`/app/story/${decodedUrl?.story}/memory/create`);
+        }
+        }
+      if(authData?.isAuth && collaborator?.roleUser === 'inactive'){
+        router.push('/app/home');
       }
     }
-  }
-}, [collaborator.roleUser]);
+  }, [collaborator?.roleUser]);
 
-UseFirstRender(() => {
-  dispatch(registerUserView());
-}, [dispatch]);
+  UseFirstRender(() => {
+    dispatch(registerUserView());
+  }, [dispatch]);
 
-const handleSubmit = async (data: {
-  name: string;
-  lastname: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  phonenumber: string; // Add phonenumber here
-}) => {
-  const { confirmPassword, ...formValues } = data;
-
-  // Ensure name is created by combining name and lastname
-  const formattedData = {
-    ...formValues,
-    name: `${formValues.name} ${formValues.lastname}`, // Combine name and lastname
-    phonenumber: "123456789", // Placeholder phone number
+  const handleSubmit = (data: any) => {
+    data.email = data.email.toLowerCase();
+    const { confirm_password, ...formValues } = data;
+    if (router?.asPath?.includes('invitation')) {
+      dispatch(registerUser({ ...formValues, invitation: router?.query?.invitation }));
+    } else {
+      dispatch(registerUser(formValues));
+    }
   };
 
-  if (router.asPath.includes("invitation")) {
-    dispatch(
-      registerUser({
-        ...formattedData,
-        invitation: router.query.invitation,
-      })
-    );
-  } else {
-    dispatch(registerUser(formattedData));
-  }
-};
+  const handleOnTouched = (key: string) => setTouched({ ...touched, [key]: true });
+
+  const {
+    values,
+    handleSubmit: formikSubmit,
+    handleChange,
+    errors,
+    touched,
+    setTouched,
+    dirty,
+    isValid,
+    setFieldValue,
+  } = FormikConfig(handleSubmit);
+
+  const changeInputStatus = (value: string, error: any) => {
+    if (value !== '') {
+      if (error) return 'error';
+      return 'inherit';
+    }
+    return 'inherit';
+  };
+
+  const handlePhone = (value: string) => {
+    setFieldValue('phonenumber', value);
+  };
+
+  useEffect(() => {
+    const storedReferralCode = localStorage.getItem('referral_code');
+    if (storedReferralCode) {
+      setFieldValue('referralCode', storedReferralCode);
+    }
+  }, [setFieldValue]);
+
 
 
 
 return (
-  <Formik
-    initialValues={{
-      name: '',
-      lastname: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      phonenumber:''
-    }}
-    validationSchema={validationSchema}
-    onSubmit={handleSubmit}
-  >
-    {({ values, handleChange, errors, touched }) => (
+ 
       <Card
         sx={{
           padding: '12px',
           bgcolor: 'rgba(102, 102, 102, 1)',
           boxShadow: 'none',
-          height: '55vh',
+          height: '58vh',
           [theme.breakpoints.down('sm')]: {
             padding: 0,
-            height: '46vh',
+            height: '54vh',
           },
         }}
       >
@@ -191,19 +191,34 @@ return (
             },
           }}
         >
-          <Form>
+          <form onSubmit={formikSubmit}>
             {/* First Name and Last Name */}
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
-              <Field
-                as={TextField}
-                label="First Name"
-                variant="outlined"
-                margin="normal"
-                name="name"
-                value={values.name}
-                onChange={handleChange}
+            
+          
+                <MuiTextField
+                id='name'
+                name='name'
                 fullWidth
-                InputLabelProps={{ shrink: values.name ? true : false }}
+                required
+                onBlur={() => {
+                  handleOnTouched('name');
+                }}
+                status={changeInputStatus(values.name, errors.name && touched.name)}
+                onChange={handleChange}
+                value={values.name}
+                autoComplete='given-name'
+                placeholder={'name'}
+                // label={'name'}
+                isDarkTheme
+                errorMessage={errors.name}
+                FormHelperTextProps={{
+                  sx: {
+                    fontSize: '16px', // Increase font size
+                    color: 'orange', // Change error message color
+                    marginTop: '6px',
+                    fontWeight:"bold"
+                  },
+                }}
                 sx={{
                   paddingTop: '2px',
                   marginTop: '5px',
@@ -226,19 +241,33 @@ return (
                   },
                 }}
               />
-              <Field
-                as={TextField}
-                label="Last Name"
-                variant="outlined"
-                margin="normal"
-                name="lastname"
-                value={values.lastname}
-                onChange={handleChange}
+           <MuiTextField
+                id='lastname'
+                name='lastname'
                 fullWidth
-                InputLabelProps={{ shrink: values.lastname ? true : false }}
+                required
+                onBlur={() => {
+                  handleOnTouched('lastname');
+                }}
+                status={changeInputStatus(values.lastname, errors.lastname && touched.lastname)}
+                onChange={handleChange}
+                value={values.lastname}
+                autoComplete='family-name'
+                placeholder={'lastname'}
+                //label={'lastname'}
+                isDarkTheme
+                errorMessage={errors.lastname}
+                FormHelperTextProps={{
+                  sx: {
+                    fontSize: '16px', // Increase font size
+                    color: 'orange', // Change error message color
+                    marginTop: '6px',
+                    fontWeight:"bold"
+                  },
+                }}
                 sx={{
                   paddingTop: '2px',
-                  marginTop: '5px',
+                  marginTop: '20px',
                   backgroundColor: 'white',
                   height: '50px',
                   borderRadius: '8px',
@@ -258,22 +287,36 @@ return (
                   },
                 }}
               />
-            </div>
+            
 
             {/* Email Input */}
-            <Field
-              as={TextField}
-              label="Email"
-              variant="outlined"
-              margin="normal"
-              name="email"
-              value={values.email}
-              onChange={handleChange}
-              fullWidth
-              InputLabelProps={{ shrink: values.email ? true : false }}
+            <MuiTextField
+                id='email'
+                name='email'
+                fullWidth
+                required
+                onBlur={() => {
+                  handleOnTouched('email');
+                }}
+                status={changeInputStatus(values.email, errors.email && touched.email)}
+                onChange={handleChange}
+                value={values.email}
+                autoComplete='email'
+                placeholder={'email'}
+               // label={'email'}
+                isDarkTheme
+                errorMessage={errors.email}
+                FormHelperTextProps={{
+                  sx: {
+                    fontSize: '16px', // Increase font size
+                    color: 'orange', // Change error message color
+                    marginTop: '6px',
+                    fontWeight:"bold"
+                  },
+                }}
               sx={{
                 paddingTop: '2px',
-                marginTop: '5px',
+                marginTop: '20px',
                 backgroundColor: 'white',
                 height: '50px',
                 borderRadius: '8px',
@@ -295,20 +338,39 @@ return (
             />
 
             {/* Password Input */}
-            <Field
-              as={TextField}
-              label="Password"
-              variant="outlined"
-              margin="normal"
-              type={showPassword ? 'text' : 'password'}
-              name="password"
-              value={values.password}
-              onChange={handleChange}
-              fullWidth
-              InputLabelProps={{ shrink: values.password ? true : false }}
+               <MuiTextField
+                id='password'
+                name='password'
+                required
+                fullWidth
+                onBlur={() => {
+                  handleOnTouched('password');
+                }}
+                onChange={handleChange}
+                value={values.password}
+                autoComplete='new-password'
+                placeholder={'password'}
+               // label={'password'}
+                isDarkTheme
+                iconMethod={switchShowPassword}
+                iconHeight={18}
+                iconWidth={18}
+                type={!showPassword ? 'password' : 'text'}
+                endIcon={showPassword ? '/icons/eye-white.svg' : '/icons/eye-out-white.svg'}
+                errorMessage={errors.password}
+                status={changeInputStatus(values.password, errors.password && touched.password)}
+                FormHelperTextProps={{
+                  sx: {
+                    fontSize: '16px', // Increase font size
+                    color: 'orange', // Change error message color
+                    marginTop: '6px',
+                    fontWeight:"bold"
+                  },
+                }}
+
               sx={{
                 paddingTop: '2px',
-                marginTop: '5px',
+                marginTop: '20px',
                 backgroundColor: 'white',
                 height: '50px',
                 borderRadius: '8px',
@@ -327,39 +389,42 @@ return (
                   fontSize: values.password ? '12px' : '16px',
                 },
               }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      sx={{
-                        color: 'black', // Icon color
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
             />
 
             {/* Confirm Password Input */}
-            <Field
-              as={TextField}
-              label="Confirm Password"
-              variant="outlined"
-              margin="normal"
-              type={showPassword ? 'text' : 'password'}
-              name="confirmPassword"
-              value={values.confirmPassword}
-              onChange={handleChange}
-              fullWidth
-              InputLabelProps={{ shrink: values.confirmPassword ? true : false }}
+        
+                 <MuiTextField
+                id='confirm_password'
+                name='confirm_password'
+                required
+                fullWidth
+                onBlur={() => {
+                  handleOnTouched('confirm_password');
+                }}
+                onChange={handleChange}
+                value={values.confirm_password}
+                autoComplete='new-password'
+                placeholder={'confirm_password'}
+              //  label={'confirm_password'}
+                isDarkTheme
+                iconMethod={switchShowConfirmPassword}
+                iconHeight={18}
+                iconWidth={18}
+                type={!showConfirmPassword ? 'password' : 'text'}
+                endIcon={showConfirmPassword ? '/icons/eye-white.svg' : '/icons/eye-out-white.svg'}
+                errorMessage={errors.confirm_password}
+                status={changeInputStatus(values.confirm_password, errors.confirm_password && touched.confirm_password)}
+                FormHelperTextProps={{
+                  sx: {
+                    fontSize: '16px', // Increase font size
+                    color: 'orange', // Change error message color
+                    marginTop: '6px',
+                    fontWeight:"bold"
+                  },
+                }}
               sx={{
                 paddingTop: '2px',
-                marginTop: '5px',
+                marginTop: '20px',
                 backgroundColor: 'white',
                 height: '50px',
                 borderRadius: '8px',
@@ -378,34 +443,19 @@ return (
                   fontSize: values.confirmPassword ? '12px' : '16px',
                 },
               }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      sx={{
-                        color: 'black', // Icon color
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+            
             />
 
             {/* Submit Button */}
             <Button
-              type="submit"
+             type='submit' disabled={!isValid || !dirty || loading} 
               fullWidth
               sx={{
-                marginTop: '12px',
+                marginTop: '20px',
                 mb: 1,
-                color: 'white',
-                height: '70px',
-                backgroundColor: '#BA0C2F',
+                color: 'white !important',
+                height: '20px',
+                backgroundColor: '#BA0C2F !important',
                 '&:hover': {
                   backgroundColor: 'rgba(34, 34, 34, 1)',
                 },
@@ -415,7 +465,7 @@ return (
             >
               Create Account
             </Button>
-          </Form>
+          </form>
 
           <Typography
             style={{
@@ -433,8 +483,8 @@ return (
           </Typography>
         </CardContent>
       </Card>
-    )}
-  </Formik>
+   
+ 
 );
 };
 export default CreateAccount;

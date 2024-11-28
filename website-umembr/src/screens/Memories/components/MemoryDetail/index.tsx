@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {  templatesSelector } from '@/store/selectors'
 import { AudioContent } from '../AudioContent';
 import { ImageContent } from '../ImageContent';
 import { MainContent } from '../MainContent';
@@ -36,6 +37,11 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
   const { notifications } = useSelector(notificationsSelector);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [adminPalette, setAdminPalette] = useState({
+    storyBackgroundColor: '#333333', // Default value
+    textColor: '#fff', // Default value
+    accentColor: '#BF5700', // Default value
+  });
 
   const [approve, setApprove] = useState();
   UseFirstRender(() => { 
@@ -106,6 +112,39 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
       window.removeEventListener('resize', resize);
     };
   }, [boxRef.current, mediaSelected]);
+
+  const { template } = useSelector(templatesSelector);
+
+  useEffect(() => {
+    if (template?.template?.colors) {
+      const colors = template.template.colors.reduce((acc:any, color:any) => {
+        // Map each color to the corresponding palette key
+        switch (color.PLabel) {
+          case 'storyBackground':
+            acc.storyBackgroundColor = color.PValue;
+            break;
+          case 'TextColor':
+            acc.textColor = color.PValue;
+            break;
+          case 'AccentColor':
+            acc.accentColor = color.PValue;
+            break;
+          default:
+            break;
+        }
+        return acc;
+      }, {});
+
+      // Set the colors to the adminPalette state
+      setAdminPalette({
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
+        textColor: colors.textColor || '#fff', // Fallback
+        accentColor: colors.accentColor || '#BF5700', // Fallback
+      });
+    }
+  }, [template]); // Make sure to add template to the dependency array
+
+  const accentColor = adminPalette.accentColor;
 
   return (
     <Modal open={open} onClose={onClose} sx={styles.modal}>
@@ -185,7 +224,7 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
                     onClick={() => {
                       dispatch(setCreateMemoryStep(1));
                     }}>
-                    <MuiButton type='button' loading={false} variant={'contained'} disabled={false}>
+                    <MuiButton type='button' backgroundColor={accentColor} loading={false} variant={'contained'} disabled={false}>
                       <Typography variant='button' color={palette.white}>
                         {t('edit_mayus')}
                       </Typography>
@@ -206,7 +245,8 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
                 <MuiIconButton
                   icon={`/icons/${item?.icon}`}
                   altIcon={item?.icon}
-                  background={mediaSelected === item?.name ? palette?.primary : palette?.black}
+                  // background={mediaSelected === item?.name ? palette?.primary : palette?.black}
+                  background={accentColor}
                   method={() => setMediaSelected(item?.name)}
                   label={item?.label}
                   disableRipple

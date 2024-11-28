@@ -177,6 +177,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
       },
     },
   ];
+ 
 
   const handleCloseButton = ()=>{
     console.log(" i am the has changes", hasChanges.hasChanges)
@@ -239,7 +240,10 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
   }, [template]); // Make sure to add template to the dependency array
 
   const accentColor = adminPalette.accentColor;
-
+ const buttonBackground =
+    router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
+      ? accentColor // Custom background for the specific page
+      : palette?.cardBackground;
   UseFirstRender(() => {
     const memoryHeight = document.getElementById('memories');
     const resizeObserver = new ResizeObserver((entries) => {
@@ -316,7 +320,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                 
                   icon='/icons/notification'
                   altIcon='notification'
-                  background={palette?.cardBackground}
+                  background={buttonBackground}
                   borderColor={palette?.cardBorder}
                   method={(event: any) => setShowNotification(event)}
                 />
@@ -327,7 +331,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                 <MuiIconButton
                   icon='/icons/people'
                   altIcon='people'
-                  background={palette?.cardBackground}
+                  background={buttonBackground}
                   borderColor={palette?.cardBorder}
                   method={(event: any) => setShowPeople(event)}
                 />
@@ -340,7 +344,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                 <MuiIconButton
                   icon='/icons/settings'
                   altIcon='settings'
-                  background={palette?.cardBackground}
+                  background={buttonBackground}
                   borderColor={palette?.cardBorder}
                   method={(event: any) => setShowDropdown(event)}
                 />
@@ -412,7 +416,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
 
       <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
         <Box position={'relative'}>
-          <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators]} />
+          {/* <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators]} /> */}
         </Box>
       </ClickAwayListener>
       <CancelModal open={status} onClose={switchStatus} confirmMethod={closeProcess} />

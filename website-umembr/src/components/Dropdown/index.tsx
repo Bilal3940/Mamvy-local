@@ -3,9 +3,11 @@ import { palette } from '@/theme/constants';
 import { useTranslation } from 'next-i18next';
 import { styles } from './styles';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 const MotionContainer = motion(Box);
 const MotionList = motion(MenuList);
+
 const MotionItem = motion(MenuItem);
 
 const itemVariants: Variants = {
@@ -16,6 +18,7 @@ const itemVariants: Variants = {
   },
   closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
 };
+
 
 interface CustomPopperProps {
   isOpen: boolean;
@@ -29,6 +32,8 @@ interface CustomPopperProps {
 
 export const MuiDropdown = ({ isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
   const { t } = useTranslation();
+  const { pathname } = useRouter();
+  let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :'transparent';
 
   return (
     <AnimatePresence>
@@ -47,7 +52,7 @@ export const MuiDropdown = ({ isOpen, handleClose, listItem, width = '10rem' }: 
           <MotionList
             sx={{
               borderRadius: '0.25rem',
-              background: palette.cardBackground,
+              background: bgColor,
               border: `0.063rem solid ${palette.cardBorder}`,
               backdropFilter: 'blur(1.5625rem)',
             }}

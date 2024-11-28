@@ -1,11 +1,11 @@
 import { palette } from '@/theme/constants';
 
-export const styles = (isMobile: boolean) => ({
+export const styles = (isMobile: boolean,bgColor?: string) => ({
   dropDown: {
     width: !isMobile ? '25rem' : '20rem',
   },
   list: {
-    background: palette.cardBackground,
+    background: bgColor,
     border: `0.063rem solid ${palette.cardBorder}`,
     backdropFilter: 'blur(1.5625rem)',
     borderRadius: '0.5rem',

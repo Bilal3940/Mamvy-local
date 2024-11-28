@@ -22,7 +22,7 @@ export const MainContent = ({ description, media, boxRef, height }: any) => {
             style={{
               width: '',
               maxWidth: '100%',
-              border: (media?.type === 'image' || media?.asset_type?.includes('image')) || media?.cover_image ? `2px solid ${palette.primary}` : 'none',
+              border: (media?.type === 'image' || media?.asset_type?.includes('image')) || media?.cover_image ? ` ${palette.primary}` : 'none',
               objectFit: 'contain',
               height: '100%',
               margin: 'auto',

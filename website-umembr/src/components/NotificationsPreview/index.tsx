@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { styles } from './styles';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
 import { MuiButton } from '../Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UseFirstRender } from '@/hooks';
 import { useDispatch } from 'react-redux';
 import {
@@ -48,7 +48,8 @@ export const NotificationsPreview = ({ isOpen, listItem, type, blur }: CustomPop
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const dispatch = useDispatch();
   const [avatarUrls, setAvatarUrls] = useState<any>({});
-
+const { pathname } = useRouter();
+console.log('i am path', pathname)
   const sortByDate = (listItem: any[]) => {
     return [...listItem].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   };
@@ -112,6 +113,11 @@ export const NotificationsPreview = ({ isOpen, listItem, type, blur }: CustomPop
     dispatch(clearAllNotifications({ type: typeofNotification }));
   };
 
+  let bgColor =    router.pathname ===   '/app/home' ? palette.cardBackground :'transparent';
+
+
+  console.log('i am the bg color',bgColor)
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -122,7 +128,7 @@ export const NotificationsPreview = ({ isOpen, listItem, type, blur }: CustomPop
           top={ blur? '4.375rem':'1rem'}
           right={blur? '1rem' : 0}
           zIndex={blur? 10000 : 10}
-          sx={styles(isMobile).dropDown}
+          sx={styles(isMobile, bgColor).dropDown}
           id='dropdown'
           animate={isOpen ? 'open' : 'closed'}>
           <MotionList

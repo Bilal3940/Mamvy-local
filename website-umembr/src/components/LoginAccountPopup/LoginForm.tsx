@@ -479,6 +479,11 @@ declare let AppleID: any;
             border: 'none', // Ensure no border on focus
           },
         },
+        '& input:-webkit-autofill': {
+          WebkitBoxShadow: '0 0 0 100px black inset', // Match the background color
+          WebkitTextFillColor: 'white', // Match the text color
+          transition: 'background-color 5000s ease-in-out 0s', // Prevent autofill background reset
+        },
       }}
 
     />

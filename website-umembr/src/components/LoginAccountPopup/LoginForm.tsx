@@ -567,7 +567,7 @@ declare let AppleID: any;
     borderRadius: '8px',
     padding: '0 5px',
     [theme.breakpoints.down('sm')]:{
-      padding:'0'
+      padding:'1.5'
      }
   }}
 >

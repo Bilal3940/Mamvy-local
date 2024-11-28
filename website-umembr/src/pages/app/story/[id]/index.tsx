@@ -45,7 +45,9 @@ export const getServerSideProps = (async (ctx) => {
     const res = await fetch(`${fallbackRestUrl}/meta/${id}`);
 
     data = await res.json();
+    console.log('im the mata data :', data);
   } catch (error) {
+    console.log('Error', error);
   }
   return {
     props: {

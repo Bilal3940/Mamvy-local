@@ -147,7 +147,7 @@ function* actualStory({ payload }: ReturnType<typeof actualStoryAction>) {
     const { user } = yield select(authSelector);
     if (user.token) router?.push('/app/home');
     else {
-      router?.push('/app/login');
+      // router?.push('/app/login');
     }
   }
 }

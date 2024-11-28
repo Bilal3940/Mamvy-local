@@ -77,7 +77,7 @@ const Main: React.FC = () => {
   //  const { isEllipseRight } = extendedPalette.isEllipseRightCheck;
     const [modalOpen, setModalOpen] = useState(false);
 
-  const handleOpen = (): void => setModalOpen(true);
+  
   const handleClose = (): void => setModalOpen(false);
 
    UseFirstRender(() => {
@@ -119,6 +119,22 @@ const Main: React.FC = () => {
           : `/app/story/${story?.url}`,
       );
   }, [router.query?.id, story?.url]);
+  const ispaid= true;
+  const ispurchased = true;
+  useEffect(() => {
+    if(ispaid)
+    { 
+      if(ispurchased){
+        setModalOpen(false);
+      }else{
+        setModalOpen(true);
+      }
+      
+     
+     
+    }
+  }, [ispurchased]);
+
 
   const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('md'));
 
@@ -491,9 +507,7 @@ console.log("i am story", story)
         {/* Grid Layout */}
         {/* <GridLayoutCheck /> */}
         <MediaGrid extendedPalette={extendedPalette}  story={story && story} />
-        <Button variant="contained" color="primary" onClick={handleOpen}>
-        Open Modal
-      </Button>
+        
 
       <PopupModal open={modalOpen} onClose={handleClose} />
       </div>

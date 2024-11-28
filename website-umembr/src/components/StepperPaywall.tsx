@@ -104,8 +104,10 @@ import { Elements } from "@stripe/react-stripe-js";
 import stripePromise from "@/utils/stipe";
 // import LoginForm from "./LoginForm";
 import CreateAccount from "@/components/CreateAccountPopup/CreateAccount";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginForm from "@/components/LoginAccountPopup/LoginForm";
+import { authSelector } from "@/store/selectors";
+import { useSelector } from "react-redux";
 
 const steps = [
   { label: "Create Account", icon: "1" },
@@ -114,6 +116,7 @@ const steps = [
 ];
 
 export default function IconBasedStepper() {
+  const { user, isAuth } = useSelector(authSelector);
   const [activeStep, setActiveStep] = React.useState(0);
   const [openLogin , setOpenLogin]= useState(true);
   const handleStepClick = (stepIndex: number) => {
@@ -125,6 +128,11 @@ export default function IconBasedStepper() {
 const handleOpenLogin = ()=>{
 setOpenLogin(true);
 };
+useEffect(() => {
+ if(isAuth)
+  setActiveStep(1)
+}, [isAuth]);
+
   return (
     <Box sx={{ width: "100%" }}>
       {/* Custom Stepper */}

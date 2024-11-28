@@ -31,7 +31,7 @@ export const MuiAppBar = () => {
   UseFirstRender(() => {
     if (!firstRender) setFirstRender(true);
 
-    if (!authData?.isAuth && firstRender && router.pathname !== '/app/story/[id]') router.push('/app/login');
+    //if (!authData?.isAuth && firstRender && router.pathname !== '/app/story/[id]') router.push('/app/login');
 
     if (authData?.isAuth && firstRender) dispatch(refreshUserData());
   }, [authData?.isAuth, firstRender]);

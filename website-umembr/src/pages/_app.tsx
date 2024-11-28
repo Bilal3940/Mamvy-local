@@ -21,6 +21,7 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
   const [firstRender, setFirstRender] = useState(false);
   const GOOGLE_CLIENT_ID = google_client_id;
   const { auth } = store.getState();
+  console.log('Im the auth object',auth)
 
   useEffect(() => {
     if (!firstRender) setFirstRender(true);

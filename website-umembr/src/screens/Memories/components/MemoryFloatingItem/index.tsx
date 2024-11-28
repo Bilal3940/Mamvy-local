@@ -114,7 +114,7 @@ const MemoryFloatingItem: FC<any> = ({ item, story, palette, position }) => {
             position: 'relative',
             backgroundColor: palette?.gray,
           }}>
-          {/* <MediaItem {...item} isMobile={isMobile} palette={palette} /> */}
+          <MediaItem {...item} isMobile={isMobile} palette={palette} />
         </Box>
 
         <IconButton sx={{ ...styles(isMobile).iconContainer, outline: 'none' }} disableRipple tabIndex={-1}>

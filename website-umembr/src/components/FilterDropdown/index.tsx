@@ -31,7 +31,7 @@ interface CustomPopperProps {
 
 export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
   const { t } = useTranslation();
- 
+ console.log('I am list',listItem)
   const [showSection, setShowSection] = useState(0);
   const tabs = getTabsFilters(setShowSection);
   const dispatch = useDispatch();

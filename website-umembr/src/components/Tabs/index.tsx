@@ -6,7 +6,7 @@ import { palette } from '@/theme/constants';
 import { useRouter } from 'next/router';
 
 interface ITabsProps {
-  color:any;
+  color?:any;
   value: any;
   width: string;
   extraStyle?: any;

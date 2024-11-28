@@ -76,12 +76,16 @@ const EmbeddedPaymentForm: React.FC = () => {
       }
 
       // Create a payment method using the CardElement
-      const { token, error } = await stripe.createToken(cardElement);
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+      });
 
       if (error) {
         setErrorMessage(error.message!);
-      } else if (token) {
-        alert(`Payment Successful! Token: ${token.id}`);
+      } else if (paymentMethod) {
+        console.log('payment response',paymentMethod);
+        alert(`Payment Successful! Token: ${paymentMethod.id}`);
         // Send the token to your server for processing
       }
     } catch (error) {

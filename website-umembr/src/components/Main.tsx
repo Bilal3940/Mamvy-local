@@ -50,7 +50,6 @@ const Main: React.FC = () => {
   const handleBackClick = () => {
     console.log("Back button clicked");
      router.push('/app/home'); 
-    // Implement back navigation logic here
   };
   const [selectedMemorie, setSelectedMemorie] = useState<any>(null);
   const { status, switchStatus } = UseIntermitence();

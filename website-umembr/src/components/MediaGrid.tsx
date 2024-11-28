@@ -642,16 +642,22 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
     setVisibleItems((prev) => prev + ITEMS_PER_PAGE); // Load 10 more items on button click
   };
 
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const sizeText = isSmallScreen ? '25px' : '30px';
+  const sizeImage = isSmallScreen ? '25px' : '40px';
+  const sizeVideo = isSmallScreen ? '25px' : '40px';
+  const sizeAudio = isSmallScreen ? '25px' : '40px';
+
   const getIcon = (type: string, color: string) => {
     switch (type) {
       case 'image':
-        return <Image1Icon color={color} />;
+        return <Image1Icon color={color}  size={sizeImage} />;
       case 'video':
-        return <Video1Icon color={color} />;
+        return <Video1Icon color={color} size={sizeVideo} />;
       case 'audio':
-        return <Audio1Icon color={color} />;
+        return <Audio1Icon color={color} size={sizeAudio}/>;
       case 'text':
-        return <Text1Icon color={color} />;
+        return <Text1Icon color={color}  size={sizeText}/>;
       default:
         return null;
     }
@@ -833,7 +839,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   }}
 >
   {/* Media Icon and Text */}
-  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+  <Box sx={{ display: 'flex', alignItems: 'center',borderRadius:'10px' }}>
     <Box sx={{ mr: 1 }}>
       {getIcon(item.type, extendedPalette.cardIconColor)} {/* Example color passed */}
     </Box>

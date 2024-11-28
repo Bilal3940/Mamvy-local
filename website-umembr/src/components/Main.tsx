@@ -250,6 +250,7 @@ console.log("i am story", story)
     }
   }, [story?.themeId, dispatch]);
   let backgroundColor:any;
+  let accentColor:any;
   useEffect(() => {
     if (template?.template?.colors) {
       // Assuming the colors array from the API response
@@ -273,6 +274,7 @@ console.log("i am story", story)
   
 
       backgroundColor= colors.storyBackgroundColor || '#333333'
+      accentColor=colors.accentColor || 'rgba(228, 222, 255, 0.2)'
       // Set the colors to the adminPalette state
       setAdminPalette({
         storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
@@ -329,24 +331,38 @@ console.log("i am story", story)
     },
     toolBarBackground: 'rgba(0, 0, 0, 0.5)',
   
+    // 
     searchField: {
-      width: '16rem',
-      '& .MuiOutlinedInput-root': {
-        backgroundColor: adminPalette.storyBackgroundColor,
-        color: palette.white,
-        marginLeft: '20px',
-        borderRadius: '30px',
-        '& fieldset': { borderColor: adminPalette.storyBackgroundColor },
-        '&:hover fieldset': { borderColor: adminPalette.storyBackgroundColor },
-        '&.Mui-focused fieldset': { borderColor: adminPalette.storyBackgroundColor },
-      },
-      '& input': {
-        color: adminPalette.textColor,
-        padding: '10px 15px',
-        fontSize: '0.9rem',
-      },
-      '& .MuiInputAdornment-root': { backgroundColor: adminPalette.storyBackgroundColor, marginRight: '4px' },
+  width: '16rem',
+  '& .MuiOutlinedInput-root': {
+    backgroundColor: adminPalette.storyBackgroundColor,
+    color: palette.white,
+    marginLeft: '20px',
+    borderRadius: '30px',
+    '& fieldset': {
+      borderColor: adminPalette.storyBackgroundColor,
     },
+    '&:hover fieldset': {
+      borderColor: adminPalette.storyBackgroundColor,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: palette.white, // Focus state outline is now white
+    },
+    '&:focus-visible fieldset': {
+      borderColor: palette.white, // Ensure compatibility with :focus-visible
+    },
+  },
+  '& input': {
+    color: adminPalette.textColor,
+    padding: '10px 15px',
+    fontSize: '0.9rem',
+  },
+  '& .MuiInputAdornment-root': {
+    backgroundColor: adminPalette.storyBackgroundColor,
+    marginRight: '4px',
+  },
+},
+
     filterButton: (filter: any, label: any) => ({
       textTransform: 'none',
       backgroundColor: filter === label ? adminPalette.textColor : adminPalette.storyBackgroundColor,

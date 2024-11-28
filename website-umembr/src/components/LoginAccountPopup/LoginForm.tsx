@@ -560,7 +560,7 @@ declare let AppleID: any;
       color:"skyblue"
     },
     borderRadius: '8px',
-    padding: '0 15px',
+    padding: '0 5px',
   }}
 >
   {/* Text Container */}
@@ -571,7 +571,9 @@ declare let AppleID: any;
       flexDirection: 'column', // Stack "Continue" and "with" vertically
       alignItems: 'flex-start', // Align text to the left
       justifyContent: 'center',
-      cursor:"pointer"
+      cursor:"pointer",
+     paddingRight:"8px",
+     paddingLeft:"12px"
     }}
   >
     <span style={{ fontSize: '15px' }}>Continue</span>
@@ -595,6 +597,7 @@ declare let AppleID: any;
         iconHeight={24}
         iconWidth={24}
         method={renderProps.onClick}
+        
       />
     )}
   />

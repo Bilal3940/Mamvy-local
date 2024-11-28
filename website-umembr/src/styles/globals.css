@@ -120,3 +120,9 @@ input[type='number'] {
   border-color: white !important;
   /* Force white outline on focus */
 }
+.MuiBox-root css-fyqqp4 {
+  border: 1px solid !important;
+}
+.css-fyqqp4{
+  border: 1px solid black !important;
+}

@@ -184,7 +184,12 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
                 user?.id === story?.user_id ||
                 user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')) && (
                 <Box width={'6.5rem'} marginRight={'1rem'}>
-                  <MuiButton type='button' loading={false} variant={'outlined'} method={method}>
+                  <MuiButton type='button' loading={false} variant={'outlined'} method={method} sx={{
+    '&:hover': {
+      borderColor: accentColor,  // Change the border color on hover
+      color: '#EB8334',         // Change the text color on hover
+    },
+  }}>
                     <Typography variant='button' color={palette.white}>
                       {t('delete')}
                     </Typography>
@@ -208,7 +213,13 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
                         // dispatch(approveMemory({ id: selectedMemorie?.id, story_id: story?.id }));
 
                         handleAcceptMemory();
-                      }}>
+                      }}
+                       sx={{
+    '&:hover': {
+      backgroundColor: accentColor, // Set your desired hover background color here
+    },
+  }}
+                      >
                       <Typography variant='button' color={palette.white}>
                         {t('accept')}
                       </Typography>
@@ -225,7 +236,11 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
                     onClick={() => {
                       dispatch(setCreateMemoryStep(1));
                     }}>
-                    <MuiButton type='button' backgroundColor={accentColor} loading={false} variant={'contained'} disabled={false}>
+                    <MuiButton type='button' backgroundColor={accentColor} loading={false} variant={'contained'} disabled={false}  sx={{
+    '&:hover': {
+      backgroundColor: accentColor, // Set your desired hover background color here
+    },
+  }}>
                       <Typography variant='button' color={palette.white}>
                         {t('edit_mayus')}
                       </Typography>

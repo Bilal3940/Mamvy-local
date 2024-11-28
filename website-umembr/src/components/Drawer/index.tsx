@@ -206,8 +206,15 @@ export const Drawer = () => {
                             width={'100%'}
                             justifyContent={'space-between'}
                             alignItems={'center'}
-                            bgcolor={palette.background}
-                            borderRadius={'1.25rem'}>
+                            // bgcolor={palette.background}
+                            // borderRadius={'1.25rem'}
+                             sx={{
+    borderRadius: '10px',
+    border: '1px solid rgba(204, 204, 204, 0.20)',
+    background: 'linear-gradient(180deg, rgba(34, 34, 34, 0.45) 0%, rgba(17, 17, 17, 0.45) 100%)',
+    backdropFilter: 'blur(25px)', // Applies the blur effect
+  }}
+                            >
                             <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                               <Box
                                 width={isMobile ? 30 : 40}

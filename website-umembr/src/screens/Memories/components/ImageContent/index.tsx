@@ -20,7 +20,7 @@ export const ImageContent = ({ mediaData, boxRef }: any) => {
     <Box height={'calc(100% - 3.2rem)'} overflow={'auto'} ref={boxRef}>
       <Box
         borderRadius={'1.25rem'}
-        border={`2px solid ${palette.primary}`}
+        border={` ${palette.primary}`}
         width={'100%'}
         position={'relative'}
         height={isMobile ? '29vh' : '22rem'}

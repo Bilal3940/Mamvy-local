@@ -294,7 +294,12 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                       disabled={false}
                       loading={false}
                       variant={'contained'}
-                      method={() => dispatch(openPublishModal())}>
+                      method={() => dispatch(openPublishModal())}
+                       sx={{
+    '&:hover': {
+      backgroundColor: accentColor, // Set your desired hover background color here
+    },
+  }}>
                       <Typography variant='button' color='white'>{story?.status == 'draft' ? t('publish') : t('share')}</Typography>
                     </MuiButton>
                   </Box>}

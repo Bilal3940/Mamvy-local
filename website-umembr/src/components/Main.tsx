@@ -72,7 +72,7 @@ const Main: React.FC = () => {
 
 
   // new field for the popup content
-  const {extraContent} = useSelector(extrasSelector)
+  const {extraContent} = useSelector(extrasSelector);
   const [viewStory, setViewStory] = useState(false);
 
 

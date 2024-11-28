@@ -2,14 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { Box, Theme, Typography, useMediaQuery, CircularProgress } from '@mui/material';
 import { MuiIconButton } from '@/components';
 import Wavesurfer from '@wavesurfer/react';
+import {  templatesSelector } from '@/store/selectors'
 import { palette } from '@/theme/constants';
+import { useDispatch, useSelector } from 'react-redux';
 import { styles } from './styles';
+import { useRouter } from 'next/router';
+
 
 export const AudioPlayer = ({ audioData, index, name }: any) => {
   const [playing, setPlaying] = useState(false);
+  const router = useRouter();
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [wavesurfer, setWavesurfer]: any = useState(null);
+  
+  const [adminPalette, setAdminPalette] = useState({
+    storyBackgroundColor: '#333333', // Default value
+    textColor: '#fff', // Default value
+    accentColor: '#BF5700', // Default value
+  });
+  
 
   const handleTogglePlay = () => {
     setPlaying(!playing);
@@ -30,6 +42,39 @@ export const AudioPlayer = ({ audioData, index, name }: any) => {
       });
     }
   }, [wavesurfer]);
+  const { template } = useSelector(templatesSelector);
+
+  useEffect(() => {
+    if (template?.template?.colors) {
+      const colors = template.template.colors.reduce((acc:any, color:any) => {
+        // Map each color to the corresponding palette key
+        switch (color.PLabel) {
+          case 'storyBackground':
+            acc.storyBackgroundColor = color.PValue;
+            break;
+          case 'TextColor':
+            acc.textColor = color.PValue;
+            break;
+          case 'AccentColor':
+            acc.accentColor = color.PValue;
+            break;
+          default:
+            break;
+        }
+        return acc;
+      }, {});
+
+      // Set the colors to the adminPalette state
+      setAdminPalette({
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
+        textColor: colors.textColor || '#fff', // Fallback
+        accentColor: colors.accentColor || '#BF5700', // Fallback
+      });
+    }
+  }, [template]); // Make sure to add template to the dependency array
+
+  const accentColor = adminPalette.accentColor;
+   let bgColor =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
 
   return (
     <Box
@@ -48,7 +93,7 @@ export const AudioPlayer = ({ audioData, index, name }: any) => {
       </Box>
       <Box
         display={'flex'}
-        bgcolor={palette.primary}
+        bgcolor={bgColor}
         borderRadius={'6.25rem'}
         height={'2.4375rem'}
         width={isMobile ? '100%' : '80%'}

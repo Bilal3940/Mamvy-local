@@ -636,11 +636,14 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
       }
     });
 
-  const allItemsLoaded = visibleItems >= filteredMediaItems.length;
-  // loadmore button handler
+  const visibleMediaItems = useMemo(() => {
+    return filteredMediaItems.slice(0, visibleItems);
+  }, [filteredMediaItems, visibleItems]);
+
   const handleLoadMore = () => {
-    setVisibleItems((prev) => prev + ITEMS_PER_PAGE); // Load 10 more items on button click
+    setVisibleItems((prev) => prev + ITEMS_PER_PAGE);
   };
+  const allItemsLoaded = visibleItems >= filteredMediaItems.length;
 
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const sizeText = isSmallScreen ? '25px' : '30px';
@@ -651,13 +654,13 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const getIcon = (type: string, color: string) => {
     switch (type) {
       case 'image':
-        return <Image1Icon color={color}  size={sizeImage} />;
+        return <Image1Icon color={color} size={sizeImage} />;
       case 'video':
         return <Video1Icon color={color} size={sizeVideo} />;
       case 'audio':
-        return <Audio1Icon color={color} size={sizeAudio}/>;
+        return <Audio1Icon color={color} size={sizeAudio} />;
       case 'text':
-        return <Text1Icon color={color}  size={sizeText}/>;
+        return <Text1Icon color={color} size={sizeText} />;
       default:
         return null;
     }
@@ -711,45 +714,42 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
               ),
             }}
           />
-         <Box
-  sx={{
-    display: 'flex',
-    justifyContent: { xs: 'center', sm: 'flex-end' }, // Center on mobile, align to the right on larger screens
-    flexGrow: 1,
-    flexWrap: { xs: 'wrap', sm: 'nowrap' },
-    gap: 1, // Add some spacing between buttons if needed
-  }}
->
-  {['All', 'Image', 'Video', 'Audio', 'Text'].map((label) => (
-    <Button
-      key={label}
-      variant="contained"
-      onClick={() => handleClick(label)}
-      sx={extendedPalette.filterButton(filter, label)}
-    >
-      {label}
-    </Button>
-  ))}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: { xs: 'center', sm: 'flex-end' }, // Center on mobile, align to the right on larger screens
+              flexGrow: 1,
+              flexWrap: { xs: 'wrap', sm: 'nowrap' },
+              gap: 1, // Add some spacing between buttons if needed
+            }}>
+            {['All', 'Image', 'Video', 'Audio', 'Text'].map((label) => (
+              <Button
+                key={label}
+                variant='contained'
+                onClick={() => handleClick(label)}
+                sx={extendedPalette.filterButton(filter, label)}>
+                {label}
+              </Button>
+            ))}
 
-  {/* Sort Dropdown */}
-  <MuiIconButton
-    icon="/icons/filter"
-    altIcon="filter"
-    background={extendedPalette.filterIconsColor}
-    borderColor={palette.black}
-    width={40}
-    height={40}
-    iconHeight={12}
-    iconWidth={20}
-    method={(event: any) => setShowFilters(event)} // Toggle state on click
-  />
-  <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
-    <Box position={'relative'}>
-      <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators, types]} />
-    </Box>
-  </ClickAwayListener>
-</Box>
-
+            {/* Sort Dropdown */}
+            <MuiIconButton
+              icon='/icons/filter'
+              altIcon='filter'
+              background={extendedPalette.filterIconsColor}
+              borderColor={palette.black}
+              width={40}
+              height={40}
+              iconHeight={12}
+              iconWidth={20}
+              method={(event: any) => setShowFilters(event)} // Toggle state on click
+            />
+            <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
+              <Box position={'relative'}>
+                <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators, types]} />
+              </Box>
+            </ClickAwayListener>
+          </Box>
 
           {/* Other Buttons */}
           {/* <Box
@@ -814,7 +814,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
 
         {/* Media Grid */}
         <Masonry columns={{ xs: 2, sm: 3, md: 4 }} spacing={2} sx={{ margin: 0 }}>
-          {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
+          {visibleMediaItems.map((item: any, index: any) => (
             <Paper
               key={index}
               sx={{
@@ -829,60 +829,56 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
               }}>
               {/* Card Header */}
               <Box
-  sx={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '8px 16px',
-    backgroundColor: extendedPalette.cardHeaderBackground,
-    color: extendedPalette.cardHeaderText,
-  }}
->
-  {/* Media Icon and Text */}
-  <Box sx={{ display: 'flex', alignItems: 'center',borderRadius:'10px' }}>
-    <Box sx={{ mr: 1 }}>
-      {getIcon(item.type, extendedPalette.cardIconColor)} {/* Example color passed */}
-    </Box>
-    <Box>
-      <Typography
-        variant="body2"
-        sx={{
-          fontFamily: 'PolySans Trial, sans-serif',
-          fontSize: { xs: '14px', sm: '16px' }, // Responsive font size
-          fontWeight: 400,
-          lineHeight: { xs: '16.8px', sm: '19.2px' }, // Adjust line height for mobile
-          textAlign: 'left',
-        }}
-      >
-        {item.title}
-      </Typography>
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 16px',
+                  backgroundColor: extendedPalette.cardHeaderBackground,
+                  color: extendedPalette.cardHeaderText,
+                }}>
+                {/* Media Icon and Text */}
+                <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: '10px' }}>
+                  <Box sx={{ mr: 1 }}>
+                    {getIcon(item.type, extendedPalette.cardIconColor)} {/* Example color passed */}
+                  </Box>
+                  <Box>
+                    <Typography
+                      variant='body2'
+                      sx={{
+                        fontFamily: 'PolySans Trial, sans-serif',
+                        fontSize: { xs: '14px', sm: '16px' }, // Responsive font size
+                        fontWeight: 400,
+                        lineHeight: { xs: '16.8px', sm: '19.2px' }, // Adjust line height for mobile
+                        textAlign: 'left',
+                      }}>
+                      {item.title}
+                    </Typography>
 
-      <Typography
-        variant="caption"
-        sx={{
-          fontFamily: 'PolySans Trial, sans-serif',
-          fontSize: { xs: '10px', sm: '12px' }, // Responsive font size for date
-          fontWeight: 400,
-          lineHeight: { xs: '12px', sm: '14.4px' }, // Adjust line height for mobile
-          textAlign: 'left',
-        }}
-      >
-        {format(new Date(item.created_at), 'MMM dd, yyyy')}
-      </Typography>
-    </Box>
-  </Box>
+                    <Typography
+                      variant='caption'
+                      sx={{
+                        fontFamily: 'PolySans Trial, sans-serif',
+                        fontSize: { xs: '10px', sm: '12px' }, // Responsive font size for date
+                        fontWeight: 400,
+                        lineHeight: { xs: '12px', sm: '14.4px' }, // Adjust line height for mobile
+                        textAlign: 'left',
+                      }}>
+                      {format(new Date(item.created_at), 'MMM dd, yyyy')}
+                    </Typography>
+                  </Box>
+                </Box>
 
-  {/* User Avatar */}
-  <Link href={`/user/${encodeURIComponent(item.username)}`} underline="none">
-    <Avatar
-      src={avatarError ? '/icons/image1.svg' : item.userImage} // Use dummy avatar if image fails
-      alt={item.username}
-      sx={{ width: 32, height: 32 }}
-      onError={() => setAvatarError(true)} // Set error state if image fails to load
-    />
-  </Link>
-</Box>
-
+                {/* User Avatar */}
+                <Link href={`/user/${encodeURIComponent(item.username)}`} underline='none'>
+                  <Avatar
+                    src={avatarError ? '/icons/image1.svg' : item.userImage} // Use dummy avatar if image fails
+                    alt={item.username}
+                    sx={{ width: 32, height: 32 }}
+                    onError={() => setAvatarError(true)} // Set error state if image fails to load
+                  />
+                </Link>
+              </Box>
 
               {/* Media Content */}
               {/* <Box sx={{ padding: '16px' }}
@@ -898,14 +894,14 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
                 }}>
                 {/* {item.type === 'image' && <Image src={`${cdn_url}${item.asset}`} alt={item.title} width={100} height={100} />} */}
                 {item.type === 'image' && (
-                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center',borderRadius: '12px' }}>
+                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', borderRadius: '12px' }}>
                     <Image
                       src={`${cdn_url}${item.asset}`}
                       alt={item.title}
                       layout='responsive'
                       width={100}
                       height={100}
-                      style={{ borderRadius: '12px' }} 
+                      style={{ borderRadius: '12px' }}
                     />
                   </Box>
                 )}

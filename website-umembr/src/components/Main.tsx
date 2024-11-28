@@ -146,18 +146,14 @@ useEffect(()=>{
   const ispaid= true;
   const ispurchased = false;
   useEffect(() => {
-    if(ispaid)
+    if(extraContent.isPaid)
     { 
-      if(ispurchased){
-        setModalOpen(false);
-      }else{
-        setModalOpen(true);
-      }
-      
+    setModalOpen(true);
      
-     
+    }else{
+      setModalOpen(false)
     }
-  }, [ispurchased]);
+  }, [extraContent]);
 
 
   const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('md'));

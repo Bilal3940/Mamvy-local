@@ -338,7 +338,7 @@ return (
             />
 
             {/* Password Input */}
-               <MuiTextField
+           <MuiTextField
                 id='password'
                 name='password'
                 required
@@ -356,7 +356,7 @@ return (
                 iconHeight={18}
                 iconWidth={18}
                 type={!showPassword ? 'password' : 'text'}
-                endIcon={showPassword ? '/icons/eye-white.svg' : '/icons/eye-out-white.svg'}
+                endIcon={showPassword ? '/icons/eye-black.svg' : '/icons/eye-out-black.svg'}
                 errorMessage={errors.password}
                 status={changeInputStatus(values.password, errors.password && touched.password)}
                 FormHelperTextProps={{
@@ -389,7 +389,7 @@ return (
                   fontSize: values.password ? '12px' : '16px',
                 },
               }}
-            />
+            />    
 
             {/* Confirm Password Input */}
         
@@ -411,7 +411,7 @@ return (
                 iconHeight={18}
                 iconWidth={18}
                 type={!showConfirmPassword ? 'password' : 'text'}
-                endIcon={showConfirmPassword ? '/icons/eye-white.svg' : '/icons/eye-out-white.svg'}
+                endIcon={showConfirmPassword ? '/icons/eye-black.svg' : '/icons/eye-out-black.svg'}
                 errorMessage={errors.confirm_password}
                 status={changeInputStatus(values.confirm_password, errors.confirm_password && touched.confirm_password)}
                 FormHelperTextProps={{

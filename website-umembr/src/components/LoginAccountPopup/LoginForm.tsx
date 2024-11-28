@@ -557,7 +557,7 @@ declare let AppleID: any;
     backgroundColor: 'rgba(34, 34, 34, 0.8)',
     '&:hover': {
       backgroundColor: 'rgba(34, 34, 34, 1)',
-      color:"skyblue"
+      color:"#0072ce"
     },
     borderRadius: '8px',
     padding: '0 5px',

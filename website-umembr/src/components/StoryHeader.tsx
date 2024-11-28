@@ -218,7 +218,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
         <Typography
           variant='h3'
           sx={{
-            fontFamily: 'PolySans Trial',
+            fontFamily: 'sans-serif',
             fontSize: '55px',
             color: extendedPalette.storyTitle,
             

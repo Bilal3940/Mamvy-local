@@ -22,6 +22,7 @@ import {
 import { extendedPalette, palette } from '@/theme/constants';
 import { cdn_url, checkPermissions, logoutWithFacebook } from '@/utils';
 import { AppBar, Box, ClickAwayListener, Stack, Typography } from '@mui/material';
+import { currentStorySelector, templatesSelector } from '@/store/selectors';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
 
@@ -59,6 +60,11 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
   const { mediaScreenType } = useSelector(memorySelector);
   const query = router.pathname;
+  const [adminPalette, setAdminPalette] = useState({
+    storyBackgroundColor: '#333333', // Default value
+    textColor: '#fff', // Default value
+    accentColor: '#BF5700', // Default value
+  });
 
   console.log("query", query)
   
@@ -201,6 +207,38 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
       router.push('/app/home');
     }
   };
+  const { template } = useSelector(templatesSelector);
+
+  useEffect(() => {
+    if (template?.template?.colors) {
+      const colors = template.template.colors.reduce((acc:any, color:any) => {
+        // Map each color to the corresponding palette key
+        switch (color.PLabel) {
+          case 'storyBackground':
+            acc.storyBackgroundColor = color.PValue;
+            break;
+          case 'TextColor':
+            acc.textColor = color.PValue;
+            break;
+          case 'AccentColor':
+            acc.accentColor = color.PValue;
+            break;
+          default:
+            break;
+        }
+        return acc;
+      }, {});
+
+      // Set the colors to the adminPalette state
+      setAdminPalette({
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
+        textColor: colors.textColor || '#fff', // Fallback
+        accentColor: colors.accentColor || '#BF5700', // Fallback
+      });
+    }
+  }, [template]); // Make sure to add template to the dependency array
+
+  const accentColor = adminPalette.accentColor;
 
   UseFirstRender(() => {
     const memoryHeight = document.getElementById('memories');
@@ -248,11 +286,12 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                   user?.id === story?.user_id) && <Box width={'5.75rem'} marginLeft={'1rem'}>
                     <MuiButton
                       type='button'
+                      backgroundColor={accentColor}
                       disabled={false}
                       loading={false}
                       variant={'contained'}
                       method={() => dispatch(openPublishModal())}>
-                      <Typography variant='button'>{story?.status == 'draft' ? t('publish') : t('share')}</Typography>
+                      <Typography variant='button' color='white'>{story?.status == 'draft' ? t('publish') : t('share')}</Typography>
                     </MuiButton>
                   </Box>}
               </Box>
@@ -274,6 +313,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
             <Box display={'flex'} width={'7rem'} justifyContent={'space-between'} alignItems={'center'}>
               <Box position='relative'>
                 <MuiIconButton
+                
                   icon='/icons/notification'
                   altIcon='notification'
                   background={palette?.cardBackground}

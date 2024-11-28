@@ -143,8 +143,15 @@ export const Drawer = () => {
                 padding={'1rem'}
                 width={'100%'}
                 justifyContent={'space-between'}
-                bgcolor={palette.background}
-                borderRadius={'1.25rem'}>
+                // bgcolor={palette.background}
+                // borderRadius={'1.25rem'}
+                 sx={{
+    borderRadius: '10px',
+    border: '1px solid rgba(204, 204, 204, 0.20)',
+    background: 'linear-gradient(180deg, rgba(34, 34, 34, 0.45) 0%, rgba(17, 17, 17, 0.45) 100%)',
+    backdropFilter: 'blur(25px)', // Applies the blur effect
+  }}
+                >
                 <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
                   <Typography variant='h5'>{user?.storyCount || 0}</Typography>
                   <Typography variant='h6'>{t('stories')}</Typography>
@@ -187,7 +194,8 @@ export const Drawer = () => {
                     flexDirection={'column'}
                     justifyContent={'flex-start'}
                     flex={'1'}
-                    alignItems={'flex-start'}>
+                    alignItems={'flex-start'}
+                    >
                     <Box display={'flex'} width={'100%'} flexDirection={'column'}>
                       {user?.collaborators?.map((item: any, index: number) => {
                         return (
@@ -199,8 +207,15 @@ export const Drawer = () => {
                             width={'100%'}
                             justifyContent={'space-between'}
                             alignItems={'center'}
-                            bgcolor={palette.background}
-                            borderRadius={'1.25rem'}>
+                            // bgcolor={palette.background}
+                            // borderRadius={'1.25rem'}
+                             sx={{
+    borderRadius: '10px',
+    border: '1px solid rgba(204, 204, 204, 0.20)',
+    background: 'linear-gradient(180deg, rgba(34, 34, 34, 0.45) 0%, rgba(17, 17, 17, 0.45) 100%)',
+    backdropFilter: 'blur(25px)', // Applies the blur effect
+  }}
+                            >
                             <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                               <Box
                                 width={isMobile ? 30 : 40}

@@ -416,7 +416,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
 
       <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
         <Box position={'relative'}>
-          {/* <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators]} /> */}
+          <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators]} />
         </Box>
       </ClickAwayListener>
       <CancelModal open={status} onClose={switchStatus} confirmMethod={closeProcess} />

@@ -39,7 +39,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
           <Paper
             sx={{
               width: '80%',
-              height:"80%",
+              height:"auto",
               position: 'relative',
               maxWidth: '900px',
               padding: 3,
@@ -78,7 +78,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                 <Box
                   sx={{
                     width: 'auto',
-                    height: '600px',
+                    height: 'auto',
                     backgroundColor: '#222',
                     border: '1px',
                     color: '#fff',

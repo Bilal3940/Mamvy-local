@@ -176,10 +176,10 @@ return (
           padding: '12px',
           bgcolor: 'rgba(102, 102, 102, 1)',
           boxShadow: 'none',
-          height: '58vh',
+          height: 'auto',
           [theme.breakpoints.down('sm')]: {
             padding: 0,
-            height: '54vh',
+            height: 'auto',
           },
         }}
       >

@@ -398,7 +398,7 @@ declare let AppleID: any;
   sx={{
     paddingTop: '2px',
     marginTop: '5px',
-    height:"50px",
+    height:"auto",
     border:"1px solid white",
     color:"white",
     backgroundColor: 'black',
@@ -566,6 +566,9 @@ declare let AppleID: any;
     },
     borderRadius: '8px',
     padding: '0 5px',
+    [theme.breakpoints.down('sm')]:{
+      padding:'0'
+     }
   }}
 >
   {/* Text Container */}
@@ -578,8 +581,12 @@ declare let AppleID: any;
       justifyContent: 'center',
       cursor:"pointer",
      paddingRight:"8px",
-     paddingLeft:"12px"
+     paddingLeft:"12px",
+     [theme.breakpoints.down('sm')]:{
+      padding:'0'
+     }
     }}
+    
   >
     <span style={{ fontSize: '15px' }}>Continue</span>
     <span style={{ fontSize: '15px', paddingLeft:"10px" }}>with</span>

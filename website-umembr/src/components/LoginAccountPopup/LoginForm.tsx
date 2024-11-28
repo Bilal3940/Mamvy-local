@@ -14,9 +14,37 @@ import {
     Link,
   } from '@mui/material';
 import { theme } from "@/theme";
+import { MuiButton, MuiIconButton, MuiTextField } from '@/components';
 
+import { UseFirstRender } from '@/hooks';
+import {
+  actualStory,
+  deleteNotification,
+  loginApple,
+  loginFacebook,
+  loginGoogle,
+  loginUser,
+  loginUserView,
+  setStep,
+} from '@/store/actions';
+import { inviteAccepted, setGuest } from '@/store/collaborator/action';
+import { authSelector, collaboratorSelector, intermitenceSelector } from '@/store/selectors';
+import { palette } from '@/theme/constants';
+import { face_client_id, google_client_id } from '@/utils';
+import {  Divider, Grid, Theme,  useMediaQuery } from '@mui/material';
+import { useGoogleLogin } from '@react-oauth/google';
+import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
 
+import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
+import AppleLogin from 'react-apple-login';
+import { useDispatch, useSelector } from 'react-redux';
+import ChevronLeftIconComponent from '../../../public/icons/components/chevron-left';
+import { FormikConfig } from './formik';
+import collaborator from '@/store/collaborator/reducer';
 
+declare let AppleID: any;
 
   interface PopupModalProps {
     open: boolean;
@@ -24,11 +52,10 @@ import { theme } from "@/theme";
   }
 
   const LoginForm: React.FC<PopupModalProps> = ({ open, onClose }) => {
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+
     
     const [showSignup , setShowSignup]=useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+    
 
     const handleClickShowPassword = () => {
       setShowPassword(!showPassword);
@@ -38,6 +65,293 @@ import { theme } from "@/theme";
   setShowSignup(true);
     }
 
+    
+    class ExternalScriptError extends Error {
+      constructor(src: string) {
+        super(`Error loading script: ${src}`);
+        this.name = 'ExternalScriptError';
+      }
+    }  
+      const { t } = useTranslation();
+      const router = useRouter();
+      const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+      const authData = useSelector(authSelector);
+      const { loading } = useSelector(intermitenceSelector);
+      const clientId = google_client_id;
+      const dispatch = useDispatch();
+      const [appleReady, setAppleReady] = useState(false);
+      const collaborator = useSelector(collaboratorSelector);
+      const decodeBase64 = (encodedString: any) => {
+        return Buffer.from(encodedString, 'base64').toString('utf-8');
+      };
+      const [decodedUrl, setDecodedUrl] = useState({
+        story: decodeBase64(
+          Array.isArray(router?.query?.story_id) ? router.query?.story_id[0] : router.query?.story_id || '',
+        ),
+        email: decodeBase64(Array.isArray(router?.query?.guest) ? router.query?.guest[0] : router.query?.guest || ''),
+        role: decodeBase64(Array.isArray(router?.query?.role) ? router.query?.role[0] : router?.query?.role || ''),
+        notification: decodeBase64(
+          Array.isArray(router?.query?.notification) ? router.query?.notification[0] : router.query?.notification || '',
+        ),
+        type: decodeBase64(Array.isArray(router?.query?.type) ? router.query?.type[0] : router.query?.type || ''),
+      });
+    
+      const handleSubmit = (data: any) => {
+        data.email = data.email.toLowerCase();
+        dispatch(loginUser(data));
+      };
+    
+      const handleOnTouched = (key: string) => setTouched({ ...touched, [key]: true });
+    
+      const [showPassword, setShowPassword] = useState(false);
+    
+      const handleShowPassword = () => setShowPassword((show) => !show);
+    
+      const {
+        values,
+        handleSubmit: formikSubmit,
+        handleChange,
+        errors,
+        touched,
+        setTouched,
+        dirty,
+        isValid,
+      } = FormikConfig(handleSubmit);
+    
+      const changeInputStatus = (value: string, error: any) => {
+        if (value !== '') {
+          if (error) return 'error';
+          return 'inherit';
+        }
+        return 'inherit';
+      };
+    
+      const initGoogleLogin = useGoogleLogin({
+        scope: 'email',
+        onSuccess: (tokenResponse: any) => {
+          if (router?.asPath?.includes('invitation')) {
+            dispatch(loginGoogle({ ...tokenResponse, invitation: router?.query?.invitation }));
+          } else {
+            dispatch(loginGoogle(tokenResponse));
+          }
+        },
+    
+        onError: (error: any) => {
+          console.log('Login Failed', error);
+        },
+      });
+    
+      // useEffect(() => {
+      //   dispatch(setStep(1));
+      //   if (authData?.isAuth) {
+      //     if (router.asPath?.includes('guest')) {
+      //       if (decodedUrl?.email == authData?.user?.email) {
+      //         dispatch(inviteAccepted({ story_id: decodedUrl?.story, role_name: decodedUrl?.role }));
+      //         // dispatch(actualStory(decodedUrl.story));
+      //         // dispatch(setGuest(decodedUrl?.role));
+      //         // if (decodedUrl?.notification.length > 0) dispatch(deleteNotification(decodedUrl?.notification));
+      //         // if (decodedUrl?.role === 'Story_Viewer') {
+      //         //   router.push(`/app/story/${decodedUrl?.story}`);
+      //         // } else {
+      //         //   router.push(`/app/story/${decodedUrl?.story}/memory/create`);
+      //         // }
+      //       } else {
+      //         router.push('/app/home');
+      //       }
+      //     } else {
+      //       router.push('/app/home');
+      //     }
+      //   }
+      // }, [authData?.isAuth]);
+    
+      useEffect(() => {
+        if (authData?.isAuth && collaborator.roleUser.length > 0) {
+          if (collaborator.roleUser !== 'inactive') {
+            dispatch(actualStory(decodedUrl.story));
+            dispatch(setGuest(decodedUrl?.role));
+            if (decodedUrl?.notification.length > 0 && collaborator.roleUser !== 'collaborating') dispatch(deleteNotification(decodedUrl?.notification));
+            if (decodedUrl?.role === 'Story_Viewer') {
+              router.push(`/app/story/${decodedUrl?.story}`);
+            } else {
+              router.push(`/app/story/${decodedUrl?.story}/memory/create`);
+            }
+          }
+          if (authData?.isAuth && collaborator?.roleUser === 'inactive') {
+            router.push('/app/home');
+          }
+        }
+      }, [collaborator?.roleUser]);
+    
+      UseFirstRender(() => {
+        if (!authData?.isAuth) {
+          dispatch(loginUserView());
+        }
+      }, [authData?.isAuth]);
+    
+      useEffect(() => {
+        const referralCode = router?.query?.referral_code;
+        if (referralCode) {
+          localStorage.setItem('referral_code', referralCode as string);
+        }
+      }, [router.query]);
+    
+    
+      UseFirstRender(() => {
+        // Google script Init
+        const google = require('gapi-script');
+        const start = () => {
+          google.gapi?.client.init({
+            clientId: clientId,
+            scope: 'email',
+            cookiepolicy: 'single_host_origin',
+          });
+        };
+    
+        google.gapi?.load('client', start);
+    
+        let winType: any = window;
+        winType.fbAsyncInit = function () {
+          winType.FB.init({
+            appId: face_client_id,
+            xfbml: true,
+            version: 'v20.0',
+          });
+    
+          winType.FB.AppEvents.logPageView();
+        };
+    
+        (function (d, s, id) {
+          var js: any,
+            fjs: any = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) {
+            return;
+          }
+          js = d.createElement(s);
+          js.id = id;
+          js.src = 'https://connect.facebook.net/en_US/sdk.js';
+          fjs?.parentNode?.insertBefore(js, fjs);
+        })(document, 'script', 'facebook-jssdk');
+      }, [])
+    
+      function loadScript(src: any, { scriptId = '', insertBeforeAllTags = false } = {}) {
+        return new Promise((resolve, reject) => {
+          let script = document.createElement('script');
+          script.id = scriptId;
+          script.onload = resolve;
+          script.onerror = (event: any) => {
+            reject(new ExternalScriptError(event.target.src));
+          };
+          script.src = src;
+    
+          if (insertBeforeAllTags) {
+            let firstScriptTagInDocument = document.getElementsByTagName('script')[0];
+    
+            firstScriptTagInDocument.parentNode &&
+              firstScriptTagInDocument.parentNode.insertBefore(script, firstScriptTagInDocument);
+          } else {
+            document.body.appendChild(script);
+          }
+        });
+      }
+    
+      const initializeAppleSDK = async () => {
+        try {
+          if (location) {
+            let winType: any = window;
+            await loadScript('https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js');
+            setAppleReady(true);
+            AppleID.auth.init({
+              clientId: 'memvy-app-prod-service',
+              scope: 'name email',
+              redirectURI: winType?.location?.href,
+              state: 'initialState',
+              usePopup: true,
+            });
+          }
+        } catch (error) {
+          console.error('Error loading Apple SDK:', error);
+        }
+      };
+    
+      const appleResponse = (response: any) => {
+    
+        if (!response.error) {
+          if (router?.asPath?.includes('invitation')) {
+            dispatch(loginApple({ ...response, invitation: router?.query?.invitation, location: location }));
+          } else {
+            dispatch(loginApple({ ...response, location: location }));
+          }
+        }
+      };
+    
+      const validateIsFaceLogged = () => {
+        return new Promise((resolve) => {
+          let winType: any = window;
+          winType?.FB?.getLoginStatus(function (response: any) {
+            console.log(response, 'facebook status');
+    
+            if (response?.status === 'connected') {
+              if (router?.asPath?.includes('invitation')) {
+                dispatch(loginFacebook({ ...response?.authResponse, invitation: router?.query?.invitation }));
+              } else {
+                dispatch(loginFacebook(response?.authResponse));
+              }
+              resolve(true);
+            } else if (response?.status === 'unknown') {
+              console.log('unkwoh error');
+    
+              resolve(false);
+            } else {
+              console.log('user is not logged in facebook ');
+              resolve(false);
+            }
+          });
+        });
+      };
+    
+      const handleFaceLogin = async () => {
+        let winType: any = window;
+    
+        const isLogged = await validateIsFaceLogged();
+    
+        if (!isLogged) {
+          winType?.FB?.login((response: any) => {
+            if (response?.authResponse) {
+              if (router?.asPath?.includes('invitation')) {
+                dispatch(loginFacebook({ ...response?.authResponse, invitation: router?.query?.invitation }));
+              } else {
+                dispatch(loginFacebook(response?.authResponse));
+              }
+              //this code return the user facebook primary data
+              // winType.FB.api('/me', function (response: any) {
+              //   console.log('Good to see you, ' + response.name + '.');
+              // });
+            } else {
+              console.log('User cancelled login or did not fully authorize.');
+            }
+          });
+        }
+        return null;
+      };
+    
+    
+      const [location, setLocation] = useState('');
+    
+    
+      UseFirstRender(() => {
+        if (typeof window !== 'undefined') {
+          let winType: any = window;
+          setLocation(winType?.location?.href);
+        }
+      }, [])
+    
+    
+      UseFirstRender(() => {
+        if(location) {
+          initializeAppleSDK();
+        }
+      }, [location])
+    
 
 
     return(
@@ -62,16 +376,22 @@ import { theme } from "@/theme";
   >
    <h2 style={{fontFamily:"inter", color:"white", marginBottom:"3px"}}>Log In</h2>
     {/* Email Input */}
-    <TextField
-  label="Email" // Show label only if email is empty
-  variant='outlined'
-  margin='normal'
-  value={email} // Controlled value
-  onChange={(e) => setEmail(e.target.value)} // Update email state
-  fullWidth
-  InputLabelProps={{
-    shrink: false, // Disable the default shrink behavior
-  }}
+    <form onSubmit={formikSubmit}>
+    <MuiTextField
+     id='email'
+     name='email'
+     fullWidth
+     onBlur={() => {
+       handleOnTouched('email');
+     }}
+     status={changeInputStatus(values.email, errors.email && touched.email)}
+     onChange={handleChange}
+     value={values.email}
+     autoComplete='email'
+     placeholder={t('email')}
+     label={'email'}
+     isDarkTheme
+     errorMessage={errors.email}
   sx={{
     paddingTop: '2px',
     marginTop: '5px',
@@ -88,15 +408,7 @@ import { theme } from "@/theme";
       },
 
     },
-    '& .MuiInputLabel-root': {
-        color: '#EEEEEE', // Default label color
-      position: 'absolute',
-      left: '14px',
-      transition: 'all 0.2s ease-in-out',
-      top: email ? '1px' : '50%', // Position based on whether there's input
-      transform: email ? 'translateY(0)' : 'translateY(-50%)', // Adjust vertical alignment
-      fontSize: email ? '12px' : '16px', // Adjust size for shrunken state
-    },
+    
 
     '& .MuiOutlinedInput-root.Mui-focused': {
       '& fieldset': {
@@ -107,17 +419,26 @@ import { theme } from "@/theme";
 />
 
     {/* Password Input */}
-    <TextField
-      label="Password"
-      variant="outlined"
-      margin="normal"
-      type={showPassword ? 'text' : 'password'} // Toggle between text and password type
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      fullWidth
-      InputLabelProps={{
-        shrink: false, // Disable the default shrink behavior
-      }}
+    <MuiTextField
+             id='password'
+             name='password'
+             fullWidth
+             onBlur={() => {
+               handleOnTouched('password');
+             }}
+             onChange={handleChange}
+             value={values.password}
+             autoComplete='current-password'
+             placeholder={t('password')}
+             label={'password'}
+             isDarkTheme
+             iconMethod={handleShowPassword}
+             iconHeight={18}
+             iconWidth={18}
+             type={!showPassword ? 'password' : 'text'}
+             endIcon={showPassword ? '/icons/eye-white.svg' : '/icons/eye-out-white.svg'}
+             errorMessage={errors.password}
+             status={changeInputStatus(values.password, errors.password && touched.password)}
       sx={{
         paddingTop: '2px',
         height: '50px',
@@ -133,44 +454,36 @@ import { theme } from "@/theme";
             color: 'white', // Set the text color to white
           },
         },
-        '& .MuiInputLabel-root': {
-          color: '#EEEEEE',
-          position: 'absolute',
-          left: '14px',
-          transition: 'all 0.2s ease-in-out',
-          top: password ? '1px' : '50%',
-          transform: password ? 'translateY(0)' : 'translateY(-50%)',
-          fontSize: password ? '12px' : '16px',
-        },
+       
         '& .MuiOutlinedInput-root.Mui-focused': {
           '& fieldset': {
             border: 'none', // Ensure no border on focus
           },
         },
       }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={handleClickShowPassword}
-              edge="end"
-              sx={{
-                color: 'white', // Icon color
-              }}
-            >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
+      // InputProps={{
+      //   endAdornment: (
+      //     <InputAdornment position="end">
+      //       <IconButton
+      //         aria-label="toggle password visibility"
+      //         onClick={handleClickShowPassword}
+      //         edge="end"
+      //         sx={{
+      //           color: 'white', // Icon color
+      //         }}
+      //       >
+      //         {showPassword ? <VisibilityOff /> : <Visibility />}
+      //       </IconButton>
+      //     </InputAdornment>
+      //   ),
+      // }}
     />
 
 
 <Box sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}>
     {/* <button>Sign Up</button> */}
     <Button
-      
+      type='submit' disabled={!isValid || !dirty || loading}  
       fullWidth
       sx={{
         marginTop: '5px',
@@ -188,6 +501,8 @@ import { theme } from "@/theme";
       }}> Continue
     </Button>
     </Box>
+
+    </form>
     <Typography style={{ display: 'flex', justifyContent: 'center', color: 'rgba(238, 238, 238, 1)', marginTop:"5px"}}>
     <Link style={{color:"#BA0C2F", cursor:"pointer" , fontWeight:"bold", textDecoration:"none"}}> {""}Forgot Password?</Link>
     </Typography>
@@ -205,6 +520,7 @@ import { theme } from "@/theme";
 >
   <Button
     fullWidth
+    onClick={() => initGoogleLogin()}
     endIcon={<img src='/icons/devicon_google.svg' />}
     sx={{
       color: 'white',
@@ -222,7 +538,7 @@ import { theme } from "@/theme";
     Continue with
   </Button>
 
-  <Button
+  {/* <Button
     fullWidth
     endIcon={<img src='/images/apple.svg' height={"22px"} width={"22px"}/>}
     sx={{
@@ -240,10 +556,30 @@ import { theme } from "@/theme";
     }}
   >
     Continue with
-  </Button>
+  </Button> */}
+    <AppleLogin
+            clientId='memvy-app-prod-service'
+            redirectURI={location}
+            usePopup={appleReady ? true : false}
+            callback={appleResponse}
+            scope='name email'
+            responseMode='form_post'
+            state='SignInUserAuthenticationRequest'
+            render={(renderProps) => (
+              <MuiIconButton
+                icon={'/images/apple'}
+                altIcon='apple'
+                background='transparent'
+                iconHeight={38}
+                iconWidth={38}
+                method={renderProps.onClick}
+              />
+            )}
+          />
   <Button
     fullWidth
     endIcon={<img src='/icons/Vector.svg' />}
+    onClick={handleFaceLogin}
     sx={{
       color: 'white',
       height: '48px',
@@ -260,8 +596,6 @@ import { theme } from "@/theme";
     Continue with
   </Button>
 </div>
-
-
     <Box mt={1.2} sx={{ display: 'flex', color: 'rgba(238, 238, 238, 1)', marginTop: {xs: '6px', sm:"35px"}, fontWeight:"bold"}}>
     <Typography style={{fontWeight:"bold"}}>
         New to Memvy?
@@ -291,7 +625,6 @@ import { theme } from "@/theme";
     </Box>
   </CardContent>
 </Card>
-
     )
 };
 export default LoginForm;

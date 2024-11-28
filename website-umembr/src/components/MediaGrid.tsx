@@ -450,6 +450,7 @@ import { authSelector, homeSelector, memorySelector } from '@/store/selectors';
 import { cdn_url } from '@/utils';
 import { FilterDropdown, MuiIconButton, RtfComponent } from '@/components';
 import Image1Icon from '../../public/icons/image1';
+import {  searchStories } from '@/store/actions';
 import Video1Icon from '../../public/icons/video1';
 import Text1Icon from '../../public/icons/test1';
 import { UseFirstRender, UseIntermitence } from '@/hooks';
@@ -459,6 +460,7 @@ import { getCollaboratorsOptions, getPropmtsOptions } from '@/components/AppBar/
 import Wait1Icon from '../../public/icons/wait1';
 import GridIcon1 from '../../public/icons/gridicom';
 import EditIcon from '../../public/icons/editing1';
+
 import Audio2Icon from '../../public/icons/audioGradient';
 import { MemoryDetail } from '@/screens/Memories/components';
 import { Router, useRouter } from 'next/router';
@@ -507,8 +509,10 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const [openFilters, setOpenFilters] = useState(false);
   const [openPeople, setOpenPeople] = useState(false);
   const { status, switchStatus } = UseIntermitence();
+  const homeData = useSelector(homeSelector);
+  const { memoryTypes } = useSelector(memorySelector);
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
-
+  const [Types, setTypes] = useState([]);
   const ITEMS_PER_PAGE = 10;
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE); // Number of items initially visible
 
@@ -548,28 +552,73 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
     setOpenModal(false);
     setSelectedMedia(null);
   };
-  const types = useMemo(() => {
-    const types = [
-      {
-        id: 'video',
-        label: 'Video',
-      },
-      {
-        id: 'image',
-        label: 'Image',
-      },
-      {
-        id: 'audio',
-        label: 'Audio',
-      },
-      {
-        id: 'text',
-        label: 'Text',
-      },
-    ];
+  // const types = useMemo(() => {
+  //   const types = [
+  //     {
+  //       id: 'video',
+  //       label: 'Video',
+  //     },
+  //     {
+  //       id: 'image',
+  //       label: 'Image',
+  //     },
+  //     {
+  //       id: 'audio',
+  //       label: 'Audio',
+  //     },
+  //     {
+  //       id: 'text',
+  //       label: 'Text',
+  //     },
+  //   ];
 
-    return types.filter((type) => memoriesLoaded?.includes(type.id));
-  }, [memoriesLoaded?.length]);
+  //   return types.filter((type) => memoriesLoaded?.includes(type.id));
+  // }, [memoriesLoaded?.length]);
+
+  const handleCheckTypes = (value: any) => {
+    if (value === undefined) return;
+
+    let updatedData = [...(homeData?.criterias?.types || [])];
+    const index = updatedData.findIndex((valueId) => valueId === value);
+
+    if (index > -1) updatedData.splice(index, 1);
+    if (index == -1) updatedData.push(value);
+    if (story?.id) {
+      return dispatch(getMemories(story?.id, { ...homeData?.criterias, types: updatedData }));
+    }
+    dispatch(searchStories({ ...homeData?.criterias, types: updatedData }));
+  };
+
+const types = useMemo(() => {
+  console.log(memoriesLoaded);
+
+  const types = [
+    {
+      id: 'video',
+      label: 'Video',
+    },
+    {
+      id: 'image',
+      label: 'Image',
+    },
+    {
+      id: 'audio',
+      label: 'Audio',
+    },
+    {
+      id: 'text',
+      label: 'Text',
+    },
+  ];
+
+  return types.filter((type) =>
+    memoriesLoaded?.some((memory:any) => memory.type === type.id)
+  );
+}, [memoriesLoaded]);
+
+console.log('I am types', types);
+
+  // console.log('Memory types:', memoriesLoaded.map((memory:any) => memory.type));
 
   UseFirstRender(() => {
     console.log('I am query first', router.query);
@@ -720,7 +769,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
     gap: 1, // Add some spacing between buttons if needed
   }}
 >
-  {['All', 'Image', 'Video', 'Audio', 'Text'].map((label) => (
+  {/* {['All', 'Image', 'Video', 'Audio', 'Text'].map((label) => (
     <Button
       key={label}
       variant="contained"
@@ -729,7 +778,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
     >
       {label}
     </Button>
-  ))}
+  ))} */}
 
   {/* Sort Dropdown */}
   <MuiIconButton

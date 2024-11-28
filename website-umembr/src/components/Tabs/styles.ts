@@ -1,13 +1,13 @@
 import { theme } from '@/theme';
 import { palette } from '@/theme/constants';
 
-export const styles: any = (width: string, extraStyle: any, qty: number, isMobile: boolean) => ({
+export const styles: any = (width: string, extraStyle: any, qty: number, isMobile: boolean,bgColor?: string) => ({
   '& .MuiTabs-indicator': {
     bottom: '0.35rem',
   },
   '& .Mui-selected': {
     bgcolor: 'transparent',
-    color: `${palette.primary} !important`,
+    color: `${bgColor} !important`,
     fontSize: theme.typography.h6,
     width: width,
   },

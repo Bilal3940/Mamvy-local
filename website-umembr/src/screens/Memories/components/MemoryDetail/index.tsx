@@ -200,6 +200,7 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
                   <Box width={'6.5rem'} marginRight={'1rem'}>
                     <MuiButton
                       type='button'
+                      backgroundColor={accentColor}
                       loading={false}
                       variant={'contained'}
                       disabled={false}

@@ -13,6 +13,8 @@ import {
   SET_PUBLICATION,
   SET_CODE,
   SET_ACTUAL_STORY_ASYNC,
+  GET_STORY_STATUS,
+  GET_STORY_STATUS_ASYNC,
   UPDATE_STORY_ASYNC,
 } from './action-types';
 
@@ -42,3 +44,7 @@ export const deleteStory = (data: any) => actionObject(DELETE_STORY, data)
 
 export const setPublication = (data: any) => actionObject(SET_PUBLICATION, data)
 export const setCode = (data: any) => actionObject(SET_CODE, data)
+
+export const getStoryStatus = (data: any) => actionObject(GET_STORY_STATUS, data);
+export const getStoryStatusAsync = (data: any, callback?: SagaCallback) => 
+  actionObject(GET_STORY_STATUS_ASYNC, { data, callback });

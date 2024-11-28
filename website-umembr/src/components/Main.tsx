@@ -8,6 +8,8 @@ import {
   changeBackground,
   closePublishModal,
   deleteStory,
+  getExtraContent,
+  getStoryStatus,
   getTemplate,
   hideGradient,
   removeMemory,
@@ -16,7 +18,7 @@ import {
   showActualSection,
   viewStoryG,
 } from '@/store/actions';
-import { authSelector, currentStorySelector, intermitenceSelector, templatesSelector } from '@/store/selectors';
+import { authSelector, currentStorySelector, extrasSelector, intermitenceSelector, storySelector, templatesSelector } from '@/store/selectors';
 import { cdn_url } from '@/utils';
 import { Box, BoxProps, Button, Theme, useMediaQuery } from '@mui/material';
 import dynamic from 'next/dynamic';
@@ -66,7 +68,11 @@ const Main: React.FC = () => {
   const dispatch = useDispatch();
   const story = useSelector(currentStorySelector);
   const { showPublishModal } = useSelector(intermitenceSelector);
-  const {template} = useSelector(templatesSelector)
+  const {template} = useSelector(templatesSelector);
+
+
+  // new field for the popup content
+  const {extraContent} = useSelector(extrasSelector)
   const [viewStory, setViewStory] = useState(false);
 
 
@@ -77,11 +83,15 @@ const Main: React.FC = () => {
   //  const { isEllipseRight } = extendedPalette.isEllipseRightCheck;
     const [modalOpen, setModalOpen] = useState(false);
 
-  
+  const handleOpen = (): void => setModalOpen(true);
   const handleClose = (): void => setModalOpen(false);
 
    UseFirstRender(() => {
     if (router.query?.id && !router.query.code) {
+
+ 
+
+
       dispatch(
         actualStory({
           id: router.query?.id as string,
@@ -97,6 +107,20 @@ const Main: React.FC = () => {
       dispatch(setCode({ password: router?.query?.code, storyId: router.query.id }));
     }
   }, [router.query?.code]);
+
+
+  // new content for popup content
+
+useEffect(()=>{
+
+  dispatch(getExtraContent(router.query?.id as string))
+  
+},[router.query.id])
+
+  console.log("extra content",extraContent )
+
+
+
 
   UseFirstRender(() => {
     if (story && (!story?.private || story?.confirmPassword || foundRole)) {
@@ -290,6 +314,7 @@ console.log("i am story", story)
 
       backgroundColor= colors.storyBackgroundColor || '#333333'
       accentColor=colors.accentColor || 'rgba(228, 222, 255, 0.2)'
+      // Set the colors to the adminPalette state
       setAdminPalette({
         storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
         textColor: colors.textColor || '#fff', // Fallback
@@ -507,7 +532,9 @@ console.log("i am story", story)
         {/* Grid Layout */}
         {/* <GridLayoutCheck /> */}
         <MediaGrid extendedPalette={extendedPalette}  story={story && story} />
-        
+        <Button variant="contained" color="primary" onClick={handleOpen}>
+        Open Modal
+      </Button>
 
       <PopupModal open={modalOpen} onClose={handleClose} />
       </div>

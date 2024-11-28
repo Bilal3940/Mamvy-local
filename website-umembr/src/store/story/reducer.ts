@@ -9,6 +9,7 @@ import {
   RESET_STORY_STATE,
   UPDATE_STORY_ASYNC,
   DELETE_STORY_ASYNC,
+  GET_STORY_STATUS_ASYNC,
 } from './action-types';
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
   prompts: {},
   storyStepName: '',
   story: {},
+  StoryStatus: {}, // Added to store story status data
 };
 
 const stories = (state = initialState, { type, payload }: any) => {
@@ -29,6 +31,8 @@ const stories = (state = initialState, { type, payload }: any) => {
       return { ...state, createStep: payload };
     case CREATE_STORIES_ASYNC:
       return { ...state, story: payload };
+    case GET_STORY_STATUS_ASYNC:
+      return { ...state, StoryStatus: payload }; // Update the `storyStatus` field
     case CREATE_PAYLOAD_TRIGGER:
       return { ...state, prev_stories: payload };
     case SET_PROMPTS_TRIGGER:

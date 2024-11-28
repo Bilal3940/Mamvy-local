@@ -12,3 +12,4 @@ export * from './analyticsStories/action';
 export * from './subscription/action';
 export * from './order/action';
 export * from './tempConfig/action'
+export * from './extras/action'

@@ -159,23 +159,23 @@ declare let AppleID: any;
       //   }
       // }, [authData?.isAuth]);
     
-      useEffect(() => {
-        if (authData?.isAuth && collaborator.roleUser.length > 0) {
-          if (collaborator.roleUser !== 'inactive') {
-            dispatch(actualStory(decodedUrl.story));
-            dispatch(setGuest(decodedUrl?.role));
-            if (decodedUrl?.notification.length > 0 && collaborator.roleUser !== 'collaborating') dispatch(deleteNotification(decodedUrl?.notification));
-            if (decodedUrl?.role === 'Story_Viewer') {
-              router.push(`/app/story/${decodedUrl?.story}`);
-            } else {
-              router.push(`/app/story/${decodedUrl?.story}/memory/create`);
-            }
-          }
-          if (authData?.isAuth && collaborator?.roleUser === 'inactive') {
-            router.push('/app/home');
-          }
-        }
-      }, [collaborator?.roleUser]);
+      // useEffect(() => {
+      //   if (authData?.isAuth && collaborator.roleUser.length > 0) {
+      //     if (collaborator.roleUser !== 'inactive') {
+      //       dispatch(actualStory(decodedUrl.story));
+      //       dispatch(setGuest(decodedUrl?.role));
+      //       if (decodedUrl?.notification.length > 0 && collaborator.roleUser !== 'collaborating') dispatch(deleteNotification(decodedUrl?.notification));
+      //       if (decodedUrl?.role === 'Story_Viewer') {
+      //         router.push(`/app/story/${decodedUrl?.story}`);
+      //       } else {
+      //         router.push(`/app/story/${decodedUrl?.story}/memory/create`);
+      //       }
+      //     }
+      //     if (authData?.isAuth && collaborator?.roleUser === 'inactive') {
+      //       router.push('/app/home');
+      //     }
+      //   }
+      // }, [collaborator?.roleUser]);
     
       UseFirstRender(() => {
         if (!authData?.isAuth) {

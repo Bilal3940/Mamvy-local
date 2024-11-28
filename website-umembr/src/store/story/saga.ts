@@ -18,6 +18,9 @@ import {
   CREATE_STORIES_ASYNC,
   DELETE_STORY,
   DELETE_STORY_ASYNC,
+  GET_STORY_STATUS,
+  GET_STORY_STATUS_ASYNC,
+  GET_STORY_STATUS_TRIGGER,
   SET_ACTUAL_STORY,
   SET_CODE,
   SET_CREATE_SECTION,
@@ -30,6 +33,7 @@ import {
   UPDATE_STORY,
   UPDATE_STORY_ASYNC,
 } from './action-types';
+import axios from 'axios';
 
 function* setCreateSectionName({ payload }: any) {
   yield put(actionObject(SET_CREATE_SECTION_TRIGGER, payload));
@@ -45,6 +49,17 @@ function* createPayload({ payload }: any) {
 
 function* setPrompts({ payload }: any) {
   yield put(actionObject(SET_PROMPTS_TRIGGER, payload));
+}
+
+function* getStoryStatus({ payload }: any){
+try{
+  const { result } = yield call(FetchService, 'stories/getStoryStatus', 'GET', payload);
+  console.log("result result", result)
+  yield put(actionObject(GET_STORY_STATUS_ASYNC, result));
+}catch(error){
+
+}
+
 }
 
 // function* createStory({ payload }: any) {
@@ -240,6 +255,9 @@ export function* watchSetCreateStep() {
 
 export function* watchCreateStory() {
   yield takeLatest(CREATE_STORIES, createStory);
+}
+export function* watchStoryActions() {
+  yield takeLatest(GET_STORY_STATUS_ASYNC, getStoryStatus);
 }
 
 export function* watchCreatePayload() {

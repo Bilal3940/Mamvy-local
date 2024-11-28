@@ -14,6 +14,7 @@ const analyticsSelector = (state: any) => state.analytics;
 const subscriptionSelector =(state: any)=> state.subscription;
 const hasChangesSelector = (state:any)=>state.hasChanges;
 const templatesSelector = (state:any)=>state.templates;
+const extrasSelector = (state:any)=>state.extraContent;
 
-export { analyticsSelector, authSelector,subscriptionSelector, collaboratorSelector, forgotSelector, homeSelector, intermitenceSelector, hideGradientSelector, backgroundChangeSelector, memorySelector, notificationsSelector, storySelector, currentStorySelector, hasChangesSelector , templatesSelector};
+export { analyticsSelector, authSelector,subscriptionSelector, collaboratorSelector, forgotSelector, homeSelector, intermitenceSelector, hideGradientSelector, backgroundChangeSelector, memorySelector, notificationsSelector, storySelector, currentStorySelector, hasChangesSelector , templatesSelector, extrasSelector};
 

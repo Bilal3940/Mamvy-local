@@ -25,6 +25,7 @@ import {
   watchCreateStory,
   watchCreatePayload,
   watchSetPrompts,
+  watchStoryActions,
   watchActualStory,
   watchUpdateStory,
   watchDeleteStory,
@@ -32,6 +33,7 @@ import {
   watchSetCodeStory,
 } from './story/saga';
 import { watchGetSignedUrl, watchGetUploadSignedUrl } from './file/saga';
+import {watchExtraContentSaga} from  './extras/saga';
 import {
   watchApproveUpdateMemory,
   watchCreateMemory,
@@ -77,6 +79,8 @@ import {    watchGetOrders,
 import {watchGetTemplate} from'./tempConfig/saga';
 export default function* allSagas() {
   yield all([
+    fork(watchStoryActions),
+    fork(watchExtraContentSaga),
     fork(watchGetProducts),
     fork(watchGetOrders),
     fork(watchGetTemplate),

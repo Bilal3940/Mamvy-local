@@ -13,6 +13,7 @@ import subscription from './subscription/reducer';
 import orders from './order/reducer';
 import hasChanges from './hasChanges/reducer';
 import templates from './tempConfig/reducer';
+import extraContent from './extras/reducer';
 
 const reducers: any = combineReducers({
   intermitence,
@@ -29,6 +30,7 @@ const reducers: any = combineReducers({
   subscription,
   analyticsStories,
   hasChanges,
+  extraContent,
 });
 
 export default reducers;

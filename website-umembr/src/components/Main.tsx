@@ -130,7 +130,7 @@ useEffect(()=>{
       setModalOpen(false)
     }
   }
-},[router.query.id])
+},[router.query.id, extraContent])
 
   console.log("extra content",extraContent )
   console.log("purchase",purchase)

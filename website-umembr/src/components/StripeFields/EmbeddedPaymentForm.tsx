@@ -13,8 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { createUserPurchase } from "@/store/actions";
 import { authSelector } from "@/store/selectors";
 
+interface PaymentProps {
+  
+  onSuccessfullPayment: () => void;
+}
 
-const EmbeddedPaymentForm: React.FC = () => {
+const EmbeddedPaymentForm: React.FC<PaymentProps> = ({onSuccessfullPayment}) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -110,6 +114,7 @@ const EmbeddedPaymentForm: React.FC = () => {
       setErrorMessage("Payment failed. Please try again.");
     } finally {
       setIsProcessing(false);
+      onSuccessfullPayment();
     }
   };
 

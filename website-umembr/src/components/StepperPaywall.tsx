@@ -122,6 +122,9 @@ export default function IconBasedStepper() {
   const handleStepClick = (stepIndex: number) => {
     setActiveStep(stepIndex);
   };
+  const paymentSuccessfull = ()=>{
+    setActiveStep(2);
+  }
   const handleOpenLogup = ( )=>{
     setOpenLogin(false);
   }
@@ -184,7 +187,7 @@ useEffect(() => {
           <Elements stripe={stripePromise}>
             <Box>
               <h1>Stripe Payment Integration</h1>
-              <EmbeddedPaymentForm />
+              <EmbeddedPaymentForm  onSuccessfullPayment={paymentSuccessfull}/>
             </Box>
           </Elements>
         )}

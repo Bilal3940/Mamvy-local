@@ -11,9 +11,11 @@ interface MemoryFloatingActionButtonsProps {
   user?: any;
   story: ReturnType<typeof currentStorySelector>;
   isMobile?: boolean;
+  extendedPalette?: any;
 }
 const MemoryFloatingActionButtons: FC<MemoryFloatingActionButtonsProps> = (props) => {
-  const { user, story, isMobile } = props;
+  const { user, story, isMobile,extendedPalette} = props;
+  console.log('I am pallete Umar',extendedPalette);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const goToCreateMemory = () => {
@@ -28,8 +30,17 @@ const MemoryFloatingActionButtons: FC<MemoryFloatingActionButtonsProps> = (props
           <Fab
             size={isMobile ? 'medium' : 'large'}
             onClick={() => dispatch(openPublishModal())}
-            color={'secondary'}
+            // color={''}
+            // sx={{
+            //   right: { xs: '0.75rem', lg: '1.5rem' },
+            //   bottom: { xs: '0.5rem', lg: '1.0rem' },
+            // }}>
             sx={{
+              backgroundColor: extendedPalette.buttonbackgroundIcon, // Custom color
+              color:'#e74c3c' , // Icon or text color
+              '&:hover': {
+                backgroundColor: '#e74c3c', // Hover color
+              },
               right: { xs: '0.75rem', lg: '1.5rem' },
               bottom: { xs: '0.5rem', lg: '1.0rem' },
             }}>
@@ -50,8 +61,13 @@ const MemoryFloatingActionButtons: FC<MemoryFloatingActionButtonsProps> = (props
             component={Link}
             onClick={goToCreateMemory}
             href={`/app/story/${story?.url}/memory/create`}
-            color={'secondary'}
+            // color={'secondary'}
             sx={{
+              backgroundColor: extendedPalette.buttonbackgroundIcon, // Custom color
+              color:'#e74c3c' , // Icon or text color
+              '&:hover': {
+                backgroundColor: '#e74c3c', // Hover color
+              },
               right: { xs: '0.75rem', lg: '1.5rem' },
               bottom: { xs: '0.5rem', lg: '1.0rem' },
             }}>

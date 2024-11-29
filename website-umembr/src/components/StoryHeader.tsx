@@ -9,7 +9,7 @@ import { authSelector, currentStorySelector, intermitenceSelector, templatesSele
 import { useDispatch } from 'react-redux';
 
 interface StoryHeaderProps {
-  extendedPalette: any;
+  extendedPalette?: any;
   imgSrc: string; 
   secondImgSrc?: string; 
   coverImage: string; 

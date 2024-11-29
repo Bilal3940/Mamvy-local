@@ -485,8 +485,8 @@ interface MediaItem {
 }
 
 interface MediaGridProps {
-  story: any;
-  extendedPalette: any;
+  story?: any;
+  extendedPalette?: any;
 }
 
 const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
@@ -664,6 +664,20 @@ console.log('I am types', types);
   //       return 0;
   //   }
   // });
+  const [isFilterActive, setIsFilterActive] = useState(false); // Tracks if any filter is selected
+
+  const handleFilterSelect = (filterSelected: boolean) => {
+    setIsFilterActive(filterSelected); // Update the state based on selection
+    setOpenFilters(false); // Close dropdown on selection
+  };
+
+  const handleToggleFilters = () => {
+    setOpenFilters(!openFilters); // Toggle the dropdown
+  };
+
+  const handleCloseFilters2 = () => {
+    setOpenFilters(false); // Close dropdown when clicking outside
+  };
   const filteredMediaItems = memoriesLoaded
     ?.filter(
       (item: any) =>
@@ -734,7 +748,7 @@ console.log('I am types', types);
             alignItems: 'center',
             mb: 2,
             backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
-            flexDirection: { xs: 'column', sm: 'row' },
+            flexDirection: { xs: 'row', sm: 'row' },
             borderRadius: '16px',
           }}>
           {/* Search Field */}
@@ -790,6 +804,14 @@ console.log('I am types', types);
     height={40}
     iconHeight={12}
     iconWidth={20}
+     sx={{
+    // Default background color
+    backgroundColor: extendedPalette.filterIconsColor,
+    '&:hover': {
+      // Hover background color
+      backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this color as needed
+    },
+  }}
     method={(event: any) => setShowFilters(event)} // Toggle state on click
   />
   <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
@@ -797,6 +819,7 @@ console.log('I am types', types);
       <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators, types]} />
     </Box>
   </ClickAwayListener>
+  
 </Box>
 
 
@@ -916,7 +939,7 @@ console.log('I am types', types);
           textAlign: 'left',
         }}
       >
-        {format(new Date(item.created_at), 'MMM dd, yyyy')}
+        {format(new Date(item.created_at), 'MMM yyyy')}
       </Typography>
     </Box>
   </Box>
@@ -992,7 +1015,7 @@ console.log('I am types', types);
                         maxWidth: '70%', // Limits width for smaller screens
                       }}>
                       <Audio2Icon
-                        color={extendedPalette.audioGradientColor1}
+                        color={extendedPalette.audioGradientColor2}
                         color2={extendedPalette.audioGradientColor2}
                       />
                       {/* <Image src={'/icons/audiolay.svg'} alt={'icon'} layout="responsive" width={199} height={55} /> */}

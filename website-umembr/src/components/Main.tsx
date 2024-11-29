@@ -37,6 +37,7 @@ import EllipseRightImage from '../../public/images/EllipseRight';
 import PopupModal from './PayWallModal';
 import { DividerType, EllipseType, palette } from '@/theme/constants';
 import StoryHeader from './StoryHeader';
+import MemoryFloatingActionButtons from '@/screens/Memories/components/MemoryFloatingActionButtons';
 
 
 const template = createTheme({
@@ -123,15 +124,11 @@ useEffect(()=>{
 },[router.query.id])
 useEffect(()=>{
   if(extraContent){
-
-  
-    if(extraContent.isPaid)
-      { 
-      setModalOpen(true);
-       
-      }else{
-        setModalOpen(false)
-      }
+ 
+    setModalOpen(true);
+     
+    }else{
+      setModalOpen(false)
     }
 },[extraContent])
 
@@ -436,6 +433,7 @@ console.log("i am story", story)
         color: palette.secondary, 
       },
     },
+    buttonbackgroundIcon:adminPalette.accentColor,
     buttonColorGrid: adminPalette.storyBackgroundColor,
     buttonHoverColor: '#BA0C2F',
   
@@ -446,8 +444,12 @@ console.log("i am story", story)
     cardHeaderBackground: adminPalette.storyBackgroundColor,
     cardHeaderText: adminPalette.textColor,
   
-    audioGradientColor1: adminPalette.accentColor,
-    audioGradientColor2: '#77BCE580',
+    audioGradientColor1:{
+      // color: adminPalette.accentColor,
+      background: 'linear-gradient(45deg, #0072CE, #5DAFFB)',
+      // filter: brightness(1.15),
+    },
+    audioGradientColor2: adminPalette.accentColor,
   
     isDividerCheck: { isDivider: false } as DividerType,
     isEllipseCheck: { isEllipseLeft: true } as EllipseType,
@@ -542,6 +544,7 @@ console.log("i am story", story)
         {/* Grid Layout */}
         {/* <GridLayoutCheck /> */}
         <MediaGrid extendedPalette={extendedPalette}  story={story && story} />
+        <MemoryFloatingActionButtons story={story} isMobile={isMobile} user={user} extendedPalette={extendedPalette} />
         <Button variant="contained" color="primary" onClick={handleOpen}>
         Open Modal
       </Button>

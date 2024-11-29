@@ -18,7 +18,7 @@ export const palette = {
   
 
 
-  secondary: '#EB8334',
+  secondary: 'red',
   black: '#000000',
   white: '#FFFFFF',
   error: '#D32F2F',

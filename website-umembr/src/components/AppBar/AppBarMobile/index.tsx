@@ -20,6 +20,7 @@ import {
   storySelector,
 } from '@/store/selectors';
 import { cdn_url, logoutWithFacebook } from '@/utils';
+import { currentStorySelector, templatesSelector } from '@/store/selectors';
 import Link from 'next/link';
 import { CancelModal } from '../CancelModal';
 import Search from '../Search';
@@ -46,6 +47,11 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
   const [notificationsData, setNotificationsData] = useState<any>([]);
   const [notificationsType, setNotificationsType] = useState<any>([]);
+  const [adminPalette, setAdminPalette] = useState({
+    storyBackgroundColor: '', // Default value
+    textColor: '', // Default value
+    accentColor: '', // Default value
+  });
   const handleDrawerChange = () => {
     dispatch(expandDrawer());
   };
@@ -125,6 +131,56 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
       return router.push(`/app/story/${story?.url}`);
     else router.push('/app/home');
   };
+  const { template } = useSelector(templatesSelector);
+
+  useEffect(() => {
+    if (template?.template?.colors) {
+      const colors = template.template.colors.reduce((acc:any, color:any) => {
+        // Map each color to the corresponding palette key
+        switch (color.PLabel) {
+          case 'storyBackground':
+            acc.storyBackgroundColor = color.PValue;
+            break;
+          case 'TextColor':
+            acc.textColor = color.PValue;
+            break;
+          case 'AccentColor':
+            acc.accentColor = color.PValue;
+            break;
+          default:
+            break;
+        }
+        return acc;
+      }, {});
+
+      // Set the colors to the adminPalette state
+      setAdminPalette({
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
+        textColor: colors.textColor || '#fff', // Fallback
+        accentColor: colors.accentColor || '#BF5700', // Fallback
+      });
+    }
+  }, [template]); // Make sure to add template to the dependency array
+
+  function addOpacityToHex(hexColor: string, opacity: number): string {
+  // Ensure opacity is between 0 and 1
+  const alpha = Math.min(Math.max(opacity, 0), 1);
+
+  // Convert HEX to RGB
+  const hex = hexColor.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  // Return as RGBA string
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+  const accentColorWithOpacity = addOpacityToHex(adminPalette.accentColor, 0.3);
+  // const accentColor = adminPalette.accentColor;
+ const buttonBackground =
+    router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
+      ? accentColorWithOpacity // Custom background for the specific page
+      : palette?.cardBackground;
 
   return (
     <>
@@ -132,10 +188,11 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
         position='fixed'
         elevation={0}
         sx={{
+          // background:'transparent'
           background: backgroundChange
             ? hideGradient
               ? 'none'
-              : 'linear-gradient(0deg, rgba(33, 33, 33, 0) 0%, rgba(19, 21, 68, 0.35) 35%)'
+              : 'linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.25) 35%)'
             : 'transparent',
         }}>
         <Box display={'flex'} padding={'1rem'} justifyContent={'space-between'} alignItems={'center'}>
@@ -165,7 +222,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                 <Link href={'/app/home'}>
                   <MuiIconButton
                     icon='/icons/left-arrow'
-                    background={palette?.cardBackground}
+                    background={buttonBackground}
                     borderColor={palette?.cardBorder}
                     iconHeight={16}
                     iconWidth={16}
@@ -201,7 +258,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                   <MuiIconButton
                     icon='/icons/search'
                     altIcon='search'
-                    background={palette?.cardBackground}
+                    background={buttonBackground}
                     borderColor={palette?.cardBorder}
                     positionIcon='flex-end'
                     method={() => setIsExpanded(!isExpanded)}
@@ -221,7 +278,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                       icon='/icons/close'
                       altIcon='close'
                       disableRipple
-                      background={palette?.cardBackground}
+                      background={buttonBackground}
                       borderColor={palette?.cardBorder}
                       iconHeight={16}
                       iconWidth={16}
@@ -242,7 +299,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                     <MuiIconButton
                       icon='/icons/filter'
                       altIcon='filters'
-                      background={palette?.cardBackground}
+                      background={buttonBackground}
                       borderColor={palette?.cardBorder}
                       positionIcon='flex-end'
                       iconHeight={12}
@@ -267,7 +324,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                     <MuiIconButton
                       icon='/icons/settings'
                       altIcon='settings'
-                      background={palette?.cardBackground}
+                      background={buttonBackground}
                       borderColor={palette?.cardBorder}
                       method={(event: any) => {
                         setShowDropdown(event);

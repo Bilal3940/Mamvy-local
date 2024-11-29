@@ -122,7 +122,7 @@ const { pathname } = useRouter();
         <MotionContainer
           initial={!isOpen ? 'open' : 'closed'}
           exit={!isOpen ? 'open' : 'closed'}
-          position={'absolute'}
+          position={'fixed'}
           top={ blur? '4.375rem':'1rem'}
           right={blur? '1rem' : 0}
           zIndex={blur? 10000 : 10}

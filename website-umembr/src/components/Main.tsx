@@ -521,6 +521,7 @@ console.log("i am story", story)
   
     cardIconColor: adminPalette.accentColor,
     filterIconsColor: 'rgba(102, 102, 102, 1)',
+    filterIconsSelectedColor: 'rgba(191, 87, 0)',
     filterIconsHoverColor: adminPalette.accentColor,
   };
 

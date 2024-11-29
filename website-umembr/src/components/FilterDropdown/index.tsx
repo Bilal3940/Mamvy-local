@@ -28,11 +28,11 @@ const itemVariants: Variants = {
 
 interface CustomPopperProps {
   isOpen: boolean;
-
+  setIsFilterActive?: any;
   listItem: any;
 }
 
-export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
+export const FilterDropdown = ({ isOpen, listItem, setIsFilterActive }: CustomPopperProps) => {
   const { t } = useTranslation();
  const [adminPalette, setAdminPalette] = useState({
     storyBackgroundColor: '#333333', // Default value
@@ -47,23 +47,41 @@ export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
   const homeData = useSelector(homeSelector);
   const { story } = useSelector(storySelector);
   const { memoryTypes } = useSelector(memorySelector);
-
+  const [promptSelected, setPromptSelected] = useState(false);
+  const [collabSelected, setCollabSelected] = useState(false);
+  const [typesSelected, setTypesSelected] = useState(false);
+  const { template } = useSelector(templatesSelector);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   const handleCheckPrompts = (value: any) => {
     if (value === undefined) return;
-
+  
     let updatedPrompts = [...(homeData?.criterias?.prompts || [])];
     const index = updatedPrompts.findIndex((promptId) => promptId === value);
-
-    if (index > -1) updatedPrompts.splice(index, 1);
-    if (index == -1) updatedPrompts.push(value);
-
+  
+    if (index > -1) {
+      updatedPrompts.splice(index, 1); // Remove the prompt
+    } else {
+      updatedPrompts.push(value); // Add the prompt
+    }
+  
+    // Update `promptSelected` based on the updatedPrompts length
+    if (updatedPrompts.length === 0) {
+      setPromptSelected(false); // No prompts are selected
+    } else {
+      setPromptSelected(true); // At least one prompt is selected
+    }
+  
+    // Dispatch the appropriate action
     if (story?.id) {
       return dispatch(getMemories(story?.id, { ...homeData?.criterias, prompts: updatedPrompts }));
     }
     dispatch(searchStories({ ...homeData?.criterias, prompts: updatedPrompts }));
   };
+  
+
+  console.log("prompt selected",promptSelected);
+
 
   const handleCheckCollaborators = (value: any) => {
     if (value === undefined) return;
@@ -73,12 +91,46 @@ export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
 
     if (index > -1) updatedData.splice(index, 1);
     if (index == -1) updatedData.push(value);
+    if (updatedData.length === 0) {
+      setCollabSelected(false); // No prompts are selected
+    } else {
+      setCollabSelected(true); // At least one prompt is selected
+    }
     if (story?.id) {
       return dispatch(getMemories(story?.id, { ...homeData?.criterias, collaborators: updatedData }));
     }
     dispatch(searchStories({ ...homeData?.criterias, collaborators: updatedData }));
   };
-   const { template } = useSelector(templatesSelector);
+
+  console.log("colab selected", collabSelected)
+
+  const handleCheckTypes = (value: any) => {
+    if (value === undefined) return;
+
+    let updatedData = [...(homeData?.criterias?.types || [])];
+    const index = updatedData.findIndex((valueId) => valueId === value);
+
+    if (index > -1) updatedData.splice(index, 1);
+    if (index == -1) updatedData.push(value);
+    if (updatedData.length === 0) {
+      setTypesSelected(false); // No prompts are selected
+    } else {
+      setTypesSelected(true); // At least one prompt is selected
+    }
+    if (story?.id) {
+      return dispatch(getMemories(story?.id, { ...homeData?.criterias, types: updatedData }));
+    }
+    dispatch(searchStories({ ...homeData?.criterias, types: updatedData }));
+  };
+  console.log("types selected", typesSelected)
+
+useEffect(()=>{
+  if(promptSelected || collabSelected || typesSelected){
+    setIsFilterActive(true)
+  }
+},[promptSelected, typesSelected, collabSelected])
+
+
 
   useEffect(() => {
     if (template?.template?.colors) {
@@ -114,19 +166,9 @@ export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
 
   let bgColor =    router.pathname ===   '/app/home' ? palette.cardBackground :accentColor;
   let bgColorCheck =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
-  const handleCheckTypes = (value: any) => {
-    if (value === undefined) return;
 
-    let updatedData = [...(homeData?.criterias?.types || [])];
-    const index = updatedData.findIndex((valueId) => valueId === value);
 
-    if (index > -1) updatedData.splice(index, 1);
-    if (index == -1) updatedData.push(value);
-    if (story?.id) {
-      return dispatch(getMemories(story?.id, { ...homeData?.criterias, types: updatedData }));
-    }
-    dispatch(searchStories({ ...homeData?.criterias, types: updatedData }));
-  };
+
 
   // const types = useMemo(() => {
   //   const types = [

@@ -575,19 +575,6 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   //   return types.filter((type) => memoriesLoaded?.includes(type.id));
   // }, [memoriesLoaded?.length]);
 
-  const handleCheckTypes = (value: any) => {
-    if (value === undefined) return;
-
-    let updatedData = [...(homeData?.criterias?.types || [])];
-    const index = updatedData.findIndex((valueId) => valueId === value);
-
-    if (index > -1) updatedData.splice(index, 1);
-    if (index == -1) updatedData.push(value);
-    if (story?.id) {
-      return dispatch(getMemories(story?.id, { ...homeData?.criterias, types: updatedData }));
-    }
-    dispatch(searchStories({ ...homeData?.criterias, types: updatedData }));
-  };
 
 const types = useMemo(() => {
   console.log(memoriesLoaded);
@@ -660,20 +647,11 @@ const types = useMemo(() => {
   //       return 0;
   //   }
   // });
+
   const [isFilterActive, setIsFilterActive] = useState(false); // Tracks if any filter is selected
 
-  const handleFilterSelect = (filterSelected: boolean) => {
-    setIsFilterActive(filterSelected); // Update the state based on selection
-    setOpenFilters(false); // Close dropdown on selection
-  };
+  console.log("i am value in media grid:",isFilterActive)
 
-  const handleToggleFilters = () => {
-    setOpenFilters(!openFilters); // Toggle the dropdown
-  };
-
-  const handleCloseFilters2 = () => {
-    setOpenFilters(false); // Close dropdown when clicking outside
-  };
   const filteredMediaItems = memoriesLoaded
     ?.filter(
       (item: any) =>
@@ -794,7 +772,7 @@ const types = useMemo(() => {
   <MuiIconButton
     icon="/icons/filter"
     altIcon="filter"
-    background={extendedPalette.filterIconsColor}
+    background={isFilterActive === true ? extendedPalette.filterIconsSelectedColor : extendedPalette.filterIconsColor}
     borderColor={palette.black}
     width={40}
     height={40}
@@ -810,9 +788,10 @@ const types = useMemo(() => {
   }}
     method={(event: any) => setShowFilters(event)} // Toggle state on click
   />
+  
   <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
     <Box position={'relative'}>
-      <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators, types]} />
+      <FilterDropdown setIsFilterActive ={setIsFilterActive} isOpen={openFilters} listItem={[prompts, collaborators, types]} />
     </Box>
   </ClickAwayListener>
   

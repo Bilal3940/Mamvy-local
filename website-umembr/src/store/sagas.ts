@@ -76,11 +76,12 @@ import { watchToggleHasChanges } from './hasChanges/saga';
 import {  watchGetProducts,watchSetSelectedTier} from './subscription/saga'
 import {    watchGetOrders,
   watchCreateOrder} from './order/saga';
-import {watchCreateUserPurchase} from './purchase/saga'
+import {watchCreateUserPurchase,watchGetUserPurchases} from './purchase/saga'
 import {watchGetTemplate} from'./tempConfig/saga';
 export default function* allSagas() {
   yield all([
     fork(watchStoryActions),
+    fork(watchGetUserPurchases),
     fork(watchExtraContentSaga),
     fork(watchCreateUserPurchase),
     fork(watchGetProducts),

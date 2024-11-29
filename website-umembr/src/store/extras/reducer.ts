@@ -1,4 +1,4 @@
-import { GET_EXTRA_CONTENT, GET_EXTRA_CONTENT_SUCCESS } from './action-types';
+import { CLEAR_EXTRA_CONTENT, GET_EXTRA_CONTENT, GET_EXTRA_CONTENT_SUCCESS } from './action-types';
 
 
 const initialState = {
@@ -14,9 +14,11 @@ const extraContent = (state = initialState, action: any) => {
 
     case GET_EXTRA_CONTENT_SUCCESS:
       return { ...state, loading: false, extraContent: action.payload };
-
-    default:
-      return state;
+    case CLEAR_EXTRA_CONTENT:
+        return { ...state, extraContent: null, error: null, loading: false };
+  
+      default:
+        return state;
   }
 };
 

@@ -106,8 +106,9 @@ import stripePromise from "@/utils/stipe";
 import CreateAccount from "@/components/CreateAccountPopup/CreateAccount";
 import { useEffect, useState } from "react";
 import LoginForm from "@/components/LoginAccountPopup/LoginForm";
-import { authSelector } from "@/store/selectors";
-import { useSelector } from "react-redux";
+import { authSelector, purchaseSelector } from "@/store/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserPurchases } from "@/store/actions";
 
 const steps = [
   { label: "Create Account", icon: "1" },
@@ -119,10 +120,18 @@ export default function IconBasedStepper() {
   const { user, isAuth } = useSelector(authSelector);
   const [activeStep, setActiveStep] = React.useState(0);
   const [openLogin , setOpenLogin]= useState(true);
+  const {userPurchases} = useSelector(purchaseSelector)
+  const dispatch = useDispatch()
   const handleStepClick = (stepIndex: number) => {
     setActiveStep(stepIndex);
   };
+
+  useEffect(()=>{
+      console.log("USer purchases are", userPurchases)
+  },[userPurchases])
   const paymentSuccessfull = ()=>{
+    dispatch(getUserPurchases(user?.id))
+    console.log("user purcahses",userPurchases)
     setActiveStep(2);
   }
   const handleOpenLogup = ( )=>{

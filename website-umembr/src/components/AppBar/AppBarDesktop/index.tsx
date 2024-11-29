@@ -61,9 +61,9 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
   const { mediaScreenType } = useSelector(memorySelector);
   const query = router.pathname;
   const [adminPalette, setAdminPalette] = useState({
-    storyBackgroundColor: '#333333', // Default value
-    textColor: '#fff', // Default value
-    accentColor: '#BF5700', // Default value
+    storyBackgroundColor: '', // Default value
+    textColor: '', // Default value
+    accentColor: '', // Default value
   });
 
   console.log("query", query)

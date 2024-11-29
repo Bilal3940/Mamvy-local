@@ -2,8 +2,8 @@ import { palette } from '@/theme/constants';
 import { Box, CircularProgress, Fab, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
 
-import { getProfileStories, showActualSection } from '@/store/actions';
-import { authSelector, homeSelector, intermitenceSelector } from '@/store/selectors';
+import { clearExtraContent, getProfileStories, showActualSection } from '@/store/actions';
+import { authSelector, extrasSelector, homeSelector, intermitenceSelector } from '@/store/selectors';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
@@ -42,12 +42,16 @@ export const Home = () => {
   const containerMargin3 = UseScrollMargin(containerRef3);
 
   const { user } = useSelector(authSelector);
+  const {extraContent} = useSelector(extrasSelector)
 
   const { status: privateStatus, switchStatus: switchPublication } = UseIntermitence();
   const router = useRouter();
   UseFirstRender(() => {
     dispatch(getProfileStories());
+    dispatch(clearExtraContent())
   }, []);
+  console.log("i am the extra in home", extraContent)
+
 
   // const handleItemClick = (item: any) => {
   //   if (item.resultContain && item.private) {

@@ -1,4 +1,4 @@
-import { GET_EXTRA_CONTENT, GET_EXTRA_CONTENT_SUCCESS } from './action-types';
+import { CLEAR_EXTRA_CONTENT, GET_EXTRA_CONTENT, GET_EXTRA_CONTENT_SUCCESS } from './action-types';
 import { actionObject } from '@/utils';
 
 export const getExtraContent = (storyId: string, callback?: any) =>
@@ -6,3 +6,5 @@ export const getExtraContent = (storyId: string, callback?: any) =>
 
 export const getExtraContentSuccess = (data: any) =>
   actionObject(GET_EXTRA_CONTENT_SUCCESS, data);
+export const clearExtraContent = () =>
+  actionObject(CLEAR_EXTRA_CONTENT);

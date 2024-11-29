@@ -6,6 +6,7 @@ import { UseFirstRender, UseIntermitence } from '@/hooks';
 import {
   actualStory,
   changeBackground,
+  clearExtraContent,
   closePublishModal,
   createUserPurchase,
   deleteStory,
@@ -117,20 +118,22 @@ const Main: React.FC = () => {
 
 
 useEffect(()=>{
-
   dispatch(getExtraContent(router.query?.id as string))
+
+},[router.query.id])
+useEffect(()=>{
   if(extraContent){
 
   
-  if(extraContent.isPaid)
-    { 
-    setModalOpen(true);
-     
-    }else{
-      setModalOpen(false)
+    if(extraContent.isPaid)
+      { 
+      setModalOpen(true);
+       
+      }else{
+        setModalOpen(false)
+      }
     }
-  }
-},[router.query.id, extraContent])
+},[extraContent])
 
   console.log("extra content",extraContent )
   console.log("purchase",purchase)

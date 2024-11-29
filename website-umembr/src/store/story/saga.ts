@@ -160,10 +160,10 @@ function* actualStory({ payload }: ReturnType<typeof actualStoryAction>) {
     yield put(actualStoryAsync(result));
   } catch (error: any) {
     const { user } = yield select(authSelector);
-    if (user.token) router?.push('/app/home');
-    else {
+  //  if (user.token) router?.push('/app/home');
+   // else {
       // router?.push('/app/login');
-    }
+   // }
   }
 }
 

@@ -112,6 +112,7 @@ export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
   }, [template]); // Make sure to add template to the dependency array
 
   const accentColor = adminPalette.accentColor;
+  const backgroundColor = adminPalette.storyBackgroundColor;
 
   let bgColor =    router.pathname ===   '/app/home' ? palette.cardBackground :accentColor;
   let bgColorCheck =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
@@ -177,7 +178,7 @@ export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
           animate={isOpen ? 'open' : 'closed'}>
           <MotionList
             sx={{
-              background: 'transparent',
+              background: `${backgroundColor}d9`,
               border: `0.063rem solid ${palette.cardBorder}`,
               borderRadius: '0.25rem',
               padding: '1rem',

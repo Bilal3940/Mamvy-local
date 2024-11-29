@@ -38,6 +38,8 @@ import PopupModal from './PayWallModal';
 import { DividerType, EllipseType, palette } from '@/theme/constants';
 import StoryHeader from './StoryHeader';
 import MemoryFloatingActionButtons from '@/screens/Memories/components/MemoryFloatingActionButtons';
+import { PrivateStoryModal } from '@/screens/Memories/components/PrivateStoryModal';
+import { AddCollaborators } from '@/screens/Memories/components';
 
 
 const template = createTheme({
@@ -125,7 +127,7 @@ useEffect(()=>{
 useEffect(()=>{
   if(extraContent){
  
-    setModalOpen(true);
+    setModalOpen(false);
      
     }else{
       setModalOpen(false)
@@ -335,13 +337,29 @@ console.log("i am story", story)
     if (backgroundColor) {
       // Dynamically set the body background color with !important
       document.body.style.setProperty('background-color', backgroundColor, 'important');
-  
-      // Clean up effect to reset to the default background color
+     
       return () => {
         document.body.style.removeProperty('background-color');
       };
     }
   }, [template]);
+  //   useEffect(() => {
+  //   if (containerRef.current) {
+  //     containerRef.current.style.setProperty('--scrollbar-color', '#0072ce');
+  //     containerRef.current.style.setProperty('--scrollbar-track-color', '#f0f0f0');
+  //   }
+  // }, []);
+  // useEffect(() => {
+  //   if (accentColor) {
+  //     // Dynamically set the body background color with !important
+  //     document.body.style.setProperty('::-webkit-scrollbar-thumb', accentColor, '!important');
+  
+  //     // Clean up effect to reset to the default background color
+  //     return () => {
+  //       document.body.style.removeProperty('webkit-scrollbar-thumb');
+  //     };
+  //   }
+  // }, [template]);
   
   
   console.log("i am the admin palette", adminPalette)
@@ -545,6 +563,15 @@ console.log("i am story", story)
         {/* <GridLayoutCheck /> */}
         <MediaGrid extendedPalette={extendedPalette}  story={story && story} />
         <MemoryFloatingActionButtons story={story} isMobile={isMobile} user={user} extendedPalette={extendedPalette} />
+              {!foundRole && !story?.confirmPassword && story?.private && story.url === router.query?.id && (
+        <PrivateStoryModal open={privateStatus} onClose={handlePublication} />
+      )}
+              <AddCollaborators
+        add={showPublishModal}
+        onClose={() => closeCollaboratorsModal()}
+        mediaContent={selectedMemorie}
+        method={() => closeCollaboratorsModal()}
+      />
         <Button variant="contained" color="primary" onClick={handleOpen}>
         Open Modal
       </Button>

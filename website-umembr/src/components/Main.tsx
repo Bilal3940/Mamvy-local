@@ -114,7 +114,17 @@ const Main: React.FC = () => {
 useEffect(()=>{
 
   dispatch(getExtraContent(router.query?.id as string))
+  if(extraContent){
+
   
+  if(extraContent.isPaid)
+    { 
+    setModalOpen(true);
+     
+    }else{
+      setModalOpen(false)
+    }
+  }
 },[router.query.id])
 
   console.log("extra content",extraContent )
@@ -146,13 +156,7 @@ useEffect(()=>{
   const ispaid= true;
   const ispurchased = false;
   useEffect(() => {
-    if(extraContent.isPaid)
-    { 
-    setModalOpen(true);
-     
-    }else{
-      setModalOpen(false)
-    }
+
   }, [extraContent]);
 
 

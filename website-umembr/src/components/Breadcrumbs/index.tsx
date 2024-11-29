@@ -60,7 +60,6 @@
 
 
 //   }, [template]);
-//   console.log('I am color',accentColor)
 //   return (
 //     <Breadcrumbs aria-label='breadcrumb' sx={styles.separator}>
 //       <Link

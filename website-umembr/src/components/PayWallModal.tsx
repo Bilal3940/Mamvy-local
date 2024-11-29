@@ -3,9 +3,8 @@ import { Modal, Box, Paper, Grid, Typography, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 import { theme } from '@/theme';
-import { ThemeProvider} from '@mui/material/styles';
-import IconBasedStepper from "@/components/StepperPaywall";
-
+import { ThemeProvider } from '@mui/material/styles';
+import IconBasedStepper from '@/components/StepperPaywall';
 
 interface PopupModalProps {
   open: boolean;
@@ -17,13 +16,13 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
     <ThemeProvider theme={theme}>
       <Modal
         open={open}
-        onClose={onClose} // Close the modal when clicking outside
-        disableAutoFocus // Prevents auto-focus on the first element
-        disableEnforceFocus // Optional: Allows focus to move outside the modal if needed
+        onClose={onClose} 
+        disableAutoFocus 
+        disableEnforceFocus 
         aria-labelledby='modal-title'
         aria-describedby='modal-description'
-        closeAfterTransition // Smooth transition
-        keepMounted // Improves performance by keeping the modal in the DOM
+        closeAfterTransition 
+        keepMounted 
       >
         <Box
           sx={{
@@ -33,32 +32,31 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
             height: '100vh',
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
             overflow: 'auto',
-            
           }}
           onClick={onClose}>
           <Paper
             sx={{
               width: '80%',
-              height:"auto",
+              height: 'auto',
               position: 'relative',
               maxWidth: '900px',
               padding: 3,
               borderRadius: 2,
               display: 'flex',
-            
+
               backgroundColor: 'rgba(102, 102, 102, 1)',
               color: '#fff',
               maxHeight: '90vh',
               flexDirection: 'column',
               overflowY: 'auto',
               [theme.breakpoints.down('sm')]: {
-                width: '95%', // Set width to 90% on small screens
+                width: '95%', 
                 padding: '5px',
-                paddingTop:"45px",
+                paddingTop: '45px',
               },
             }}
             onClick={(e) => e.stopPropagation()}>
-              {/* Close Button */}
+            {/* Close Button */}
             <IconButton
               onClick={onClose}
               sx={{
@@ -67,8 +65,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                 right: 8,
                 color: '#fff',
                 display: { xs: 'block', sm: 'none' },
-              }}
-            >
+              }}>
               <CloseIcon />
             </IconButton>
 
@@ -83,11 +80,11 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                     border: '1px',
                     color: '#fff',
                     padding: '42px',
-                    // gap:"16px",
+                    
                     borderRadius: '10px',
                     [theme.breakpoints.down('sm')]: {
                       padding: '10px',
-                      height:"auto"
+                      height: 'auto',
                     },
                   }}>
                   <img src='/icons/Union.svg' />
@@ -123,13 +120,13 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
 
                   <Typography
                     sx={{
-                      marginTop: { xs: '10px', sm: '35px' }, // 10px for mobile, 35px for larger screens
+                      marginTop: { xs: '10px', sm: '35px' }, 
                     }}>
                     <hr style={{ border: '1px solid grey' }} />
                     <Typography
                       variant='h4'
                       sx={{
-                        marginTop: { xs: '10px', sm: '35px' }, // Adjust margin for the inner Typography as well
+                        marginTop: { xs: '10px', sm: '35px' }, 
                       }}>
                       $5.00
                     </Typography>
@@ -138,9 +135,8 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
               </Grid>
 
               {/* Right Card (Payment Form) */}
-              <Grid 
-              item xs={12} md={6}>
-              <IconBasedStepper />
+              <Grid item xs={12} md={6}>
+                <IconBasedStepper />
               </Grid>
             </Grid>
           </Paper>
@@ -148,6 +144,6 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
       </Modal>
     </ThemeProvider>
   );
-}
+};
 
 export default PopupModal;

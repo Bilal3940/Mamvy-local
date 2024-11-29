@@ -9,7 +9,7 @@ const StepForm = () => {
 
   const steps = ['Create Account', 'One Time Payment', 'Access The Story'];
 
-  // Function to handle moving to the next step
+  
   const handleNext = () => {
     if (activeStep === 0 && password !== confirmPassword) {
       alert('Passwords do not match');
@@ -18,17 +18,17 @@ const StepForm = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  // Function to handle moving to the previous step
+  
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  // Function to handle click on a step
+  
   const handleStepClick = (step: number) => {
     setActiveStep(step);
   };
 
-  // Render the form for each step
+  
   const renderStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -36,9 +36,9 @@ const StepForm = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               fullWidth
-              label="Email"
-              variant="outlined"
-              margin="normal"
+              label='Email'
+              variant='outlined'
+              margin='normal'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               sx={{
@@ -52,10 +52,10 @@ const StepForm = () => {
 
             <TextField
               fullWidth
-              label="Password"
-              variant="outlined"
-              margin="normal"
-              type="password"
+              label='Password'
+              variant='outlined'
+              margin='normal'
+              type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               sx={{
@@ -69,10 +69,10 @@ const StepForm = () => {
 
             <TextField
               fullWidth
-              label="Confirm Password"
-              variant="outlined"
-              margin="normal"
-              type="password"
+              label='Confirm Password'
+              variant='outlined'
+              margin='normal'
+              type='password'
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               sx={{
@@ -83,23 +83,29 @@ const StepForm = () => {
                 },
               }}
             />
-            
-            <Button variant="contained" onClick={handleNext}>Next</Button>
+
+            <Button variant='contained' onClick={handleNext}>
+              Next
+            </Button>
           </Box>
         );
       case 1:
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField label="Card Number" variant="outlined" fullWidth />
-            <TextField label="Expiry Date" variant="outlined" fullWidth />
-            <Button variant="contained" onClick={handleNext}>Next</Button>
+            <TextField label='Card Number' variant='outlined' fullWidth />
+            <TextField label='Expiry Date' variant='outlined' fullWidth />
+            <Button variant='contained' onClick={handleNext}>
+              Next
+            </Button>
           </Box>
         );
       case 2:
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Typography variant="body1">Thank you for completing the payment!</Typography>
-            <Button variant="contained" onClick={handleNext}>Finish</Button>
+            <Typography variant='body1'>Thank you for completing the payment!</Typography>
+            <Button variant='contained' onClick={handleNext}>
+              Finish
+            </Button>
           </Box>
         );
       default:
@@ -118,37 +124,33 @@ const StepForm = () => {
               display: 'flex',
               alignItems: 'center',
               padding: '8px',
-              cursor: 'pointer', // Make the step clickable
+              cursor: 'pointer', 
             }}
-            onClick={() => handleStepClick(index)} // Handle click on a step
+            onClick={() => handleStepClick(index)} 
           >
             <Avatar
               sx={{
-                backgroundColor: activeStep === index ? 'blue' : 'black', // Highlight only active circle
+                backgroundColor: activeStep === index ? 'blue' : 'black', 
                 color: 'white',
                 width: 35,
                 height: 35,
-              }}
-            >
+              }}>
               {index + 1}
             </Avatar>
             <Typography
-              variant="body2"
+              variant='body2'
               sx={{
                 mx: 1,
-                color: 'black', // Keep text color normal
-                fontWeight: activeStep === index ? 'bold' : 'normal', // Bold active step
-              }}
-            >
+                color: 'black', 
+                fontWeight: activeStep === index ? 'bold' : 'normal', 
+              }}>
               {label}
             </Typography>
           </Box>
         ))}
       </Box>
-      
-      <Box sx={{ mt: 2 }}>
-        {renderStepContent(activeStep)}
-      </Box>
+
+      <Box sx={{ mt: 2 }}>{renderStepContent(activeStep)}</Box>
 
       {/* <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
         <Button

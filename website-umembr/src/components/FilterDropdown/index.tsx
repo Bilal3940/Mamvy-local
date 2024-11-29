@@ -34,7 +34,6 @@ interface CustomPopperProps {
 
 export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
   const { t } = useTranslation();
- console.log('I am list',listItem)
  const [adminPalette, setAdminPalette] = useState({
     storyBackgroundColor: '#333333', // Default value
     textColor: '#fff', // Default value
@@ -48,7 +47,6 @@ export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
   const homeData = useSelector(homeSelector);
   const { story } = useSelector(storySelector);
   const { memoryTypes } = useSelector(memorySelector);
-  console.log('memory type',memoryTypes)
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
@@ -116,7 +114,6 @@ export const FilterDropdown = ({ isOpen, listItem }: CustomPopperProps) => {
 
   let bgColor =    router.pathname ===   '/app/home' ? palette.cardBackground :accentColor;
   let bgColorCheck =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
-  console.log("I am color",bgColor)
   const handleCheckTypes = (value: any) => {
     if (value === undefined) return;
 

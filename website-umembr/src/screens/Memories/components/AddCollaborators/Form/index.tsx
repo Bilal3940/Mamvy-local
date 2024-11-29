@@ -1,5 +1,5 @@
 import { palette } from '@/theme/constants';
-import { Box, Divider, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
+import { Avatar, Box, Divider, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, collaboratorSelector, storySelector } from '@/store/selectors';
@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { RemoveCollaborator } from '../RemoveCollaborator';
 import { UseFirstRender } from '@/hooks';
 import { styles } from '../styles';
+import { cdn_url } from '@/utils';
 
 export const Form: FC<any> = ({ formRef, onClose }) => {
   const { t } = useTranslation();
@@ -50,6 +51,9 @@ export const Form: FC<any> = ({ formRef, onClose }) => {
     return 'inherit';
   };
 
+
+
+  console.log("I AM THE COLLABORATOR", collaborators)
   const isEmailValid = (email: any) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -107,6 +111,8 @@ export const Form: FC<any> = ({ formRef, onClose }) => {
     setNonValidatedCollaborators(collaborators?.collaborators?.filter((user: any) => !user?.validated));
   }, [collaborators]);
 
+  console.log("NOVAL",nonValidatedCollaborators)
+
   const capitalizeAndRemoveS = (string: any) => {
     let result = string?.charAt(0)?.toUpperCase() + string?.slice(1);
     if (result && result?.endsWith('s')) {
@@ -130,6 +136,9 @@ export const Form: FC<any> = ({ formRef, onClose }) => {
                   {isMobile ? (
                     <Grid item xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                       <Grid display={'flex'} item xs={9} flexDirection={'column'}>
+                      <Grid>
+                          <Image width={100} height={100} src={user?.picture}  alt='hello'/>
+                        </Grid>
                         <Grid>
                           <Typography align='left'>{user?.user?.email}</Typography>
                         </Grid>
@@ -212,6 +221,7 @@ export const Form: FC<any> = ({ formRef, onClose }) => {
                         </Grid>
                       ) : (
                         <>
+
                           <Grid item xs={6}>
                             <Typography align='center'>{user?.user?.email}</Typography>
                           </Grid>

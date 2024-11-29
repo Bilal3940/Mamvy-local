@@ -10,6 +10,7 @@ import {
   closePublishModal,
   createUserPurchase,
   deleteStory,
+  getCollaboratorStory,
   getExtraContent,
   getStoryStatus,
   getTemplate,
@@ -21,7 +22,7 @@ import {
   showActualSection,
   viewStoryG,
 } from '@/store/actions';
-import { authSelector, currentStorySelector, extrasSelector, intermitenceSelector, orderSelector, purchaseSelector, storySelector, templatesSelector } from '@/store/selectors';
+import { authSelector, collaboratorSelector, currentStorySelector, extrasSelector, intermitenceSelector, orderSelector, purchaseSelector, storySelector, templatesSelector } from '@/store/selectors';
 import { cdn_url, hasUserPurchasedTheStory } from '@/utils';
 import { Box, BoxProps, Button, Theme, useMediaQuery } from '@mui/material';
 import dynamic from 'next/dynamic';
@@ -77,7 +78,8 @@ const Main: React.FC = () => {
   const story = useSelector(currentStorySelector);
   const { showPublishModal } = useSelector(intermitenceSelector);
   const {template} = useSelector(templatesSelector);
-  const {purchase } = useSelector(purchaseSelector)
+  const {purchase } = useSelector(purchaseSelector);
+  const { collaborators} = useSelector(collaboratorSelector)
 
 
   // new field for the popup content
@@ -118,7 +120,11 @@ const Main: React.FC = () => {
     }
   }, [router.query?.code]);
 
+  UseFirstRender(() => {
+    if (story?.id) dispatch(getCollaboratorStory(story?.id));
+  }, [story]);
 
+  console.log("coll in main",collaborators?.collaborators)
   // new content for popup content
 
 
@@ -392,7 +398,6 @@ console.log("i am story", story)
   // }, [template]);
   
   
-  console.log("i am the admin palette", adminPalette)
   
   const extendedPalette = {
     storyBackground: adminPalette.storyBackgroundColor,
@@ -402,9 +407,9 @@ console.log("i am story", story)
       fontSize: '14px',
     },
     editButton: {
-      color: adminPalette.textColor,
-      opacity: 0.7, 
-      backgroundColor: adminPalette.storyBackgroundColor, 
+      color: '#33333',
+      opacity: 0.7,
+      backgroundColor: '#3333',
       fontSize: '14px',
       textTransform: 'none',
       borderRadius: '20px',
@@ -412,6 +417,12 @@ console.log("i am story", story)
       padding: '11px 16px',
       marginRight: { xs: '0', md: '50px' },
       boxShadow: '0px 4px 14px 0px #00000029',
+      '&:hover': {
+        backgroundColor: adminPalette.accentColor, // Hover background color
+        opacity: 1, // Optional: Increase opacity on hover
+        transform: 'scale(1.05)', // Optional: Add a slight zoom effect
+        transition: 'all 0.3s ease-in-out', // Optional: Smooth transition
+      },
     },
     storyTitle: adminPalette.textColor,
     dateStyle: {
@@ -569,8 +580,8 @@ console.log("i am story", story)
           ]}
           onBackClick={handleBackClick}
         /> */}
-<StoryHeader 
-  extendedPalette = {extendedPalette}
+<StoryHeader
+  extendedPalette={extendedPalette}
   themeId={story?.themeId ? story?.themeId : "1"}
   coverImage={story?.cover_image ? `${cdn_url}${story.cover_image}` : ''} // Fallback cover image
   imgSrc={story?.extraAsset1 ? `${cdn_url}${story.extraAsset1}` : ''} // First extra image
@@ -578,12 +589,7 @@ console.log("i am story", story)
   title={story?.title}
   createdDate={story?.created_at}
   description={story?.description}
-  collaborators={[
-    // { src: "/assets/Ellipse 51.png", alt: "Collaborator 1" },
-    // { src: "/assets/Ellipse 52.png", alt: "Collaborator 2" },
-    // { src: "/assets/Ellipse 56.png", alt: "Collaborator 3" },
-    // { src: "/assets/Ellipse 54.png", alt: "Collaborator 4" },
-  ]}
+  collaborators={collaborators?.collaborators}
   onBackClick={handleBackClick}
   userId={story?.user_id}
 />

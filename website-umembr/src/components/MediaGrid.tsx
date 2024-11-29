@@ -275,7 +275,7 @@
 
 //             {/* User Avatar */}
 //             {/* <Link href={`/user/${encodeURIComponent(item.username)}`} underline="none">
-//               <Avatar src={item.userImage} alt={item.username} sx={{ width: 32, height: 32 }} />
+//               < src={item.userImage} alt={item.username} sx={{ width: 32, height: 32 }} />
 //             </Link> */}
 //             <Link href={`/user/${encodeURIComponent(item.username)}`} underline="none">
 //       <Avatar
@@ -616,12 +616,9 @@ const types = useMemo(() => {
   );
 }, [memoriesLoaded]);
 
-console.log('I am types', types);
 
-  // console.log('Memory types:', memoriesLoaded.map((memory:any) => memory.type));
 
   UseFirstRender(() => {
-    console.log('I am query first', router.query);
     if (router?.query?.memoryId && memoriesLoaded.current) {
       const memory = memoriesLoaded.current
         .getMemories()
@@ -640,7 +637,6 @@ console.log('I am types', types);
       );
   }, [router.query?.id, story?.url]);
 
-  console.log('I am query', router.query);
   const closeMemory = () => {
     setSelectedMedia(null);
     router.push(`/app/story/${story?.url}`);

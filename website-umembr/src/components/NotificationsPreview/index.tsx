@@ -49,7 +49,6 @@ export const NotificationsPreview = ({ isOpen, listItem, type, blur }: CustomPop
   const dispatch = useDispatch();
   const [avatarUrls, setAvatarUrls] = useState<any>({});
 const { pathname } = useRouter();
-console.log('i am path', pathname)
   const sortByDate = (listItem: any[]) => {
     return [...listItem].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   };
@@ -116,7 +115,6 @@ console.log('i am path', pathname)
   let bgColor =    router.pathname ===   '/app/home' ? palette.cardBackground :'transparent';
 
 
-  console.log('i am the bg color',bgColor)
 
   return (
     <AnimatePresence>

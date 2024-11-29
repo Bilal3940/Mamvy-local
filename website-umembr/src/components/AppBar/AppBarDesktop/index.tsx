@@ -294,7 +294,9 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                       disabled={false}
                       loading={false}
                       variant={'contained'}
-                      method={() => dispatch(openPublishModal())}
+                      method={() => {dispatch(openPublishModal());
+                          console.log("i am clicked")
+                      }}
                        sx={{
     '&:hover': {
       backgroundColor: accentColor, // Set your desired hover background color here

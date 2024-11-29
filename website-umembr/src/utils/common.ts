@@ -402,6 +402,24 @@ export function debounce<T extends (...args: any[]) => unknown>(func: T, timeout
   };
 }
 
+export const hasUserPurchasedTheStory = (userId: number, storyId: number, userPurchases: any) => {
+  console.log('Checking for storyId:', storyId);
+  console.log('User Purchases:', userPurchases);
+
+  // Loop through the userPurchases array
+  for (let purchase of userPurchases) {
+    // Check if both userId and storyId match
+    if (purchase.storyId === storyId && purchase.userId === userId) {
+      console.log('Match found!');
+      return true; // Return true immediately if a match is found
+    }
+  }
+
+  // If no match was found after the loop, return false
+  return false;
+}
+
+
 export const mapProps = async (store: any, action: any) => {
   store.dispatch(action);
   store.dispatch(END);

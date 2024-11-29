@@ -11,7 +11,7 @@ import {  PaymentRequest } from '@stripe/stripe-js';
 import { colors } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { createUserPurchase } from "@/store/actions";
-import { authSelector } from "@/store/selectors";
+import { authSelector, purchaseSelector, storySelector } from "@/store/selectors";
 
 interface PaymentProps {
   
@@ -25,10 +25,17 @@ const EmbeddedPaymentForm: React.FC<PaymentProps> = ({onSuccessfullPayment}) => 
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null); // State to hold paymentRequest
   const [canMakePayment, setCanMakePayment] = useState(false);
   const {user} = useSelector(authSelector);
+  const {story}= useSelector(storySelector);
+  const {purchase, actionSuccess}= useSelector(purchaseSelector);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const dispatch = useDispatch()
-
+ useEffect(()=>{
+ if(purchase)
+ {
+  onSuccessfullPayment();
+ }
+ },[actionSuccess])
   // Setting up Payment Request for Google Pay
   useEffect(() => {
     if (stripe) {
@@ -102,7 +109,7 @@ const EmbeddedPaymentForm: React.FC<PaymentProps> = ({onSuccessfullPayment}) => 
         userName:  user?.name ?? "John Doe test1",
         userId: user?.id  ?? 143,
         paymentMethodId: paymentMethod.id,
-        storyId: 1,
+        storyId: story.id|| 2,
         amount: 50
         }
         dispatch(createUserPurchase(payload))
@@ -112,10 +119,7 @@ const EmbeddedPaymentForm: React.FC<PaymentProps> = ({onSuccessfullPayment}) => 
     } catch (error) {
       console.error(error);
       setErrorMessage("Payment failed. Please try again.");
-    } finally {
-      setIsProcessing(false);
-      onSuccessfullPayment();
-    }
+    } 
   };
 
   return (

@@ -13,6 +13,7 @@ import {
   getExtraContent,
   getStoryStatus,
   getTemplate,
+  getUserPurchases,
   hideGradient,
   removeMemory,
   setCode,
@@ -21,7 +22,7 @@ import {
   viewStoryG,
 } from '@/store/actions';
 import { authSelector, currentStorySelector, extrasSelector, intermitenceSelector, orderSelector, purchaseSelector, storySelector, templatesSelector } from '@/store/selectors';
-import { cdn_url } from '@/utils';
+import { cdn_url, hasUserPurchasedTheStory } from '@/utils';
 import { Box, BoxProps, Button, Theme, useMediaQuery } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -58,6 +59,8 @@ const Main: React.FC = () => {
   };
   const [selectedMemorie, setSelectedMemorie] = useState<any>(null);
   const { status, switchStatus } = UseIntermitence();
+  const {userPurchases}=useSelector(purchaseSelector);
+  
   const { status: storyStatus, switchStatus: switchStory } = UseIntermitence();
   const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();
   const { status: deleteStatusStory, switchStatus: switchDeleteStory } = UseIntermitence();
@@ -120,17 +123,44 @@ const Main: React.FC = () => {
 
 useEffect(()=>{
   dispatch(getExtraContent(router.query?.id as string))
-
+  
 },[router.query.id])
-useEffect(()=>{
-  if(extraContent){
- 
-    setModalOpen(true);
-     
-    }else{
-      setModalOpen(false)
+useEffect (()=>{
+  if(user &&  user.id ){
+
+   
+  dispatch(getUserPurchases( user && user?.id));
+  }
+},[user])
+useEffect(() => {
+  // Dispatch to fetch user purchases
+  
+
+  // Check if extraContent is available
+  if (extraContent) {
+    // Only check if the content is paid
+    if (extraContent.isPaid) {
+      if (isAuth) {
+        // Check if the user has purchased the story
+        if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
+          console.log('User has purchased it');
+          setModalOpen(false);  // Close the modal if the user has purchased
+        } else {
+          console.log('User has not purchased it');
+          setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
+        }
+      } else {
+        console.log('User is not authenticated');
+        setModalOpen(true); // Open the modal if the user is not authenticated
+      }
+    } else {
+      console.log('Content is not paid');
+      setModalOpen(false);  // Close the modal if the content is not paid
     }
-},[extraContent])
+  }
+}, [extraContent, userPurchases, isAuth, user?.id, story.id]);  // Include relevant dependencies
+
+
 
   console.log("extra content",extraContent )
   console.log("purchase",purchase)

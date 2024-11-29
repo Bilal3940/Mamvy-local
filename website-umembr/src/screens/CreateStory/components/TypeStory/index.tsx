@@ -13,7 +13,6 @@ const storyTypes = [
   { text: 'classmates_story', value: 1, url: 'classmates-story', content: 'classmates_story_content' },
   { text: 'teammates_story', value: 2, url: 'teammates-story', content: 'teammates_story_content' },
   { text: 'none_of_this_story', value: 3, url: 'none-story', content: 'none_of_this_story_content' },
-  { text: 'uga_story', value: 4, url: 'uga-story', content: 'uag_story_content' },
 
   
 ];

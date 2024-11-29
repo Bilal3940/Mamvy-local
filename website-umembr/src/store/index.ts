@@ -59,7 +59,7 @@ const makeStore: any = ({ isServer }: any) => {
     const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage();
     const persistConfig = {
       key: 'memvy-nextjs',
-      whitelist: ['auth','subscription','order', 'tempconfig', 'extraContent'],
+      whitelist: ['auth','subscription','order', 'tempconfig', 'extraContent','purchase'],
       blacklist: ['page', 'intermitence', 'home', 'forgotPassword'],
       storage,
     };

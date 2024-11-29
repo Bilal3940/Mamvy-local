@@ -7,6 +7,7 @@ import {
   actualStory,
   changeBackground,
   closePublishModal,
+  createUserPurchase,
   deleteStory,
   getExtraContent,
   getStoryStatus,
@@ -18,7 +19,7 @@ import {
   showActualSection,
   viewStoryG,
 } from '@/store/actions';
-import { authSelector, currentStorySelector, extrasSelector, intermitenceSelector, storySelector, templatesSelector } from '@/store/selectors';
+import { authSelector, currentStorySelector, extrasSelector, intermitenceSelector, orderSelector, purchaseSelector, storySelector, templatesSelector } from '@/store/selectors';
 import { cdn_url } from '@/utils';
 import { Box, BoxProps, Button, Theme, useMediaQuery } from '@mui/material';
 import dynamic from 'next/dynamic';
@@ -69,6 +70,7 @@ const Main: React.FC = () => {
   const story = useSelector(currentStorySelector);
   const { showPublishModal } = useSelector(intermitenceSelector);
   const {template} = useSelector(templatesSelector);
+  const {purchase } = useSelector(purchaseSelector)
 
 
   // new field for the popup content
@@ -105,11 +107,14 @@ const Main: React.FC = () => {
   UseFirstRender(() => {
     if (router.query?.id && router.query.code) {
       dispatch(setCode({ password: router?.query?.code, storyId: router.query.id }));
+
     }
   }, [router.query?.code]);
 
 
   // new content for popup content
+
+
 
 useEffect(()=>{
 
@@ -128,6 +133,8 @@ useEffect(()=>{
 },[router.query.id])
 
   console.log("extra content",extraContent )
+  console.log("purchase",purchase)
+
 
 
 

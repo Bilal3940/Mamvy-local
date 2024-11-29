@@ -9,6 +9,9 @@ import {
 } from "@stripe/react-stripe-js";
 import {  PaymentRequest } from '@stripe/stripe-js';
 import { colors } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { createUserPurchase } from "@/store/actions";
+import { authSelector } from "@/store/selectors";
 
 
 const EmbeddedPaymentForm: React.FC = () => {
@@ -17,8 +20,10 @@ const EmbeddedPaymentForm: React.FC = () => {
 
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null); // State to hold paymentRequest
   const [canMakePayment, setCanMakePayment] = useState(false);
+  const {user} = useSelector(authSelector);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const dispatch = useDispatch()
 
   // Setting up Payment Request for Google Pay
   useEffect(() => {
@@ -84,8 +89,20 @@ const EmbeddedPaymentForm: React.FC = () => {
       if (error) {
         setErrorMessage(error.message!);
       } else if (paymentMethod) {
+
+// DUMMY METHOD ADDED TO CRAETE THE ORDER
+
         console.log('payment response',paymentMethod);
-        alert(`Payment Successful! Token: ${paymentMethod.id}`);
+        const payload={
+        userEmail: user?.email ?? "usertest1@example.com",
+        userName:  user?.name ?? "John Doe test1",
+        userId: user?.id  ?? 143,
+        paymentMethodId: paymentMethod.id,
+        storyId: 1,
+        amount: 50
+        }
+        dispatch(createUserPurchase(payload))
+        // alert(`Payment Successful! Token: ${paymentMethod.id}`);
         // Send the token to your server for processing
       }
     } catch (error) {

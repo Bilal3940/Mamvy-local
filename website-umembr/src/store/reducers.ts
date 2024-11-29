@@ -14,10 +14,12 @@ import orders from './order/reducer';
 import hasChanges from './hasChanges/reducer';
 import templates from './tempConfig/reducer';
 import extraContent from './extras/reducer';
+import purcahse from './purchase/reducer';
 
 const reducers: any = combineReducers({
   intermitence,
   templates,
+  purcahse,
   forgotPassword,
   home,
   auth,

@@ -408,14 +408,15 @@ export const CreateStory = () => {
     // Refresh user data to get the latest storage information
     const res = await RefreshUserData(user?.token, user?.id);
     const userData = res?.result;
-    const perm = checkRoleAndPermission(
-      userData?.roles,
-      'Subscriber_Individual',
-      // '',
-      'CLIENT_STORY_CREATE',
-      user?.id
-    );
+    // const perm = checkRoleAndPermission(
+    //   userData?.roles,
+    //   'Subscriber_Individual',
+    //   // '',
+    //   'Client',
+    //   user?.id
+    // );
   
+    const perm = checkPermissions(userData?.roles, 'CLIENT_STORY_CREATE')
     // Check if the user has the required permission
     if (!perm) {
       setCreating(false);

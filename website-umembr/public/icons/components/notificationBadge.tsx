@@ -17,14 +17,14 @@ const NotificationBadge: React.FC<NotificationBadgeProps> = ({ notifications,col
         position: 'absolute',
         top: '-8px',
         right: '-8px',
-        backgroundColor: 'red', // Naranja
+        backgroundColor: color, // Naranja
         borderRadius: '50%',
         width: '24px',
         height: '24px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        color: {color}, // Blanco
+        color: '#fff', // Blanco
         fontSize: '16px',
         fontWeight: 'bold',
       }}>

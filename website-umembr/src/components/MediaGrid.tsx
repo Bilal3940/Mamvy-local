@@ -751,7 +751,7 @@ useEffect(() => {
   //         return 0;
   //     }
   //   });
-  const isChronological = truestory; // Set to true for chronological, false for reverse chronological
+  const isChronological = true; // Set to true for chronological, false for reverse chronological
 
 const filteredMediaItems = memoriesLoaded
   ?.filter(

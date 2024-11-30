@@ -365,7 +365,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
 
                 <ClickAwayListener onClickAway={handleClose} disableReactTree={true}>
                   <Box position={'relative'}>
-                    <MuiDropdown isOpen={isOpen} handleClose={handleClose} listItem={settingsOptions} />
+                    <MuiDropdown color={notificationBackground} isOpen={isOpen} handleClose={handleClose} listItem={settingsOptions} />
                   </Box>
                 </ClickAwayListener>
               </Box>

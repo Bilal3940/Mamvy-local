@@ -21,16 +21,18 @@ const itemVariants: Variants = {
 
 
 interface CustomPopperProps {
+  color?:any;
   isOpen: boolean;
   handleClose: any;
   width?: string;
   listItem: {
     label: string;
     action: any;
+    
   }[];
 }
 
-export const MuiDropdown = ({ isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
+export const MuiDropdown = ({ color,isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
   const { t } = useTranslation();
   const { pathname } = useRouter();
   let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :'transparent';
@@ -46,7 +48,7 @@ export const MuiDropdown = ({ isOpen, handleClose, listItem, width = '10rem' }: 
           right={0}
           width={width}
           zIndex={10}
-          sx={styles.dropDown}
+          sx={styles().dropDown}
           id='dropdown'
           animate={isOpen ? 'open' : 'closed'}>
           <MotionList
@@ -81,7 +83,7 @@ export const MuiDropdown = ({ isOpen, handleClose, listItem, width = '10rem' }: 
               return (
                 <MotionItem
                   key={item.label}
-                  sx={styles.item}
+                  sx={styles(color).item}
                   variants={itemVariants}
                   onClick={() => {
                     item?.action();

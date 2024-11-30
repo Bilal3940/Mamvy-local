@@ -875,8 +875,8 @@ const filteredMediaItems = memoriesLoaded
   <MuiIconButton
     icon="/icons/filter"
     altIcon="filter"
-    background={isFilterActive? `${extendedPalette.filterIconsSelectedColor} !important` : `${extendedPalette.filterIconsColor} !important`}
-    borderColor={isFilterActive ? '#fff' : palette.black}
+    background={isFilterActive? `${palette.black} !important` : `${extendedPalette.buttonbackgroundIcon} !important`}
+    borderColor={isFilterActive ? palette.black : palette.black}
     width={40}
     height={40}
     iconHeight={12}
@@ -885,7 +885,7 @@ const filteredMediaItems = memoriesLoaded
        transform: openFilters ? 'rotate(180deg)' : 'rotate(0deg)',
     transition: 'transform 0.3s ease',
     // Default background color
-    backgroundColor: extendedPalette.filterIconsColor,
+    // backgroundColor: extendedPalette.filterIconsColor,
     '&:hover': {
       // Hover background color
       backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this color as needed

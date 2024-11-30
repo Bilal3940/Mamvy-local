@@ -387,18 +387,22 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
               sx={{ width: '21.5rem' }}
             />
             <Box>
-              <MuiIconButton
-                icon='/icons/filter'
-                altIcon='filter'
-                background={palette?.cardBackground}
-                borderColor={palette?.cardBorder}
-                width={40}
-                height={40}
-                padding={0}
-                iconHeight={12}
-                iconWidth={20}
-                method={(event: any) => setShowFilters(event)}
-              />
+            <MuiIconButton
+  icon='/icons/filter'
+  altIcon='filter'
+  background={palette?.cardBackground}
+  borderColor={palette?.cardBorder}
+  width={40}
+  height={40}
+  padding={0}
+  iconHeight={12}
+  iconWidth={20}
+  method={(event: any) => setShowFilters(event)}
+  sx={{
+    transform: openFilters ? 'rotate(180deg)' : 'rotate(0deg)',
+    transition: 'transform 0.3s ease'  // Optional: smooth transition for rotation
+  }}
+/>
             </Box>
           </Stack>
         )}

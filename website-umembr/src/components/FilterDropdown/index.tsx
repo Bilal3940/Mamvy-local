@@ -28,11 +28,11 @@ const itemVariants: Variants = {
 
 interface CustomPopperProps {
   isOpen: boolean;
-  setIsFilterActive?: any;
+  callbackfunction?:(flag:boolean) => void;
   listItem: any;
 }
 
-export const FilterDropdown = ({ isOpen, listItem, setIsFilterActive }: CustomPopperProps) => {
+export const FilterDropdown = ({ isOpen, listItem, callbackfunction }: CustomPopperProps) => {
   const { t } = useTranslation();
  const [adminPalette, setAdminPalette] = useState({
     storyBackgroundColor: '#333333', // Default value
@@ -125,9 +125,16 @@ export const FilterDropdown = ({ isOpen, listItem, setIsFilterActive }: CustomPo
   console.log("types selected", typesSelected)
 
 useEffect(()=>{
+  if (callbackfunction) {
   if(promptSelected || collabSelected || typesSelected){
-    setIsFilterActive(true)
+  
+      callbackfunction(true); // Call it only if it's provided
+   
   }
+  else{
+    callbackfunction(false);
+  }
+}
 },[promptSelected, typesSelected, collabSelected])
 
 

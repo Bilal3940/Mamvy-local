@@ -524,7 +524,10 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const handleOpen = (): void => setModalOpen(true);
   const handleClose = (): void => setModalOpen(false);
   const { isDivider } = extendedPalette.isDividerCheck.isDivider || true;
-
+  const callbackfunction =(flag:boolean)=>{
+    console.log('im the callback ', flag);
+    setIsFilterActive(flag);
+  }
   useEffect(() => {
     if (story?.id) {
       dispatch(getMemories(story?.id));
@@ -872,13 +875,15 @@ const filteredMediaItems = memoriesLoaded
   <MuiIconButton
     icon="/icons/filter"
     altIcon="filter"
-    background={isFilterActive === true ? extendedPalette.filterIconsSelectedColor : extendedPalette.filterIconsColor}
+    background={isFilterActive? `${extendedPalette.filterIconsSelectedColor} !important` : `${extendedPalette.filterIconsColor} !important`}
     borderColor={isFilterActive ? '#fff' : palette.black}
     width={40}
     height={40}
     iconHeight={12}
     iconWidth={20}
      sx={{
+       transform: openFilters ? 'rotate(180deg)' : 'rotate(0deg)',
+    transition: 'transform 0.3s ease',
     // Default background color
     backgroundColor: extendedPalette.filterIconsColor,
     '&:hover': {
@@ -891,7 +896,7 @@ const filteredMediaItems = memoriesLoaded
   
   <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
     <Box position={'relative'}>
-      <FilterDropdown setIsFilterActive ={setIsFilterActive} isOpen={openFilters} listItem={[prompts, collaborators, types]} />
+      <FilterDropdown  callbackfunction={(flag: boolean) => callbackfunction(flag)} isOpen={openFilters} listItem={[prompts, collaborators, types]} />
     </Box>
   </ClickAwayListener>
   

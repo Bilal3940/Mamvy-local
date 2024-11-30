@@ -431,36 +431,43 @@ console.log("i am story", story)
     toolBarBackground: 'rgba(0, 0, 0, 0.5)',
   
     // 
-    searchField: {
+//     searchField: {
+//   width: '16rem',
+//   '& .MuiOutlinedInput-root': {
+//     backgroundColor: adminPalette.storyBackgroundColor,
+//     color: palette.white,
+//     marginLeft: '20px',
+//     borderRadius: '30px',
+//     '& fieldset': {
+//       borderColor: adminPalette.storyBackgroundColor,
+//     },
+//     '&:hover fieldset': {
+//       borderColor: adminPalette.storyBackgroundColor,
+//     },
+//     '&.Mui-focused fieldset': {
+//       borderColor: palette.white, // Focus state outline is now white
+//     },
+//     '&:focus-visible fieldset': {
+//       borderColor: palette.white, // Ensure compatibility with :focus-visible
+//     },
+//   },
+//   '& input': {
+//     color: adminPalette.textColor,
+//     padding: '10px 15px',
+//     fontSize: '0.9rem',
+//   },
+//   '& .MuiInputAdornment-root': {
+//     backgroundColor: adminPalette.storyBackgroundColor,
+//     marginRight: '4px',
+//   },
+// },
+searchField: {
   width: '16rem',
-  '& .MuiOutlinedInput-root': {
-    backgroundColor: adminPalette.storyBackgroundColor,
-    color: palette.white,
-    marginLeft: '20px',
-    borderRadius: '30px',
-    '& fieldset': {
-      borderColor: adminPalette.storyBackgroundColor,
-    },
-    '&:hover fieldset': {
-      borderColor: adminPalette.storyBackgroundColor,
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: palette.white, // Focus state outline is now white
-    },
-    '&:focus-visible fieldset': {
-      borderColor: palette.white, // Ensure compatibility with :focus-visible
-    },
-  },
-  '& input': {
-    color: adminPalette.textColor,
-    padding: '10px 15px',
-    fontSize: '0.9rem',
-  },
-  '& .MuiInputAdornment-root': {
-    backgroundColor: adminPalette.storyBackgroundColor,
-    marginRight: '4px',
-  },
+  // borderRadius: '200px',
+  background: 'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%), #333',
+  boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.5) inset',
 },
+
 
     filterButton: (filter: any, label: any) => ({
       textTransform: 'none',
@@ -490,7 +497,14 @@ console.log("i am story", story)
     buttonColorGrid: adminPalette.storyBackgroundColor,
     buttonHoverColor: '#BA0C2F',
   
-    cardMediaBackground: adminPalette.storyBackgroundColor,
+    // cardMediaBackground: adminPalette.storyBackgroundColor,
+    cardMediaBackground: {
+  borderRadius: '10px', // Use camelCase for border-radius
+  border: '1px solid rgba(204, 204, 204, 0.20)',
+  background: 'linear-gradient(180deg, rgba(34, 34, 34, 0.45) 0%, rgba(17, 17, 17, 0.45) 100%)',
+  backdropFilter: 'blur(25px)', // Use camelCase for backdrop-filter
+},
+
     cardMediaColor: adminPalette.textColor,
   
   
@@ -598,6 +612,7 @@ console.log("i am story", story)
         <PrivateStoryModal open={privateStatus} onClose={handlePublication} />
       )}
               <AddCollaborators
+              extendedPalette={extendedPalette}
         add={showPublishModal}
         onClose={() => closeCollaboratorsModal()}
         mediaContent={selectedMemorie}

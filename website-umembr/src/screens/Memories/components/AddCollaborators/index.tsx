@@ -14,13 +14,14 @@ import { useRouter } from 'next/router';
 import { base_url } from '@/utils';
 
 interface ModalDetailProps {
+  extendedPalette?: any;
   add: boolean;
   onClose: () => void;
   mediaContent?: any;
   method: () => void;
 }
 
-export const AddCollaborators = ({ add, onClose }: ModalDetailProps) => {
+export const AddCollaborators = ({ add, onClose,extendedPalette }: ModalDetailProps) => {
   const { t } = useTranslation();
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -50,7 +51,7 @@ export const AddCollaborators = ({ add, onClose }: ModalDetailProps) => {
     navigator.clipboard.writeText(`${base_url}${router?.asPath}?code=${story?.story?.password}${story?.story?.user?.refferal_code ? `?referral_code=${story?.story?.user?.referalCode?.trim()}` : ''}`);
     setTimeout(() => setLinkCode(false), 2000);
   };
-
+console.log('i am extendeddddddddddddd',extendedPalette)
   return (
     <Modal open={add} onClose={onClose} sx={styles.modal}>
       <Box
@@ -122,7 +123,12 @@ export const AddCollaborators = ({ add, onClose }: ModalDetailProps) => {
                     disabled={false}
                     loading={loading}
                     variant={'outlined'}
-                    method={() => handlePublication('public')}>
+                    method={() => handlePublication('public')}
+                     sx={{'&:hover': {
+      borderColor: extendedPalette.buttonbackgroundIcon,  // Change the border color on hover
+              // Change the text color on hover
+    },
+  }}>
                     <Typography color={palette.white} variant={isMobile ? 'caption' : 'button'}>
                       {t('to_public')}
                     </Typography>
@@ -131,8 +137,10 @@ export const AddCollaborators = ({ add, onClose }: ModalDetailProps) => {
                     type='button'
                     disabled={false}
                     loading={false}
+                    backgroundColor={extendedPalette.buttonbackgroundIcon}
                     variant={'contained'}
-                    method={() => copyLink()}>
+                    method={() => copyLink()}
+                    >
                     <Typography variant={isMobile ? 'caption' : 'button'}>
                       {link ? t('copied') : t('copy link')}
                     </Typography>
@@ -141,8 +149,15 @@ export const AddCollaborators = ({ add, onClose }: ModalDetailProps) => {
                     type='button'
                     disabled={false}
                     loading={false}
+                    backgroundColor={extendedPalette.buttonbackgroundIcon}
                     variant={'contained'}
-                    method={() => copyLinkCode()}>
+                    method={() => copyLinkCode()}
+                     sx={{
+    backgroundColor: extendedPalette.buttonbackgroundIcon,
+    '&:hover': {
+      backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
+    },
+  }}>
                     <Typography variant={isMobile ? 'caption' : 'button'}>
                       {linkCode ? t('copied') : t('copy_link_with_code')}
                     </Typography>
@@ -162,7 +177,12 @@ export const AddCollaborators = ({ add, onClose }: ModalDetailProps) => {
                     disabled={false}
                     loading={loading}
                     variant={'outlined'}
-                    method={() => handlePublication('private')}>
+                    method={() => handlePublication('private')}
+                    sx={{'&:hover': {
+      borderColor: extendedPalette.buttonbackgroundIcon,  // Change the border color on hover
+              // Change the text color on hover
+    },
+  }}>
                     <Typography color={palette.white} variant={isMobile ? 'caption' : 'button'}>
                       {t('to_private')}
                     </Typography>
@@ -171,8 +191,15 @@ export const AddCollaborators = ({ add, onClose }: ModalDetailProps) => {
                     type='button'
                     disabled={false}
                     loading={false}
+                    backgroundColor={extendedPalette.buttonbackgroundIcon}
                     variant={'contained'}
-                    method={() => copyLink()}>
+                    method={() => copyLink()}
+                    sx={{
+    backgroundColor: extendedPalette.buttonbackgroundIcon,
+    '&:hover': {
+      backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
+    },
+  }}>
                     <Typography variant={isMobile ? 'caption' : 'button'}>
                       {link ? t('copied') : t('copy link')}
                     </Typography>
@@ -213,7 +240,7 @@ export const AddCollaborators = ({ add, onClose }: ModalDetailProps) => {
             </>
           )}
         </Box>
-        <Form onClose={onClose} />
+        <Form onClose={onClose} extendedPalette={extendedPalette} />
       </Box>
     </Modal>
   );

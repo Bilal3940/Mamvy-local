@@ -1,9 +1,10 @@
 import { palette } from '@/theme/constants';
 
-export const styles = {
+
+export const styles = (color?: string)=>({
   inputMobile: {
     border: `0.063rem solid ${palette.cardBorder}`,
-    background: palette.background,
+    background: color,
 
     color: palette.white,
     borderRadius: '6.25rem',
@@ -23,4 +24,4 @@ export const styles = {
     flexGrow: 1,
     gap: '0.5rem',
   },
-};
+});

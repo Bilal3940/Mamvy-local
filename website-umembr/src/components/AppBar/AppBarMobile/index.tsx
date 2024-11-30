@@ -182,6 +182,8 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
       ? accentColorWithOpacity // Custom background for the specific page
       : palette?.cardBackground;
 
+
+
   return (
     <>
       <AppBar
@@ -252,7 +254,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                 display={'flex'}
                 alignItems={'center'}
                 borderRadius={'6.25rem'}
-                sx={isExpanded ? styles.paperMobileExpanded : undefined}
+                sx={isExpanded ? styles().paperMobileExpanded : undefined}
                 overflow={'hidden'}>
                 {!isExpanded && (
                   <MuiIconButton
@@ -267,6 +269,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
 
                 <MotionInputContainer variants={inputVariants} transition={{ duration: 0 }}>
                   <Search
+                  color={buttonBackground}
                     value={search}
                     onChange={(event: any) => setSearch(event.target.value)}
                     onClear={() => setSearch('')}

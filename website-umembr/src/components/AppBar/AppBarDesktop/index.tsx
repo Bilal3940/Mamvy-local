@@ -244,6 +244,10 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
     router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
       ? accentColor // Custom background for the specific page
       : palette?.cardBackground;
+      const notificationBackground =
+    router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
+      ? accentColor // Custom background for the specific page
+      : palette?.primary;
   UseFirstRender(() => {
     const memoryHeight = document.getElementById('memories');
     const resizeObserver = new ResizeObserver((entries) => {
@@ -331,7 +335,9 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                   borderColor={palette?.cardBorder}
                   method={(event: any) => setShowNotification(event)}
                 />
-                <NotificationBadge notifications={notifications?.notifications?.otherNotifications?.length || 0} />
+                <NotificationBadge 
+                color={notificationBackground}
+                notifications={notifications?.notifications?.otherNotifications?.length || 0} />
           
               </Box>
               <Box position='relative'>
@@ -343,6 +349,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                   method={(event: any) => setShowPeople(event)}
                 />
                 <NotificationBadge
+                color={notificationBackground}
                   notifications={notifications?.notifications?.collaborationNotifications?.length || 0}
                 />
              

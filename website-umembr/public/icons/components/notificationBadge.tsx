@@ -3,9 +3,10 @@ import React from 'react';
 
 interface NotificationBadgeProps {
   notifications: number;
+  color?:any;
 }
 
-const NotificationBadge: React.FC<NotificationBadgeProps> = ({ notifications }) => {
+const NotificationBadge: React.FC<NotificationBadgeProps> = ({ notifications,color }) => {
   if (notifications === 0) {
     return null;
   }
@@ -16,14 +17,14 @@ const NotificationBadge: React.FC<NotificationBadgeProps> = ({ notifications }) 
         position: 'absolute',
         top: '-8px',
         right: '-8px',
-        backgroundColor: '#0072CE', // Naranja
+        backgroundColor: 'red', // Naranja
         borderRadius: '50%',
         width: '24px',
         height: '24px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        color: '#FFFFFF', // Blanco
+        color: {color}, // Blanco
         fontSize: '16px',
         fontWeight: 'bold',
       }}>

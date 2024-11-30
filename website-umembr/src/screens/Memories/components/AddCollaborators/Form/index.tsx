@@ -13,7 +13,7 @@ import { UseFirstRender } from '@/hooks';
 import { styles } from '../styles';
 import { cdn_url } from '@/utils';
 
-export const Form: FC<any> = ({ formRef, onClose }) => {
+export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
   const { t } = useTranslation();
   const { story } = useSelector(storySelector);
   const dispatch = useDispatch();
@@ -335,8 +335,15 @@ export const Form: FC<any> = ({ formRef, onClose }) => {
               type='button'
               method={() => addCollaborators()}
               disabled={false}
+              backgroundColor={extendedPalette.buttonbackgroundIcon}
               loading={false}
-              variant={'contained'}>
+              variant={'contained'}
+               sx={{
+    backgroundColor: extendedPalette.buttonbackgroundIcon,
+    '&:hover': {
+      backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
+    },
+  }}>
               <Typography variant={isMobile ? 'caption' : 'button'}>{t('add')}</Typography>
             </MuiButton>
           </Grid>
@@ -441,12 +448,22 @@ export const Form: FC<any> = ({ formRef, onClose }) => {
             ),
         )}
         <Box width={'100%'} display={'flex'} justifyContent={'space-between'} gap={'1rem'}>
-          <MuiButton type='button' disabled={false} loading={false} variant={'outlined'} method={() => onClose()}>
+          <MuiButton type='button' disabled={false} loading={false} variant={'outlined'} method={() => onClose()}
+             sx={{'&:hover': {
+      borderColor: extendedPalette.buttonbackgroundIcon,  // Change the border color on hover
+              // Change the text color on hover
+    },
+  }}>
             <Typography color={palette.white} variant='button'>
               {t('cancel')}
             </Typography>
           </MuiButton>
-          <MuiButton type='submit' disabled={values?.collaborators?.length < 1} loading={false} variant={'contained'}>
+          <MuiButton type='submit' disabled={values?.collaborators?.length < 1} loading={false} backgroundColor={extendedPalette.buttonbackgroundIcon} variant={'contained'}  sx={{
+    backgroundColor: extendedPalette.buttonbackgroundIcon,
+    '&:hover': {
+      backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
+    },
+  }}>
             <Typography variant='button'>{t('invite')}</Typography>
           </MuiButton>
         </Box>

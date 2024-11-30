@@ -7,23 +7,26 @@ import Image from 'next/image';
 import { styles } from '../styles';
 
 const Search = ({
+  color,
   value,
   onChange,
   onClear,
   sx,
 }: {
+  color?:any;
   value?: string;
   onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined;
   onClear?: () => void;
   sx?: SxProps<Theme> | undefined;
 }) => {
   const { t } = useTranslation();
+  // const dynamicStyles = styles(color);
 
   return (
     <TextField
       id='search'
       name='search'
-      sx={{ ...sx, ...styles.inputMobile }}
+      sx={{ ...sx, ...styles(color).inputMobile }}
       fullWidth
       onChange={onChange}
       value={value}

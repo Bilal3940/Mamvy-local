@@ -723,9 +723,13 @@ const types = useMemo(() => {
   //   }
   // });
 
-  const [isFilterActive, setIsFilterActive] = useState(false); // Tracks if any filter is selected
+  const [isFilterActive, setIsFilterActive] = useState(false);
+  
+useEffect(() => {
+    console.log("i am value in media grid:",isFilterActive)
+  }, [isFilterActive]);
 
-  console.log("i am value in media grid:",isFilterActive)
+  
 
   const filteredMediaItems = memoriesLoaded
     ?.filter(
@@ -848,7 +852,7 @@ const types = useMemo(() => {
     icon="/icons/filter"
     altIcon="filter"
     background={isFilterActive === true ? extendedPalette.filterIconsSelectedColor : extendedPalette.filterIconsColor}
-    borderColor={palette.black}
+    borderColor={isFilterActive ? '#fff' : palette.black}
     width={40}
     height={40}
     iconHeight={12}
@@ -944,7 +948,7 @@ const types = useMemo(() => {
                 borderRadius: 2,
                 overflow: 'hidden',
                 backgroundColor: extendedPalette.cardMediaBackground,
-                color: extendedPalette.cardMediaColor,
+                // color: extendedPalette.cardMediaColor,
                 display: 'flex',
                 flexDirection: 'column',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -957,7 +961,7 @@ const types = useMemo(() => {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '8px 16px',
-    backgroundColor: extendedPalette.cardHeaderBackground,
+    // backgroundColor: extendedPalette.cardHeaderBackground,
     color: extendedPalette.cardHeaderText,
   }}
 >
@@ -996,14 +1000,14 @@ const types = useMemo(() => {
   </Box>
 
   {/* User Avatar */}
-  <Link href={`/user/${encodeURIComponent(item.username)}`} underline="none">
+ 
     <Avatar
       src={avatarError ? '/icons/image1.svg' : item.userImage} // Use dummy avatar if image fails
       alt={item.username}
       sx={{ width: 32, height: 32 }}
       onError={() => setAvatarError(true)} // Set error state if image fails to load
     />
-  </Link>
+  
 </Box>
 
 

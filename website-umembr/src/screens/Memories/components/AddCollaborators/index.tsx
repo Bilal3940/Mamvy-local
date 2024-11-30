@@ -222,17 +222,27 @@ console.log('i am extendeddddddddddddd',extendedPalette)
                   <MuiButton
                     type='button'
                     disabled={false}
+                    backgroundColor={extendedPalette.buttonbackgroundIcon}
                     loading={false}
                     variant={'contained'}
-                    method={() => handlePublication('private')}>
+                    method={() => handlePublication('private')}
+                    sx={{ '&:hover': {
+      backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
+    },
+  }}>
                     <Typography variant={'button'}>{t('publish as private')}</Typography>
                   </MuiButton>
                   <MuiButton
                     type='button'
                     disabled={false}
+                     backgroundColor={extendedPalette.buttonbackgroundIcon}
                     loading={false}
                     variant={'contained'}
-                    method={() => handlePublication('public')}>
+                    method={() => handlePublication('public')}
+                     sx={{ '&:hover': {
+      backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
+    },
+  }}>
                     <Typography variant={'button'}>{t('publish as public')}</Typography>
                   </MuiButton>
                 </Grid>

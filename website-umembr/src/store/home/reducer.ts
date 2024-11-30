@@ -11,6 +11,7 @@ const initialState = {
     draftStories: [],
     publishedStories: [],
     collaboratorStories: [],
+    purchasedStories:[],
   },
   storiesResult: [],
   homeLoading: true,

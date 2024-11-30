@@ -133,6 +133,7 @@ export const Home = () => {
           {stories?.draftStories?.length == 0 &&
           stories?.publishedStories?.length == 0 &&
           stories?.collaboratorStories?.length == 0 &&
+          stories?.purchasedStories?.length == 0 &&
           criterias?.search?.length == 0 &&
           !homeLoading ? (
             <Box
@@ -151,6 +152,19 @@ export const Home = () => {
               criterias?.prompts?.length == 0 &&
               criterias?.collaborators?.length == 0 ? (
                 <>
+                 {stories?.purchasedStories?.length > 0 && (
+                    <CategoriesContainer
+                      {...{
+                        title: 'purchased',
+                        data: stories.purchasedStories,
+                        t,
+                        isMobile,
+                        handleItemClick,
+                        scrollMargin: containerMargin2,
+                        containerRef: containerRef2,
+                      }}
+                    />
+                  )}
                   {stories?.draftStories?.length > 0 && (
                     <CategoriesContainer
                       {...{

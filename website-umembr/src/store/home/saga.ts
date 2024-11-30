@@ -19,6 +19,7 @@ function* getProfileStoriesAsync(): any {
       draftStories: result?.draftStories,
       publishedStories: result?.publishedStories,
       collaboratorStories: result?.collaboratorStories,
+      purchasedStories:result?.purchasedStories,
     };
     yield put(actionObject(GET_PROFILE_STORIES_ASYNC, data));
     yield put(actionObject(SET_HOME_LOADING, false));

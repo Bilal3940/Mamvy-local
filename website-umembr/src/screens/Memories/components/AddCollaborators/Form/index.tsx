@@ -53,7 +53,6 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
 
 
 
-  console.log("I AM THE COLLABORATOR", collaborators)
   const isEmailValid = (email: any) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -111,7 +110,6 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
     setNonValidatedCollaborators(collaborators?.collaborators?.filter((user: any) => !user?.validated));
   }, [collaborators]);
 
-  console.log("NOVAL",nonValidatedCollaborators)
 
   const capitalizeAndRemoveS = (string: any) => {
     let result = string?.charAt(0)?.toUpperCase() + string?.slice(1);
@@ -303,6 +301,7 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
         )}
 
         <RemoveCollaborator
+        color={extendedPalette.buttonbackgroundIcon}
           open={openRemoveCollaborator}
           onClose={() => setOpenRemoveCollaborator(false)}
           values={selectedUser}

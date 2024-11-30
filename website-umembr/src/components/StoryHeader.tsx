@@ -188,7 +188,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                 sx={{
                   height: '100px',
                   borderColor: extendedPalette.dividerColor,
-                  margin: '21px 10px',
+                  margin: '15px 10px',
                 }}
               />
               {secondImgSrc && (
@@ -239,7 +239,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
           }}>
           <AvatarGroup max={4}>
             {images.map((collab, index) => (
-              <Avatar key={index} alt={collab.alt} src={collab.src} sx={{ width: 36, height: 36 }} />
+              <Avatar key={index} alt={collab.alt} src={collab.src} sx={{ width: 40, height: 40 }} />
             ))}
           </AvatarGroup>
         </Box>

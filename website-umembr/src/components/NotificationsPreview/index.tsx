@@ -237,10 +237,14 @@ const { pathname } = useRouter();
                               <MuiButton
                                 variant={'outlined'}
                                 margin='1rem 0.5rem'
-                                backgroundColor={notificationColor}
                                 height='2.625rem'
                                 method={() => handleDeleteNotification(item?.id, actions)}
-                                disabled={actions?.action === 'ACCEPTED'}>
+                                disabled={actions?.action === 'ACCEPTED'}
+                                sx={{'&:hover': {
+      borderColor: notificationColor,  // Change the border color on hover
+              // Change the text color on hover
+    },
+  }}>
                                 <Typography color={palette.white}>{t('decline')}</Typography>
                               </MuiButton>
                             )}
@@ -248,8 +252,14 @@ const { pathname } = useRouter();
                               <MuiButton
                                 variant={'outlined'}
                                 margin='1rem 0.5rem'
+                                
                                 height='2.625rem'
-                                method={() => handlePreview(item)}>
+                                method={() => handlePreview(item)}
+                                sx={{'&:hover': {
+      borderColor: notificationColor,  // Change the border color on hover
+              // Change the text color on hover
+    },
+  }}>
                                 <Typography>{t('preview')}</Typography>
                               </MuiButton>
                             )}

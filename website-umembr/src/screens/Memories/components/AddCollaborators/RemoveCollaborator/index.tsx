@@ -6,8 +6,10 @@ import { MuiButton } from '@/components';
 import { styles } from './styles';
 import { useDispatch } from 'react-redux';
 import { removeCollaborator, removeCollaboratorNoRegister } from '@/store/actions';
+import { useRouter } from 'next/router';
 
 interface ModalDetailProps {
+  color?:any;
   open: boolean;
   onClose: () => void;
   confirmMethod?: () => void;
@@ -16,7 +18,7 @@ interface ModalDetailProps {
   noRegister?: any;
 }
 
-export const RemoveCollaborator = ({ open, onClose, values, noRegister }: ModalDetailProps) => {
+export const RemoveCollaborator = ({ color,open, onClose, values, noRegister }: ModalDetailProps) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -36,6 +38,9 @@ export const RemoveCollaborator = ({ open, onClose, values, noRegister }: ModalD
     }
     onClose();
   };
+  const { pathname } = useRouter();
+
+   let bgColor =  pathname ===   '/app/home' ? palette.primary :color;
 
   return (
     <Modal open={open} onClose={onClose} sx={styles.modal}>
@@ -73,7 +78,12 @@ export const RemoveCollaborator = ({ open, onClose, values, noRegister }: ModalD
         <Divider sx={styles.divider} style={{ margin: '1rem' }} />
         <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
           <Box marginRight={'1rem'}>
-            <MuiButton type='button' loading={false} variant={'outlined'} method={onClose}>
+            <MuiButton type='button' loading={false} variant={'outlined'} method={onClose}
+            sx={{'&:hover': {
+      borderColor: bgColor,  // Change the border color on hover
+              // Change the text color on hover
+    },
+  }}>
               <Typography variant='button' color={palette.white}>
                 {t('cancel')}
               </Typography>
@@ -84,8 +94,14 @@ export const RemoveCollaborator = ({ open, onClose, values, noRegister }: ModalD
               type='submit'
               loading={false}
               variant={'contained'}
+              backgroundColor={bgColor}
               disabled={false}
-              method={() => deleteCollaborator(values, noRegister)}>
+              method={() => deleteCollaborator(values, noRegister)}
+               sx={{
+    '&:hover': {
+      backgroundColor:bgColor, // Add your hover color
+    },
+  }}>
               <Typography variant='button' color={palette.white}>
                 {t('confirm')}
               </Typography>

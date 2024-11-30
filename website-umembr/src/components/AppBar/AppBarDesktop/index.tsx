@@ -411,6 +411,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
       <ClickAwayListener onClickAway={handleCloseNotifications} disableReactTree={true}>
                   <Box position='relative'>
                     <NotificationsPreview
+                      color={buttonBackground}
                       isOpen={openNotification}
                       handleClose={handleCloseNotifications}
                       listItem={notifications?.notifications?.otherNotifications || []}

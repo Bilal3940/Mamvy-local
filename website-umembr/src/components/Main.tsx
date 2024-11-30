@@ -99,10 +99,6 @@ const Main: React.FC = () => {
 
    UseFirstRender(() => {
     if (router.query?.id && !router.query.code) {
-
- 
-
-
       dispatch(
         actualStory({
           id: router.query?.id as string,
@@ -129,44 +125,42 @@ const Main: React.FC = () => {
 
 
 
-useEffect(()=>{
-  dispatch(getExtraContent(router.query?.id as string))
+// useEffect(()=>{
+//   dispatch(getExtraContent(router.query?.id as string))
   
-},[router.query.id])
-useEffect (()=>{
-  if(user &&  user.id ){
+// },[router.query.id])
+// useEffect (()=>{
+//   if(user &&  user.id ){
 
    
-  dispatch(getUserPurchases( user && user?.id));
-  }
-},[user])
-useEffect(() => {
-  // Dispatch to fetch user purchases
-  
-
-  // Check if extraContent is available
-  if (extraContent) {
-    // Only check if the content is paid
-    if (extraContent.isPaid) {
-      if (isAuth) {
-        // Check if the user has purchased the story
-        if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
-          console.log('User has purchased it');
-          setModalOpen(false);  // Close the modal if the user has purchased
-        } else {
-          console.log('User has not purchased it');
-          setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
-        }
-      } else {
-        console.log('User is not authenticated');
-        setModalOpen(true); // Open the modal if the user is not authenticated
-      }
-    } else {
-      console.log('Content is not paid');
-      setModalOpen(false);  // Close the modal if the content is not paid
-    }
-  }
-}, [extraContent, userPurchases, isAuth, user?.id, story.id]);  // Include relevant dependencies
+//   dispatch(getUserPurchases( user && user?.id));
+//   }
+// },[user])
+// useEffect(() => {
+//   // Dispatch to fetch user purchases
+//   // Check if extraContent is available
+//   if (extraContent) {
+//     // Only check if the content is paid
+//     if (extraContent.isPaid) {
+//       if (isAuth) {
+//         // Check if the user has purchased the story
+//         if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
+//           console.log('User has purchased it');
+//           setModalOpen(false);  // Close the modal if the user has purchased
+//         } else {
+//           console.log('User has not purchased it');
+//           setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
+//         }
+//       } else {
+//         console.log('User is not authenticated');
+//         setModalOpen(true); // Open the modal if the user is not authenticated
+//       }
+//     } else {
+//       console.log('Content is not paid');
+//       setModalOpen(false);  // Close the modal if the content is not paid
+//     }
+//   }
+// }, [extraContent, userPurchases, isAuth, user?.id, story.id]);  // Include relevant dependencies
 
 
 
@@ -609,11 +603,11 @@ console.log("i am story", story)
         mediaContent={selectedMemorie}
         method={() => closeCollaboratorsModal()}
       />
-        <Button variant="contained" color="primary" onClick={handleOpen}>
+        {/* <Button variant="contained" color="primary" onClick={handleOpen}>
         Open Modal
-      </Button>
+      </Button> */}
 
-      <PopupModal open={modalOpen} onClose={handleClose} />
+      {/* <PopupModal open={modalOpen} onClose={handleClose} /> */}
       </div>
       // </div>
 

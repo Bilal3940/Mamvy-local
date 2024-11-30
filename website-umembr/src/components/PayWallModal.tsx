@@ -16,7 +16,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
     <ThemeProvider theme={theme}>
       <Modal
         open={open}
-        onClose={onClose} 
+     
         disableAutoFocus 
         disableEnforceFocus 
         aria-labelledby='modal-title'
@@ -33,7 +33,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
             overflow: 'auto',
           }}
-          onClick={onClose}>
+       >
           <Paper
             sx={{
               width: '80%',
@@ -64,7 +64,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                 top: 1,
                 right: 8,
                 color: '#fff',
-                display: { xs: 'block', sm: 'none' },
+                
               }}>
               <CloseIcon />
             </IconButton>

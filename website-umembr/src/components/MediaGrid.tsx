@@ -444,10 +444,10 @@ import MediaModal from './MediaModal';
 import { extendedPalette, palette } from '@/theme/constants';
 import { styles } from './AppBar/CancelModal/styles';
 import VideoThumbnail from './VideoThumbnail';
-import { getMemories } from '@/store/actions';
+import { getExtraContent, getMemories, getUserPurchases } from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { authSelector, homeSelector, memorySelector } from '@/store/selectors';
-import { cdn_url } from '@/utils';
+import { authSelector, extrasSelector, homeSelector, memorySelector, purchaseSelector } from '@/store/selectors';
+import { cdn_url, hasUserPurchasedTheStory } from '@/utils';
 import { FilterDropdown, MuiIconButton, RtfComponent } from '@/components';
 import Image1Icon from '../../public/icons/image1';
 import {  searchStories } from '@/store/actions';
@@ -464,6 +464,8 @@ import EditIcon from '../../public/icons/editing1';
 import Audio2Icon from '../../public/icons/audioGradient';
 import { MemoryDetail } from '@/screens/Memories/components';
 import { Router, useRouter } from 'next/router';
+import PopupModal from './PayWallModal';
+
 type MediaType = 'image' | 'audio' | 'video' | 'text';
 
 interface MediaItem {
@@ -496,13 +498,15 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const [openModal, setOpenModal] = useState(false);
   const [search, setSearch] = useState('');
   const router = useRouter();
+  const {extraContent} = useSelector(extrasSelector);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();
   // Define state for filter and selected media item
   const [filter, setFilter] = useState('All');
   const { stories } = useSelector(homeSelector);
   const prompts = getPropmtsOptions(stories, story);
-  const { user } = useSelector(authSelector);
+  const {userPurchases}=useSelector(purchaseSelector);
+  const { user , isAuth} = useSelector(authSelector);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
@@ -515,7 +519,10 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const [Types, setTypes] = useState([]);
   const ITEMS_PER_PAGE = 10;
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE); // Number of items initially visible
+  const [modalOpen, setModalOpen] = useState(false);
 
+  const handleOpen = (): void => setModalOpen(true);
+  const handleClose = (): void => setModalOpen(false);
   const { isDivider } = extendedPalette.isDividerCheck.isDivider || true;
 
   useEffect(() => {
@@ -574,8 +581,71 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
 
   //   return types.filter((type) => memoriesLoaded?.includes(type.id));
   // }, [memoriesLoaded?.length]);
+  useEffect (()=>{
+  if(user &&  user.id ){
+  dispatch(getUserPurchases( user && user?.id));
+  }
+},[userPurchases])
+const AllowOpenModel = (item:any) => {
+    // Dispatch to fetch user purchases
+  // Check if extraContent is available
+  dispatch(getExtraContent(router.query?.id as string))
+  dispatch(getUserPurchases( user && user?.id));
+  if (extraContent) {
+    // Only check if the content is paid
+    if (extraContent.isPaid) {
+      if (isAuth) {
+        // Check if the user has purchased the story
+        if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
+          console.log('User has purchased it');
 
+          setModalOpen(false);  
+          handleOpenModal(item);
+          window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);// Close the modal if the user has purchased
+        } else {
+          console.log('User has not purchased it');
+          setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
+        }
+      } else {
+        console.log('User is not authenticated');
+        setModalOpen(true); // Open the modal if the user is not authenticated
+      }
+    } else {
+      console.log('Content is not paid');
+      setModalOpen(false);  // Close the modal if the content is not paid
+    }
+  }
+}
+const AllowHandleLoadMore = () => {
+  // Dispatch to fetch user purchases
+// Check if extraContent is available
+dispatch(getExtraContent(router.query?.id as string))
+dispatch(getUserPurchases( user && user?.id));
+if (extraContent) {
+  // Only check if the content is paid
+  if (extraContent.isPaid) {
+    if (isAuth) {
+      // Check if the user has purchased the story
+      if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
+        console.log('User has purchased it');
 
+        setModalOpen(false);  
+        handleLoadMore();
+       // window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);// Close the modal if the user has purchased
+      } else {
+        console.log('User has not purchased it');
+        setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
+      }
+    } else {
+      console.log('User is not authenticated');
+      setModalOpen(true); // Open the modal if the user is not authenticated
+    }
+  } else {
+    console.log('Content is not paid');
+    setModalOpen(false);  // Close the modal if the content is not paid
+  }
+}
+}
 const types = useMemo(() => {
   console.log(memoriesLoaded);
 
@@ -863,6 +933,7 @@ const types = useMemo(() => {
         <Masonry columns={{ xs: 2, sm: 3, md: 4 }} spacing={2} sx={{ margin: 0 }}>
           {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
             <Paper
+            onClick={()=>AllowOpenModel(item)}
               key={index}
               sx={{
                 borderRadius: 2,
@@ -940,8 +1011,7 @@ const types = useMemo(() => {
                 // Call your modal opening function if needed
                 // handleOpenModal(item);
                 onClick={() => {
-                  handleOpenModal(item);
-                  window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
+                 AllowOpenModel(item)
                 }}>
                 {/* {item.type === 'image' && <Image src={`${cdn_url}${item.asset}`} alt={item.title} width={100} height={100} />} */}
                 {item.type === 'image' && (
@@ -1049,7 +1119,7 @@ const types = useMemo(() => {
             <Button
               variant='contained'
               color='primary'
-              onClick={handleLoadMore}
+              onClick={AllowHandleLoadMore}
               sx={{
                 textTransform: 'none', // To maintain consistent typography with primary styling
                 fontWeight: '500',
@@ -1059,7 +1129,7 @@ const types = useMemo(() => {
           )}
         </Box>
       </Box>
-
+      <PopupModal open={modalOpen} onClose={handleClose} />
       <MemoryDetail
         open={Boolean(selectedMedia)}
         onClose={closeMemory}

@@ -590,7 +590,9 @@ const AllowOpenModel = (item:any) => {
     // Dispatch to fetch user purchases
   // Check if extraContent is available
   dispatch(getExtraContent(router.query?.id as string))
+  if(user &&  user.id ){
   dispatch(getUserPurchases( user && user?.id));
+  }
   if (extraContent) {
     // Only check if the content is paid
     if (extraContent.isPaid) {
@@ -620,7 +622,10 @@ const AllowHandleLoadMore = () => {
   // Dispatch to fetch user purchases
 // Check if extraContent is available
 dispatch(getExtraContent(router.query?.id as string))
+if(user &&  user.id ){
+  console.log('calling purchases')
 dispatch(getUserPurchases( user && user?.id));
+}
 if (extraContent) {
   // Only check if the content is paid
   if (extraContent.isPaid) {

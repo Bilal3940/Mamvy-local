@@ -62,7 +62,7 @@ const Main: React.FC = () => {
   };
   const [selectedMemorie, setSelectedMemorie] = useState<any>(null);
   const { status, switchStatus } = UseIntermitence();
-  const {userPurchases}=useSelector(purchaseSelector);
+  // const {userPurchases}=useSelector(purchaseSelector);
   
   const { status: storyStatus, switchStatus: switchStory } = UseIntermitence();
   const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();

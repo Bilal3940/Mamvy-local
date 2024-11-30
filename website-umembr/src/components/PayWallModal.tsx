@@ -5,6 +5,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { theme } from '@/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import IconBasedStepper from '@/components/StepperPaywall';
+import { extrasSelector } from '@/store/selectors';
+import { useSelector } from 'react-redux';
 
 interface PopupModalProps {
   open: boolean;
@@ -12,6 +14,8 @@ interface PopupModalProps {
 }
 
 const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
+  const {extraContent} = useSelector(extrasSelector);
+
   return (
     <ThemeProvider theme={theme}>
       <Modal
@@ -88,8 +92,37 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                     },
                   }}>
                   <img src='/icons/Union.svg' />
+       
+                  {
+  extraContent?.teaserContent && extraContent.teaserContent.map((item: any, index: any) => {
+    // Check if the item contains an <h1> tag
+    if (item.includes('<h1>')) {
+      return <h4 key={index} dangerouslySetInnerHTML={{ __html: item }} />;
+    }
 
-                  <Typography>
+    // Check if the item contains <ul> (unordered list) or <li> (list item)
+    if (item.includes('<ul>') || item.includes('<li>')) {
+      // Modify each <li> item to include an image and text in a flex container
+      const modifiedItem = item.replace(/<li>(.*?)<\/li>/g, (match:any, p1:any) => {
+        return `
+          
+            <Typography variant='body2' display={'flex'} alignItems={'flex-start'}>
+              <img src='/icons/RedTick.svg' style='margin-right: 8px;' />
+              ${p1}
+            </Typography>
+          
+        `;
+      });
+
+      return <div key={index} dangerouslySetInnerHTML={{ __html: modifiedItem }} />;
+    }
+
+    // Default rendering for other content like <p> and text nodes
+    return <div key={index} dangerouslySetInnerHTML={{ __html: item }} />;
+  })
+}
+
+                  {/* <Typography>
                     <Typography fontSize={'1.5rem'}>Welcome to Memvy</Typography>
                     <Typography fontSize={'1.1rem'} color={'#CCCCCC'} lineHeight={'20px'}>
                       The Future of Enjoying the Past
@@ -116,7 +149,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                       <img src='/icons/RedTick.svg' style={{ marginRight: '8px' }} />
                       Experience the excitement of gameday again and again
                     </Typography>
-                  </Typography>
+                  </Typography> */}
 
                   <Typography
                     sx={{
@@ -128,7 +161,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                       sx={{
                         marginTop: { xs: '10px', sm: '35px' }, 
                       }}>
-                      $5.00
+                      ${extraContent?.price}.00
                     </Typography>
                   </Typography>
                 </Box>

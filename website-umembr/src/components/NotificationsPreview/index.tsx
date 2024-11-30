@@ -40,9 +40,10 @@ interface CustomPopperProps {
   listItem: any;
   type?: string;
   blur?: boolean;
+  color?:any;
 }
 
-export const NotificationsPreview = ({ isOpen, listItem, type, blur }: CustomPopperProps) => {
+export const NotificationsPreview = ({color, isOpen, listItem, type, blur }: CustomPopperProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -113,6 +114,8 @@ const { pathname } = useRouter();
   };
 
   let bgColor =    router.pathname ===   '/app/home' ? palette.cardBackground :'transparent';
+  let notificationColor =    router.pathname ===   '/app/home' ? palette.cardBackground :color;
+
 
 
 
@@ -164,7 +167,11 @@ const { pathname } = useRouter();
                 </Typography>
                 {sortedListItem.length > 0 && (
                   <Box sx={styles(isMobile).buttons}>
-                    <MuiButton variant={'contained'} borderRadius='6.35rem' method={() => handleClearAll()}>
+                    <MuiButton variant={'contained'} backgroundColor={notificationColor} borderRadius='6.35rem' method={() => handleClearAll()}
+                       sx={{
+    '&:hover': {
+      backgroundColor: notificationColor, // Set your desired hover background color here
+    }}}>
                       <Typography>{t('clear_all')}</Typography>
                     </MuiButton>
                   </Box>
@@ -230,6 +237,7 @@ const { pathname } = useRouter();
                               <MuiButton
                                 variant={'outlined'}
                                 margin='1rem 0.5rem'
+                                backgroundColor={notificationColor}
                                 height='2.625rem'
                                 method={() => handleDeleteNotification(item?.id, actions)}
                                 disabled={actions?.action === 'ACCEPTED'}>
@@ -249,9 +257,14 @@ const { pathname } = useRouter();
                             <MuiButton
                               variant={'contained'}
                               margin='1rem 0.5rem'
+                              backgroundColor={notificationColor}
                               height='2.625rem'
                               method={() => handleAccept({ actions, item })}
-                              disabled={actions?.action === 'ACCEPTED'}>
+                              disabled={actions?.action === 'ACCEPTED'}
+                               sx={{
+    '&:hover': {
+      backgroundColor: notificationColor, // Set your desired hover background color here
+    }}}>
                               <Typography>{actions?.type === 'COLLABORATION_ACCEPTED' || actions?.type === 'APPROVED'  ? t('close') :  t('accept')}</Typography>
                             </MuiButton>
                           </Box>

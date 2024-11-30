@@ -59,11 +59,11 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
           <MainContent description={mediaContent?.description} media={mediaContent} boxRef={boxRef} height={height} />
         );
       case 'image':
-        return <ImageContent mediaData={mediaContent?.memory_details?.complementaryImage} boxRef={boxRef} />;
+        return <ImageContent color={accentColor} mediaData={mediaContent?.memory_details?.complementaryImage} boxRef={boxRef} />;
       case 'text':
-        return <TextContent mediaData={mediaContent?.memory_details?.complementaryText} boxRef={boxRef} />;
+        return <TextContent  color={accentColor} mediaData={mediaContent?.memory_details?.complementaryText} boxRef={boxRef} />;
       case 'video':
-        return <VideoContent mediaData={mediaContent?.memory_details?.complementaryVideo} boxRef={boxRef} />;
+        return <VideoContent  color={accentColor} mediaData={mediaContent?.memory_details?.complementaryVideo} boxRef={boxRef} />;
       case 'audio':
         return <AudioContent mediaData={mediaContent?.memory_details?.complementaryAudio} boxRef={boxRef} />;
 

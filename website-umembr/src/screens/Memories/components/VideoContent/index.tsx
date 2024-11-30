@@ -5,7 +5,7 @@ import { UseFirstRender } from '@/hooks';
 import VideoItem from './VideoItem';
 import { cdn_url } from '@/utils';
 
-export const VideoContent = ({ mediaData, boxRef }: any) => {
+export const VideoContent = ({ color,mediaData, boxRef }: any) => {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [elementSelected, setElementSelected] = useState<any>();
 
@@ -47,6 +47,7 @@ export const VideoContent = ({ mediaData, boxRef }: any) => {
               const formatItem = typeof item === 'string' ? item : item.video;
               return (
                 <VideoItem
+                color={color}
                   key={index}
                   thumbnail={typeof item === 'string' ? null : item.thumb}
                   item={formatItem}

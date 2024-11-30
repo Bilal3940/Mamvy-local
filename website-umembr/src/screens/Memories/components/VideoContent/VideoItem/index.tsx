@@ -3,17 +3,21 @@ import { palette } from '@/theme/constants';
 import { cdn_url } from '@/utils';
 import { Box, Grid, Theme, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { FC } from 'react';
 
-const VideoItem: FC<any> = ({ item, name, elementSelected, handleSelectVideo, thumbnail }) => {
+const VideoItem: FC<any> = ({ color,item, name, elementSelected, handleSelectVideo, thumbnail }) => {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const router= useRouter();
+  let bgColor =    router.pathname ===   '/app/home' ? palette.primary :color;
+  // console.log("i am color in imamge",bgColor)
 
   return (
     <Grid
       item
       position={'relative'}
       borderRadius={'1.25rem'}
-      border={elementSelected?.name === name ? `0.0625rem solid ${palette.primary}` : 'none'}
+      border={elementSelected?.name === name ? `0.0625rem solid ${bgColor}` : 'none'}
       xs={isMobile ? 3.8 : 3.5}
       onClick={(e) => handleSelectVideo(e, { name, url: `${cdn_url}${item}` })}
       height={'7rem'}

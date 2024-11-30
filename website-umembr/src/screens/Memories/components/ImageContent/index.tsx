@@ -7,7 +7,7 @@ import ImageItem from './ImageItem';
 import { UseFirstRender } from '@/hooks';
 import { cdn_url } from '@/utils';
 
-export const ImageContent = ({ mediaData, boxRef }: any) => {
+export const ImageContent = ({color, mediaData, boxRef }: any) => {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [elementSelected, setElementSelected] = useState<any>();
 
@@ -20,7 +20,7 @@ export const ImageContent = ({ mediaData, boxRef }: any) => {
     <Box height={'calc(100% - 3.2rem)'} overflow={'auto'} ref={boxRef}>
       <Box
         borderRadius={'1.25rem'}
-        border={` ${palette.primary}`}
+        border='red'
         width={'100%'}
         position={'relative'}
         height={isMobile ? '29vh' : '22rem'}
@@ -53,6 +53,7 @@ export const ImageContent = ({ mediaData, boxRef }: any) => {
               {mediaData?.map((item: any, index: number) => {
                 return (
                   <ImageItem
+                  color={color}
                     key={index}
                     item={item}
                     name={item?.split('/').pop()}

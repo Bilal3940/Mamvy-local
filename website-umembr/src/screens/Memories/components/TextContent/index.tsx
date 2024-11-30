@@ -1,8 +1,12 @@
 import { RtfComponent } from '@/components';
 import { palette } from '@/theme/constants';
 import { Box } from '@mui/material';
+import { useRouter } from 'next/router';
 
-export const TextContent = ({ mediaData, boxRef }: any) => {
+export const TextContent = ({ color,mediaData, boxRef }: any) => {
+  const router=useRouter();
+  let bgColor =    router.pathname ===   '/app/home' ? palette.cardBorder :color;
+  // console.log("i am color in imamge",bgColor)
   return (
     <Box flexDirection={'column'} ref={boxRef} height={'calc(100% - 3.2rem)'}>
       <Box height={'100%'} sx={{ overflowY: 'auto' }}>
@@ -10,7 +14,7 @@ export const TextContent = ({ mediaData, boxRef }: any) => {
           minHeight={'6.25rem'}
           bgcolor={palette.cardBackground}
           sx={{ backdropFilter: 'blur(1.5625rem)' }}
-          border={`0.063rem solid ${palette.cardBorder}`}
+          border={`0.063rem solid ${bgColor}`}
           margin={'1rem 0'}
           borderRadius={'1.25rem'}
           padding={'1rem 1.1875rem'}>

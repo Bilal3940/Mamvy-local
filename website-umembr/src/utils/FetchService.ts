@@ -9,7 +9,6 @@ const API_URL = process.env.REST_URL || fallbackRestUrl;
 
 function* FetchService(url: any, method = 'GET', variables = {}, auth: any = null, loading: any = true): any {
   try {
-    console.log(url, variables, method)
     if (loading) yield put(actionObject(SHOW_LOADING, true));
     const headers: any = {
       'Content-Type': 'application/json',

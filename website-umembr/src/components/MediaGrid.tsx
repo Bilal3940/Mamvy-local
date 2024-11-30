@@ -533,7 +533,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
       dispatch(getMemories(story?.id));
     }
   }, [story?.id, dispatch]);
-  console.log('i am the memory loded', memoriesLoaded);
+  // console.log('i am the memory loded', memoriesLoaded);
 
   const handleClick = (filterType: string) => {
     setFilter(filterType);
@@ -550,7 +550,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
     setOpenPeople(false);
   };
   const setShowFilters = (event: any) => {
-    console.log('I am clicked');
+    // console.log('I am clicked');
     event.preventDefault();
     event.stopPropagation();
     setOpenFilters((openFilters) => !openFilters);
@@ -602,21 +602,21 @@ const AllowOpenModel = (item:any) => {
       if (isAuth) {
         // Check if the user has purchased the story
         if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
-          console.log('User has purchased it');
+          // console.log('User has purchased it');
 
           setModalOpen(false);  
           handleOpenModal(item);
           window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);// Close the modal if the user has purchased
         } else {
-          console.log('User has not purchased it');
+          // console.log('User has not purchased it');
           setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
         }
       } else {
-        console.log('User is not authenticated');
+        // console.log('User is not authenticated');
         setModalOpen(true); // Open the modal if the user is not authenticated
       }
     } else {
-      console.log('Content is not paid');
+      // console.log('Content is not paid');
       setModalOpen(false);  // Close the modal if the content is not paid
     }
   }
@@ -626,7 +626,7 @@ const AllowHandleLoadMore = () => {
 // Check if extraContent is available
 dispatch(getExtraContent(router.query?.id as string))
 if(user &&  user.id ){
-  console.log('calling purchases')
+  // console.log('calling purchases')
 dispatch(getUserPurchases( user && user?.id));
 }
 if (extraContent) {
@@ -635,27 +635,27 @@ if (extraContent) {
     if (isAuth) {
       // Check if the user has purchased the story
       if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
-        console.log('User has purchased it');
+        // console.log('User has purchased it');
 
         setModalOpen(false);  
         handleLoadMore();
        // window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);// Close the modal if the user has purchased
       } else {
-        console.log('User has not purchased it');
+        // console.log('User has not purchased it');
         setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
       }
     } else {
-      console.log('User is not authenticated');
+      // console.log('User is not authenticated');
       setModalOpen(true); // Open the modal if the user is not authenticated
     }
   } else {
-    console.log('Content is not paid');
+    // console.log('Content is not paid');
     setModalOpen(false);  // Close the modal if the content is not paid
   }
 }
 }
 const types = useMemo(() => {
-  console.log(memoriesLoaded);
+  // console.log(memoriesLoaded);
 
   const types = [
     {
@@ -729,7 +729,7 @@ const types = useMemo(() => {
   const [isFilterActive, setIsFilterActive] = useState(false);
   
 useEffect(() => {
-    console.log("i am value in media grid:",isFilterActive)
+    // console.log("i am value in media grid:",isFilterActive)
   }, [isFilterActive]);
 
   

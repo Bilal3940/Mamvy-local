@@ -57,7 +57,7 @@ const template = createTheme({
 
 const Main: React.FC = () => {
   const handleBackClick = () => {
-    console.log("Back button clicked");
+    // console.log("Back button clicked");
      router.push('/app/home'); 
   };
   const [selectedMemorie, setSelectedMemorie] = useState<any>(null);
@@ -120,7 +120,7 @@ const Main: React.FC = () => {
     if (story?.id) dispatch(getCollaboratorStory(story?.id));
   }, [story]);
 
-  console.log("coll in main",collaborators?.collaborators)
+  // console.log("coll in main",collaborators?.collaborators)
   // new content for popup content
 
 
@@ -164,8 +164,8 @@ const Main: React.FC = () => {
 
 
 
-  console.log("extra content",extraContent )
-  console.log("purchase",purchase)
+  // console.log("extra content",extraContent )
+  // console.log("purchase",purchase)
 
 
 
@@ -303,7 +303,7 @@ const Main: React.FC = () => {
       }
     };
   }, [story]);
-console.log("i am story", story)
+// console.log("i am story", story)
   const closeCollaboratorsModal = () => {
     dispatch(closePublishModal());
   };

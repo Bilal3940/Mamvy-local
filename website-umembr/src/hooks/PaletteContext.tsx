@@ -19,8 +19,8 @@ export const PaletteProvider = ({
   const dynamicPalette = {
     ...(templateColors || {}),
   };
-  console.log("I am the dynamic palette",dynamicPalette)
-  console.log("i am the template", templateColors)
+  // console.log("I am the dynamic palette",dynamicPalette)
+  // console.log("i am the template", templateColors)
 
   return (
     <PaletteContext.Provider value={{ palette: dynamicPalette }}>

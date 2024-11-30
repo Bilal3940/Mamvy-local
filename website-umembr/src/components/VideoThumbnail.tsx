@@ -28,7 +28,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
       const canvas = canvasRef.current;
 
       const handleLoadedMetadata = () => {
-        console.log("Video metadata loaded", video.videoWidth, video.videoHeight);
+        // console.log("Video metadata loaded", video.videoWidth, video.videoHeight);
 
         if (!video.videoWidth || !video.videoHeight) return;
 

@@ -10,7 +10,6 @@ const VideoItem: FC<any> = ({ color,item, name, elementSelected, handleSelectVid
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const router= useRouter();
   let bgColor =    router.pathname ===   '/app/home' ? palette.primary :color;
-  // console.log("i am color in imamge",bgColor)
 
   return (
     <Grid

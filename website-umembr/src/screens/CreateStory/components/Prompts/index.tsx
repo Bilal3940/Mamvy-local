@@ -66,7 +66,7 @@ export const PromptsStories = ({
   const { storySection, prev_stories } = createData;
 
   const [prompts, setPrompts] = useState(storyPrompts);
-  console.log("i am the prompts", prompts)
+  // console.log("i am the prompts", prompts)
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const statePrompts = useSelector((state: any) => state.story.prompts);
 

@@ -103,7 +103,7 @@ const EmbeddedPaymentForm: React.FC<PaymentProps> = ({onSuccessfullPayment}) => 
 
 // DUMMY METHOD ADDED TO CRAETE THE ORDER
 
-        console.log('payment response',paymentMethod);
+        // console.log('payment response',paymentMethod);
         const payload={
         userEmail: user?.email ?? "usertest1@example.com",
         userName:  user?.name ?? "John Doe test1",

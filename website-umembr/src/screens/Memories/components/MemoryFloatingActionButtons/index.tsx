@@ -15,7 +15,6 @@ interface MemoryFloatingActionButtonsProps {
 }
 const MemoryFloatingActionButtons: FC<MemoryFloatingActionButtonsProps> = (props) => {
   const { user, story, isMobile,extendedPalette} = props;
-  console.log('I am pallete Umar',extendedPalette);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const goToCreateMemory = () => {

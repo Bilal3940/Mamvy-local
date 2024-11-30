@@ -50,7 +50,7 @@ export const Home = () => {
     dispatch(getProfileStories());
     dispatch(clearExtraContent())
   }, []);
-  console.log("i am the extra in home", extraContent)
+  // console.log("i am the extra in home", extraContent)
 
 
   // const handleItemClick = (item: any) => {

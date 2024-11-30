@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 export const TextContent = ({ color,mediaData, boxRef }: any) => {
   const router=useRouter();
   let bgColor =    router.pathname ===   '/app/home' ? palette.cardBorder :color;
-  // console.log("i am color in imamge",bgColor)
   return (
     <Box flexDirection={'column'} ref={boxRef} height={'calc(100% - 3.2rem)'}>
       <Box height={'100%'} sx={{ overflowY: 'auto' }}>

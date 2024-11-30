@@ -13,12 +13,10 @@ import FetchService from '@/utils/FetchService';
 
 
 function* createUserPurchaseAsync({ payload }: any): any {
-    console.log("i am the payload", payload)
     try {
         const { user } = yield select(authSelector);
         const url = `/order/one-time-order`;
         const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
-        console.log("i am trhe result", result)
         if (result) {
             yield put(actionObject(CREATE_USER_PURCHASE_ASYNC, result));
 
@@ -40,7 +38,6 @@ function* getUserPurchasesAsync({ payload }: any): any {
       const url = `order/userPurchases/${payload.userId}`;
       const { result } = yield call(FetchService, url, 'GET', '', user?.token);
       
-      console.log("User purchases fetched:", result); // Debug API result
       
       if (result) {
         yield put(actionObject(GET_USER_PURCHASES_ASYNC, result));

@@ -80,7 +80,7 @@ export const FilterDropdown = ({ isOpen, listItem, callbackfunction }: CustomPop
   };
   
 
-  console.log("prompt selected",promptSelected);
+  // console.log("prompt selected",promptSelected);
 
 
   const handleCheckCollaborators = (value: any) => {
@@ -102,7 +102,7 @@ export const FilterDropdown = ({ isOpen, listItem, callbackfunction }: CustomPop
     dispatch(searchStories({ ...homeData?.criterias, collaborators: updatedData }));
   };
 
-  console.log("colab selected", collabSelected)
+  // console.log("colab selected", collabSelected)
 
   const handleCheckTypes = (value: any) => {
     if (value === undefined) return;
@@ -122,7 +122,7 @@ export const FilterDropdown = ({ isOpen, listItem, callbackfunction }: CustomPop
     }
     dispatch(searchStories({ ...homeData?.criterias, types: updatedData }));
   };
-  console.log("types selected", typesSelected)
+  // console.log("types selected", typesSelected)
 
 useEffect(()=>{
   if (callbackfunction) {

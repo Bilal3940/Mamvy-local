@@ -34,11 +34,11 @@ export default function IconBasedStepper() {
 
   useEffect(()=>{
      
-      console.log("USer purchases are", userPurchases)
+      // console.log("USer purchases are", userPurchases)
   },[userPurchases])
   const paymentSuccessfull = () => {
     // Fetch user purchases
-  console.log('successsfull')
+  // console.log('successsfull')
     if (purchase && purchase) {
       if(purchase.userId===user.id && purchase.storyId === story.id && purchase.orderStatus==="successful"){
      setActiveStep(2);

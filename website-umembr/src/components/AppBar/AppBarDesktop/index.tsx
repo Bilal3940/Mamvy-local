@@ -66,7 +66,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
     accentColor: '', // Default value
   });
 
-  console.log("query", query)
+//  console.log("query", query)
   
 
   const setShowDropdown = (event: any) => {
@@ -88,7 +88,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
   };
 
   const setShowFilters = (event: any) => {
-    console.log("I am clicked")
+//    console.log("I am clicked")
     event.preventDefault();
     event.stopPropagation();
     setOpenFilters((openFilters) => !openFilters);
@@ -180,7 +180,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
  
 
   const handleCloseButton = ()=>{
-    console.log(" i am the has changes", hasChanges.hasChanges)
+//    console.log(" i am the has changes", hasChanges.hasChanges)
       if (hasChanges.hasChanges) {
         switchStatus()
         return;
@@ -268,7 +268,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
 
     return () => { resizeObserver.disconnect() }
   }, [router?.pathname]);
-  console.log("ïntermitttance data", intermitenceData)
+//  console.log("ïntermitttance data", intermitenceData)
   return (
     <>
       <MotionAppBar
@@ -299,7 +299,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                       loading={false}
                       variant={'contained'}
                       method={() => {dispatch(openPublishModal());
-                          console.log("i am clicked")
+//                          console.log("i am clicked")
                       }}
                        sx={{
     '&:hover': {

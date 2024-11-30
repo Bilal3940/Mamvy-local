@@ -51,7 +51,6 @@ export const AddCollaborators = ({ add, onClose,extendedPalette }: ModalDetailPr
     navigator.clipboard.writeText(`${base_url}${router?.asPath}?code=${story?.story?.password}${story?.story?.user?.refferal_code ? `?referral_code=${story?.story?.user?.referalCode?.trim()}` : ''}`);
     setTimeout(() => setLinkCode(false), 2000);
   };
-console.log('i am extendeddddddddddddd',extendedPalette)
   return (
     <Modal open={add} onClose={onClose} sx={styles.modal}>
       <Box

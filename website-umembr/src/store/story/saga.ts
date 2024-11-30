@@ -54,7 +54,6 @@ function* setPrompts({ payload }: any) {
 function* getStoryStatus({ payload }: any){
 try{
   const { result } = yield call(FetchService, 'stories/getStoryStatus', 'GET', payload);
-  console.log("result result", result)
   yield put(actionObject(GET_STORY_STATUS_ASYNC, result));
 }catch(error){
 

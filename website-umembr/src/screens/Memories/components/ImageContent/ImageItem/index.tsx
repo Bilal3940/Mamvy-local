@@ -9,7 +9,6 @@ const ImageItem: FC<any> = ({color, item, name, elementSelected, setElementSelec
   const router=useRouter();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   let bgColor =    router.pathname ===   '/app/home' ? palette.primary :color;
-  // console.log("i am color in imamge",bgColor)
   return (
     <Grid
       item

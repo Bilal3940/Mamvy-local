@@ -731,26 +731,47 @@ useEffect(() => {
 
   
 
-  const filteredMediaItems = memoriesLoaded
-    ?.filter(
-      (item: any) =>
-        (filter === 'All' || item.type === filter.toLowerCase()) &&
-        (!search ||
-          (search.length >= 3 &&
-            (item.title?.toLowerCase().includes(search.toLowerCase()) ||
-              item.username?.toLowerCase().includes(search.toLowerCase())))),
-    )
-    ?.sort((a: any, b: any) => {
-      if (!sortOrder) return 0; // No sorting
-      switch (sortOrder) {
-        case 'asc':
-          return a.title.localeCompare(b.title); // Title Ascending
-        case 'desc':
-          return b.title.localeCompare(a.title); // Title Descending
-        default:
-          return 0;
-      }
-    });
+  // const filteredMediaItems = memoriesLoaded
+  //   ?.filter(
+  //     (item: any) =>
+  //       (filter === 'All' || item.type === filter.toLowerCase()) &&
+  //       (!search ||
+  //         (search.length >= 3 &&
+  //           (item.title?.toLowerCase().includes(search.toLowerCase()) ||
+  //             item.username?.toLowerCase().includes(search.toLowerCase())))),
+  //   )
+  //   ?.sort((a: any, b: any) => {
+  //     if (!sortOrder) return 0; // No sorting
+  //     switch (sortOrder) {
+  //       case 'asc':
+  //         return a.title.localeCompare(b.title); // Title Ascending
+  //       case 'desc':
+  //         return b.title.localeCompare(a.title); // Title Descending
+  //       default:
+  //         return 0;
+  //     }
+  //   });
+  const isChronological = truestory; // Set to true for chronological, false for reverse chronological
+
+const filteredMediaItems = memoriesLoaded
+  ?.filter(
+    (item: any) =>
+      (filter === 'All' || item.type === filter.toLowerCase()) &&
+      (!search ||
+        (search.length >= 3 &&
+          (item.title?.toLowerCase().includes(search.toLowerCase()) ||
+            item.username?.toLowerCase().includes(search.toLowerCase())))),
+  )
+  ?.sort((a: any, b: any) => {
+    if (isChronological) {
+      // Chronological order (earliest to latest)
+      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    } else {
+      // Reverse chronological order (latest to earliest)
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }
+  });
+
 
   const allItemsLoaded = visibleItems >= filteredMediaItems.length;
   // loadmore button handler
@@ -948,7 +969,7 @@ useEffect(() => {
                 borderRadius: 2,
                 overflow: 'hidden',
                 backgroundColor: extendedPalette.cardMediaBackground,
-                // color: extendedPalette.cardMediaColor,
+                color: extendedPalette.cardMediaColor,
                 display: 'flex',
                 flexDirection: 'column',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -994,7 +1015,7 @@ useEffect(() => {
           textAlign: 'left',
         }}
       >
-        {format(new Date(item.created_at), 'MMM yyyy')}
+        {format(new Date(item.created_at), 'MMM dd, yyyy')}
       </Typography>
     </Box>
   </Box>

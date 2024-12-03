@@ -1,5 +1,5 @@
 import { palette } from '@/theme/constants';
-import { Avatar, Box, Divider, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
+import { Box, Divider, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, collaboratorSelector, storySelector } from '@/store/selectors';
@@ -413,6 +413,13 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
                           { id: 'other', name: 'Other' },
                           { id: 'family', name: 'Family' },
                           { id: 'friends', name: 'Friends' },
+                          {id:'fans', name:'Fans'},
+                          {id:'athelete', name:'Athelete'},
+                          {id:'players', name:'players'},
+                          {}
+
+
+
                         ]}
                       />
                     </Box>
@@ -437,7 +444,6 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
                           { id: 'owner', name: 'Owner' },
                           { id: 'collaborator', name: 'Collaborator' },
                           { id: 'viewer', name: 'Viewer' },
-                          {id:'uga_collaborator', name:'UGA Collaborator'},
                         ]}
                       />
                     </Box>

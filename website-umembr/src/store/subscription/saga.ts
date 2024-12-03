@@ -1,5 +1,5 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { actionObject, checkPermissions, showDialog } from '../../utils/common';
+import { actionObject, showDialog } from '../../utils/common';
 
 import {
   GET_PRODUCTS,

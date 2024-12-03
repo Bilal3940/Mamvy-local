@@ -13,26 +13,21 @@ import { MuiIconButton, MuiTextField } from '@/components';
 
 import { UseFirstRender } from '@/hooks';
 import {
-  actualStory,
-  deleteNotification,
   loginApple,
   loginFacebook,
   loginGoogle,
   loginUser,
   loginUserView,
-  setStep,
 } from '@/store/actions';
-import {  setGuest } from '@/store/collaborator/action';
-import { authSelector, collaboratorSelector, intermitenceSelector } from '@/store/selectors';
+import { authSelector, intermitenceSelector } from '@/store/selectors';
 
 import { face_client_id, google_client_id } from '@/utils';
-import {  Divider, Grid, Theme,  useMediaQuery } from '@mui/material';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useTranslation } from 'next-i18next';
 
 
 import { useRouter } from 'next/router';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import AppleLogin from 'react-apple-login';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -48,18 +43,8 @@ declare let AppleID: any;
 
   const LoginForm: React.FC<PopupModalProps> = ({ open, onClose }) => {
 
-    
     const [showSignup , setShowSignup]=useState(false);
     
-
-    const handleClickShowPassword = () => {
-      setShowPassword(!showPassword);
-    };
-
-    function OpenSignup (){
-  setShowSignup(true);
-    }
-
     
     class ExternalScriptError extends Error {
       constructor(src: string) {
@@ -69,13 +54,11 @@ declare let AppleID: any;
     }  
       const { t } = useTranslation();
       const router = useRouter();
-      const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
       const authData = useSelector(authSelector);
       const { loading } = useSelector(intermitenceSelector);
       const clientId = google_client_id;
       const dispatch = useDispatch();
       const [appleReady, setAppleReady] = useState(false);
-      const collaborator = useSelector(collaboratorSelector);
       const decodeBase64 = (encodedString: any) => {
         return Buffer.from(encodedString, 'base64').toString('utf-8');
       };

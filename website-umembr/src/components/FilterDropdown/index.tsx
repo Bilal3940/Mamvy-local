@@ -1,11 +1,11 @@
 import { Box, Checkbox, FormControlLabel, MenuItem, MenuList, Theme, Typography, useMediaQuery } from '@mui/material';
 import { palette } from '@/theme/constants';
 import { useTranslation } from 'next-i18next';
-import { currentStorySelector, templatesSelector } from '@/store/selectors';
+import { templatesSelector } from '@/store/selectors';
 import { styles } from './styles';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
 import { MuiTabs } from '../Tabs';
-import { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { getTabsFilters } from '../AppBar/constants';
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -46,12 +46,13 @@ export const FilterDropdown = ({ isOpen, listItem, callbackfunction }: CustomPop
   const dispatch = useDispatch();
   const homeData = useSelector(homeSelector);
   const { story } = useSelector(storySelector);
-  const { memoryTypes } = useSelector(memorySelector);
   const [promptSelected, setPromptSelected] = useState(false);
   const [collabSelected, setCollabSelected] = useState(false);
   const [typesSelected, setTypesSelected] = useState(false);
   const { template } = useSelector(templatesSelector);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
+  console.log("home",homeData?.criterias?.prompts)
 
   const handleCheckPrompts = (value: any) => {
     if (value === undefined) return;
@@ -215,7 +216,7 @@ useEffect(()=>{
           initial={!isOpen ? 'open' : 'closed'}
           exit={!isOpen ? 'open' : 'closed'}
           position={'absolute'}
-          top={isMobile? '1rem' : '7rem'}
+          top={isMobile? '1rem' : '3rem'}
           right={0}
           width={'20rem'}
           zIndex={10}

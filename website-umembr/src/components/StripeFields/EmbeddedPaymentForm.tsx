@@ -8,7 +8,6 @@ import {
   PaymentRequestButtonElement,
 } from "@stripe/react-stripe-js";
 import {  PaymentRequest } from '@stripe/stripe-js';
-import { colors } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { createUserPurchase } from "@/store/actions";
 import { authSelector, purchaseSelector, storySelector } from "@/store/selectors";

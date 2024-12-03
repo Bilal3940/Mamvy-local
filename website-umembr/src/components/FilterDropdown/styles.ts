@@ -1,5 +1,4 @@
-import { palette } from '@/theme/constants';
-import { red } from '@mui/material/colors';
+
 
 export const styles = (isMobile: boolean,bgColor?: string) => ({
   dropDown: {

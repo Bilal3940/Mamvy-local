@@ -16,6 +16,19 @@ const statusManagement = (inputStatus: any = 'inherit') => {
   if (inputStatus == 'inherit') return false;
   if (inputStatus == 'error') return true;
 };
+export const formatDate = (dateString: string): string => {
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
+
+  const date = new Date(dateString);
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month} ${day < 10 ? "0" + day : day}, ${year}`;
+};
 
 // Some overloads to help with typings on reducers & action definitions
 export function actionObject<ActionType>(

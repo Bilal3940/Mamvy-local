@@ -54,8 +54,13 @@ export const getPropmtsOptions = (stories: any, story: any) => {
     { label: 'share_a_memory_fun2', id: '14' },
     { label: 'share_a_memory_challenge2', id: '15' },
     { label: 'share_a_memory_other4', id: '16' },
-  ];
-
+      { label: 'share_a_test_prompt_1', id: '17' },
+      { label: 'share_a_memory_test_prompt_2', id: '18' },
+      { label: 'share_a_memory_challenge2_test_prompt_3', id: '19' },
+      { label: 'share_a_memory_other4_test_prompt_4', id: '20' },
+      { label: 'share_a_memory_other4_test_prompt_5', id: '21' },
+      { label: 'share_a_memory_other4_test_prompt_6', id: '22' }
+  ]
   const generalPrompts: any = [
 
   ]

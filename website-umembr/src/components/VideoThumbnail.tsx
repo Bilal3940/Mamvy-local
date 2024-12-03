@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
 
 // Function to extract YouTube video ID from the URL
@@ -66,8 +67,14 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
     <div>
       {thumbnail ? (
         <div style={{ position: "relative" }}>
-          <img src={thumbnail} alt="Video Thumbnail" style={{ width: "100%", height: "auto" }} />
+  <Image 
+    src={thumbnail} 
+    alt="Video Thumbnail" 
+    width={100}
+    height={100}
 
+    style={{width:'100%', height:'auto'}} 
+  />
           <div
             style={{
               position: "absolute",

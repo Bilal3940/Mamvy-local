@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Stepper, Step, StepLabel, Box, Avatar, Typography, TextField, Button } from '@mui/material';
+import {Box, Avatar, Typography, TextField, Button } from '@mui/material';
 
 const StepForm = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -16,14 +16,7 @@ const StepForm = () => {
       return;
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  
+  };  
   const handleStepClick = (step: number) => {
     setActiveStep(step);
   };

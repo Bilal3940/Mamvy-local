@@ -12,7 +12,6 @@ import {
   setPrompts,
   getUploadSignedUrl,
   createStoryViewG,
-  refreshUserData,
 } from '@/store/actions';
 import { TypeStory, FormStories, PromptsStories, FinishCreate } from './components';
 import { useRouter } from 'next/router';

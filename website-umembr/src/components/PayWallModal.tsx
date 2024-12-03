@@ -1,12 +1,13 @@
 import React from 'react';
-import { Modal, Box, Paper, Grid, Typography, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Modal, Box, Paper, Grid, Typography} from '@mui/material';
 
 import { theme } from '@/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import IconBasedStepper from '@/components/StepperPaywall';
 import { extrasSelector } from '@/store/selectors';
 import { useSelector } from 'react-redux';
+import { MuiIconButton } from './IconButton';
+import Image from 'next/image';
 
 interface PopupModalProps {
   open: boolean;
@@ -61,19 +62,14 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
             }}
             onClick={(e) => e.stopPropagation()}>
             {/* Close Button */}
-            <IconButton
-              onClick={onClose}
-              sx={{
-                position: 'absolute',
-                top: 1,
-                right: 8,
-                color: '#fff',
-                
-              }}>
-              <CloseIcon />
-            </IconButton>
+            <MuiIconButton  sx={{
+            position: 'absolute',
+            top: 0,
+            right: 15,
+            padding: '0.5px',
+          }} icon='/icons/close' altIcon='close' background={'transparent'} method={onClose} />
 
-            <Grid container spacing={2}>
+            <Grid container spacing={2}  >
               {/* Left Card (Description & Pricing) */}
               <Grid item xs={12} md={6}>
                 <Box
@@ -91,7 +87,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                       height: 'auto',
                     },
                   }}>
-                  <img src='/icons/Union.svg' />
+                  <Image width={200} height={200} alt='memvy' src='/icons/Union.svg' />
        
                   {
   extraContent?.teaserContent && extraContent.teaserContent.map((item: any, index: any) => {

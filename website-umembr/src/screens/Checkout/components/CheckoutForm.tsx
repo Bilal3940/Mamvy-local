@@ -3,12 +3,9 @@ import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { PaymentForm } from './PaymentForm';
-import { Box, Card, Typography } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { subscriptionSelector } from '@/store/selectors';
+import { Box,  Typography } from '@mui/material';
+import { useDispatch} from 'react-redux';
 import { useRouter } from 'next/router';
-import { REFRESH_USER_DATA_ASYNC } from '@/store/auth/action-types';
-import { refreshUserData } from '@/store/actions';
 import { stripe_public_key } from '../../../utils/path';
 interface CheckoutFormProps {
   handleClose: () => void;
@@ -17,8 +14,6 @@ interface CheckoutFormProps {
 
 const stripePromise = loadStripe(stripe_public_key);
 export const CheckoutForm: React.FC<CheckoutFormProps> = ({ handleClose }) => {
-  const dispatch = useDispatch();
-  const router = useRouter();
   const handlePaymentSuccess = () => {
     handleClose();
   };

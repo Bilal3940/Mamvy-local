@@ -2,10 +2,8 @@ import * as React from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import Button from '@mui/material/Button';
 import { Box, Typography } from '@mui/material';
 import { palette } from '@/theme/constants';
-import ExpandMoreIcon from '/public/icons/down-arrow-dark.svg'
 import Image from 'next/image';
 import { faqs } from '@/utils';
 export default function FAQ() {

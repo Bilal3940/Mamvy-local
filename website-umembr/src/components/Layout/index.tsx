@@ -52,15 +52,13 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setSeparation } from '@/store/actions';
-import { extendedPalette } from '@/theme/constants';  // Assuming the colors are defined here
-import { palette } from '@/theme/constants';
 
 interface LayoutProps {
   children: React.ReactNode;
   color?: string;  // Add a color prop
 }
 
-export const Layout = ({ children, color }: LayoutProps) => {
+export const Layout = ({ children}: LayoutProps) => {
   const router = useRouter();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const dispatch = useDispatch();

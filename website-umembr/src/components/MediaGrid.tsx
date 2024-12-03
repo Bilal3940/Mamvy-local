@@ -429,42 +429,36 @@ import {
   Button,
   TextField,
   Divider,
-  Link,
   InputAdornment,
   Avatar,
-  MenuItem,
-  Select,
   ClickAwayListener,
   useMediaQuery,
 } from '@mui/material';
-import Masonry from '@mui/lab/Masonry';
-import { format } from 'date-fns';
+
 import Image from 'next/image';
-import MediaModal from './MediaModal';
-import { extendedPalette, palette } from '@/theme/constants';
+
+import { palette } from '@/theme/constants';
 import { styles } from './AppBar/CancelModal/styles';
-import VideoThumbnail from './VideoThumbnail';
 import { getExtraContent, getMemories, getUserPurchases } from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, extrasSelector, homeSelector, memorySelector, purchaseSelector } from '@/store/selectors';
-import { cdn_url, hasUserPurchasedTheStory } from '@/utils';
+import { cdn_url, formatDate, hasUserPurchasedTheStory } from '@/utils';
 import { FilterDropdown, MuiIconButton, RtfComponent } from '@/components';
 import Image1Icon from '../../public/icons/image1';
-import {  searchStories } from '@/store/actions';
+
 import Video1Icon from '../../public/icons/video1';
 import Text1Icon from '../../public/icons/test1';
 import { UseFirstRender, UseIntermitence } from '@/hooks';
 import Audio1Icon from '../../public/icons/audio1';
-import Search from '@/components/AppBar/Search';
+
 import { getCollaboratorsOptions, getPropmtsOptions } from '@/components/AppBar/constants';
-import Wait1Icon from '../../public/icons/wait1';
-import GridIcon1 from '../../public/icons/gridicom';
-import EditIcon from '../../public/icons/editing1';
 
 import Audio2Icon from '../../public/icons/audioGradient';
 import { MemoryDetail } from '@/screens/Memories/components';
-import { Router, useRouter } from 'next/router';
+import {useRouter } from 'next/router';
+import {Masonry} from '@mui/lab';
 import PopupModal from './PayWallModal';
+import VideoThumbnail from './VideoThumbnail';
 
 type MediaType = 'image' | 'audio' | 'video' | 'text';
 
@@ -514,14 +508,12 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const [openPeople, setOpenPeople] = useState(false);
   const { status, switchStatus } = UseIntermitence();
   const homeData = useSelector(homeSelector);
-  const { memoryTypes } = useSelector(memorySelector);
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
   const [Types, setTypes] = useState([]);
   const ITEMS_PER_PAGE = 10;
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE); // Number of items initially visible
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleOpen = (): void => setModalOpen(true);
   const handleClose = (): void => setModalOpen(false);
   const { isDivider } = extendedPalette.isDividerCheck.isDivider || true;
   const callbackfunction =(flag:boolean)=>{
@@ -535,9 +527,6 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   }, [story?.id, dispatch]);
   // console.log('i am the memory loded', memoriesLoaded);
 
-  const handleClick = (filterType: string) => {
-    setFilter(filterType);
-  };
 
   const handleOpenModal = (item: MediaItem) => {
     setSelectedMedia(item);
@@ -546,9 +535,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const handleCloseFilters = () => {
     setOpenFilters(false);
   };
-  const handleClosePeople = () => {
-    setOpenPeople(false);
-  };
+
   const setShowFilters = (event: any) => {
     // console.log('I am clicked');
     event.preventDefault();
@@ -585,11 +572,10 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   //   return types.filter((type) => memoriesLoaded?.includes(type.id));
   // }, [memoriesLoaded?.length]);
   useEffect (()=>{
-    console.log(story,'its story')
   if(user &&  user.id ){
   dispatch(getUserPurchases( user && user?.id));
   }
-},[userPurchases])
+},[])
 const AllowOpenModel = (item:any) => {
     // Dispatch to fetch user purchases
   // Check if extraContent is available
@@ -966,7 +952,8 @@ const filteredMediaItems = memoriesLoaded
         {isDivider && <Divider sx={styles.divider} />}
 
         {/* Media Grid */}
-        <Masonry columns={{ xs: 2, sm: 3, md: 4 }} spacing={2} sx={{ margin: 0 }}>
+        <Masonry columns={{ xs: 2, sm: 3, md: 4 }} spacing={2} sx={{ margin: 0 }}> 
+
           {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
             <Paper
             onClick={()=>AllowOpenModel(item)}
@@ -1021,7 +1008,7 @@ const filteredMediaItems = memoriesLoaded
           textAlign: 'left',
         }}
       >
-        {format(new Date(item.created_at), 'MMM dd, yyyy')}
+          {formatDate(item.created_at)}
       </Typography>
     </Box>
   </Box>
@@ -1146,10 +1133,9 @@ const filteredMediaItems = memoriesLoaded
               </Box>
             </Paper>
           ))}
-        </Masonry>
-        {/* {selectedMedia && (
-        <MediaModal  extendedPalette={extendedPalette}  open={openModal} onClose={handleCloseModal} mediaContent={selectedMedia} />
-      )} */}
+
+         </Masonry> 
+
         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
           {!allItemsLoaded && (
             <Button

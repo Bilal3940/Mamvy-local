@@ -18,9 +18,7 @@ import {
   CREATE_STORIES_ASYNC,
   DELETE_STORY,
   DELETE_STORY_ASYNC,
-  GET_STORY_STATUS,
   GET_STORY_STATUS_ASYNC,
-  GET_STORY_STATUS_TRIGGER,
   SET_ACTUAL_STORY,
   SET_CODE,
   SET_CREATE_SECTION,
@@ -33,7 +31,6 @@ import {
   UPDATE_STORY,
   UPDATE_STORY_ASYNC,
 } from './action-types';
-import axios from 'axios';
 
 function* setCreateSectionName({ payload }: any) {
   yield put(actionObject(SET_CREATE_SECTION_TRIGGER, payload));
@@ -61,22 +58,6 @@ try{
 
 }
 
-// function* createStory({ payload }: any) {
-//   try {
-//     // API call
-//     const { user } = yield select(authSelector);
-
-//     const { result } = yield call(FetchService, 'stories', 'POST', payload, user?.token);
-
-//     yield put(actionObject(CREATE_STORIES_ASYNC, result));
-//     yield put(actionObject(CLEAN_PREV_PROMPTS))
-//     yield put(createStoryActionG(result));
-//   } catch (error) {
-//     /* console.error(error); */
-
-//   }
-// }
-
 function* createStory({ payload }: any) {
   try {
     const { user } = yield select(authSelector);
@@ -90,56 +71,6 @@ function* createStory({ payload }: any) {
     yield call(showDialog, message, 'error');
   }
 }
-
-// function* createStory({ payload }: any) {
-//   try {
-
-//     const { user } = yield select(authSelector);
-//     const { fileSize } = payload; // Assume `fileSize` is the size of the story being uploaded
-
-//     // Check storage limits
-//     if ((user?.usedStorage || 0) + fileSize > (user?.totalStorage || 0)) {
-//       const errorResponse = {
-//         success: false,
-//         message: "Not enough storage available",
-//       };
-//       yield call(showDialog, errorResponse.message, "error");
-//       return errorResponse; // Return an error response object
-//     }
-
-//     // Proceed with story creation if storage is sufficient
-//     const { result } = yield call(FetchService, 'stories', 'POST', payload, user?.token);
-
-//     const successResponse = {
-//       success: true,
-//       data: result,
-//     };
-//     yield put(actionObject(CREATE_STORIES_ASYNC, result));
-//     yield put(actionObject(CLEAN_PREV_PROMPTS));
-//     yield put(createStoryActionG(result));
-
-//     return successResponse; // Return a success response object
-
-//   } catch (error: any) {
-//     let message = error?.message;
-//     if (error?.message?.includes('error')) {
-//       try {
-//         message = JSON.parse(message)?.error;
-//       } catch {
-//         // In case of JSON parsing error, fallback to error message
-//         message = error.message || "An unknown error occurred";
-//       }
-//     }
-
-//     const errorResponse = {
-//       success: false,
-//       message: message || "An error occurred during story creation",
-//     };
-
-//     yield call(showDialog, errorResponse.message, "error");
-//     return errorResponse; // Return a structured error response
-//   }
-// }
 
 function* actualStory({ payload }: ReturnType<typeof actualStoryAction>) {
   const { confirmPassword, id, router } =
@@ -158,8 +89,6 @@ function* actualStory({ payload }: ReturnType<typeof actualStoryAction>) {
     const { result } = yield call(FetchService, `stories/${id}${confirmPassword}`, 'GET', {}, user?.token);
     yield put(actualStoryAsync(result));
   } catch (error: any) {
-    const { user } = yield select(authSelector);
-    console.log('Result',error)
   //  if (user.token) router?.push('/app/home');
    // else {
       // router?.push('/app/login');
@@ -167,24 +96,8 @@ function* actualStory({ payload }: ReturnType<typeof actualStoryAction>) {
   }
 }
 
-// function* updateStoryAsync({ payload, callback }: ReturnType<typeof updateStory>) {
-//   try {
-//     const { user } = yield select(authSelector);
-//     const { result } = yield call(FetchService, `stories/${payload.id}`, 'PUT', payload, user?.token);
-//     yield put(updateStoryAsyncAction(result));
-//     yield put(updateStoryActionG(result))
-//   } catch (error) {
-//     // if (callback) {
-//     //   callback({
-//     //     ok: false,
-//     //     message: String(error),
-//     //   })
-//     // }
-//     /* console.error(error); */
-//   }
-// }
 
-function* updateStoryAsync({ payload, callback }: ReturnType<typeof updateStory>) {
+function* updateStoryAsync({payload}: ReturnType<typeof updateStory>) {
   try {
     const { user } = yield select(authSelector);
     const { result } = yield call(FetchService, `stories/${payload.id}`, 'PUT', payload, user?.token);
@@ -197,16 +110,7 @@ function* updateStoryAsync({ payload, callback }: ReturnType<typeof updateStory>
   }
 }
 
-// function* deleteStoryAsync({ payload }: any) {
-//   try {
-//     const { user } = yield select(authSelector);
-//     const { result } = yield call(FetchService, `stories/${payload}`, 'DELETE', {}, user?.token);
-//     yield put(actionObject(DELETE_STORY_ASYNC));
-//     yield put(deleteStoryActionG(result))
-//   } catch (error) {
-//     /* console.error(error); */
-//   }
-// }
+
 
 function* deleteStoryAsync({ payload }: any) {
   try {

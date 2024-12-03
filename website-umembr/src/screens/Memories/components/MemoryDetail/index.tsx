@@ -1,5 +1,4 @@
 import { palette } from '@/theme/constants';
-
 import { MuiButton, MuiIconButton } from '@/components';
 import { UseFirstRender } from '@/hooks';
 import { approveMemory, deleteNotification, setCreateMemoryStep, viewMemory, viewMemoryG } from '@/store/actions';

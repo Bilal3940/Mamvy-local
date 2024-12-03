@@ -1,4 +1,3 @@
-import { palette } from '@/theme/constants';
 import Image from 'next/image';
 import { Box, Grid, Stack, Theme, useMediaQuery } from '@mui/material';
 

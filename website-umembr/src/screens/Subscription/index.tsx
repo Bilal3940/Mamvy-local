@@ -1,6 +1,6 @@
 // components/SubscriptionContainer.tsx
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Button, Box } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { subscriptionSelector } from '@/store/selectors';
 import { getProducts, setSelectedTier } from '@/store/actions';

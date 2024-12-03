@@ -32,7 +32,6 @@ export const Home = () => {
   const { criterias, stories, storiesResult, homeLoading } = useSelector(homeSelector);
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-  const [isPopupOpen, setPopupOpen] = useState(false);
   const containerRef1 = useRef(null);
   const containerRef2 = useRef(null);
   const containerRef3 = useRef(null);
@@ -42,7 +41,6 @@ export const Home = () => {
   const containerMargin3 = UseScrollMargin(containerRef3);
 
   const { user } = useSelector(authSelector);
-  const {extraContent} = useSelector(extrasSelector)
 
   const { status: privateStatus, switchStatus: switchPublication } = UseIntermitence();
   const router = useRouter();
@@ -52,40 +50,9 @@ export const Home = () => {
   }, []);
   // console.log("i am the extra in home", extraContent)
 
-
-  // const handleItemClick = (item: any) => {
-  //   if (item.resultContain && item.private) {
-  //     const validRoles = ['Story_Collaborator', 'Story_Viewer', 'Story_Owner'];
-      
-  //     const hasRole = user?.roles?.find(
-  //       (role: any) => role.story_id === item?.id && validRoles.includes(role.role.name),
-  //     );
-  
-  //     const userIsCreator = user?.id === item?.user_id;
-  
-  //     if (hasRole || userIsCreator) {
-  //       router.push(`/app/story/${item?.url}`);
-  //     } else {
-  //       dispatch(showActualSection(item?.title));
-  //       switchPublication();
-  //     }
-  //   } else {
-  //     dispatch(showActualSection(item?.title));
-  //     router.push(`/app/story/${item?.url}`);
-  //   }
-  // };
-  
-  const handleOpenPopup = () => setPopupOpen(true);
-  const handleClosePopup = () => setPopupOpen(false);
-
   const handleItemClick = (item: any) => {
-    if (item.url === "My-Test-1") {
-      handleOpenPopup()
-
-      return; // Stop further execution
-    }
   
-    // Continue with existing logic if item.url is not "test-1"
+
     if (item.resultContain && item.private) {
       const validRoles = ['Story_Collaborator', 'Story_Viewer', 'Story_Owner'];
       

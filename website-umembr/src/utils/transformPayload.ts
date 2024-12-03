@@ -169,6 +169,33 @@ export const transformPayload = (
 
     return transformedPayload;
   }
+  if (typeOfStory === 'custom_event') {
+    const { story_title_image, name_of_event, location_event, people_involved, general_notes, fileSize } = values;
+
+    const transformedPayload = {
+      user_id,
+      title: story_title_image.title,
+      description: story_title_image.description,
+      isPrivate: false,
+      password: ' ',
+      cover_image: `stories/${story_title_image?.title}/${imageName?.replace(/\.[^.]+$/, '.webp')}`,
+      fileSize:fileSize,
+      name_image: imageName?.replace(/\.[^.]+$/, '.webp'),
+      type_image: imageType,
+      story_details: {
+        type_of_story: typeOfStory,
+        general_info: {
+          name_of_event: name_of_event,
+          location_event: location_event,
+          people_involved: people_involved,
+          general_notes: general_notes?.general_notes?.general_notes || general_notes?.general_notes || general_notes,
+        },
+      },
+      status: status || 'draft',
+    };
+
+    return transformedPayload;
+  }
 };
 
 export const finalPayload = (prev_stories: any, prompts: any = {}, typeOfStory: string) => {

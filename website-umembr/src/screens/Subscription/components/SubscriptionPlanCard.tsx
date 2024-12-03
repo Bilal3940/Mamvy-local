@@ -1,8 +1,7 @@
 // components/SubscriptionPlanCard.tsx
 import React from 'react';
-import { Card, CardContent, Typography, List, ListItem, ListItemIcon, ListItemText, ListItemButton, Button, Divider, Box } from '@mui/material';
+import { Card, CardContent, Typography,  Button,  Box } from '@mui/material';
 import { palette } from '@/theme/constants';
-import { color } from 'framer-motion';
 
 interface Price {
   priceId: string;

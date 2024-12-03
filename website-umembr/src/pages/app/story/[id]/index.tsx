@@ -1,16 +1,9 @@
-import type { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Memories } from '@/screens';
 import { Layout } from '@/components';
 import Head from 'next/head';
-import { useSelector } from 'react-redux';
-import { storySelector } from '@/store/selectors';
 import { base_domain, base_url, cdn_url, fallbackRestUrl } from '@/utils';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-// import Masonry from '@mui/material/Masonry';
 import Main from '../../../../components/Main';
-import { extendedPalette } from '@/theme/constants';
 
 const MemoriesPage = ({ pageProps: { story } }: InferGetServerSidePropsType<any>) => {
   return (

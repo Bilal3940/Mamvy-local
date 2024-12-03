@@ -1,4 +1,3 @@
-import { palette } from '@/theme/constants';
 
 export const styles =(color?:any)=>( {
   dropDown: {

@@ -1,10 +1,8 @@
 // PaymentForm.tsx
 import React, { useState } from 'react';
 import {
-  CardElement,
   useStripe,
   useElements,
-  CardElementProps,
   CardNumberElement,
   CardExpiryElement,
   CardCvcElement,
@@ -12,7 +10,6 @@ import {
 import { Box, FormControl, InputLabel, TextField } from '@mui/material';
 import { authSelector, subscriptionSelector } from '@/store/selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { MuiTextField } from '@/components';
 import { createOrder } from '@/store/actions';
 
 interface PaymentFormProps {

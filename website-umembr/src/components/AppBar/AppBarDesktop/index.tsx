@@ -319,12 +319,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                 disabled={false}
                 loading={false}
                 variant={'outlined'}
-                method={handleCloseButton}
-                 sx={{'&:hover': {
-      borderColor: accentColor,  // Change the border color on hover
-              // Change the text color on hover
-    },
-  }}>
+                method={handleCloseButton}>
                 <Typography variant='button'>{t('close')}</Typography>
               </MuiButton>
             </Box>

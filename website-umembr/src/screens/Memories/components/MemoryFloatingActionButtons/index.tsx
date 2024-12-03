@@ -36,9 +36,9 @@ const MemoryFloatingActionButtons: FC<MemoryFloatingActionButtonsProps> = (props
             // }}>
             sx={{
               backgroundColor: extendedPalette.buttonbackgroundIcon, // Custom color
-              // color:'#e74c3c' , // Icon or text color
+              color:'#e74c3c' , // Icon or text color
               '&:hover': {
-                backgroundColor: extendedPalette.buttonbackgroundIcon, // Hover color
+                backgroundColor: '#e74c3c', // Hover color
               },
               right: { xs: '0.75rem', lg: '1.5rem' },
               bottom: { xs: '0.5rem', lg: '1.0rem' },
@@ -63,9 +63,9 @@ const MemoryFloatingActionButtons: FC<MemoryFloatingActionButtonsProps> = (props
             // color={'secondary'}
             sx={{
               backgroundColor: extendedPalette.buttonbackgroundIcon, // Custom color
-              // color:'#e74c3c' , // Icon or text color
+              color:'#e74c3c' , // Icon or text color
               '&:hover': {
-                backgroundColor: extendedPalette.buttonbackgroundIcon, // Hover color
+                backgroundColor: '#e74c3c', // Hover color
               },
               right: { xs: '0.75rem', lg: '1.5rem' },
               bottom: { xs: '0.5rem', lg: '1.0rem' },

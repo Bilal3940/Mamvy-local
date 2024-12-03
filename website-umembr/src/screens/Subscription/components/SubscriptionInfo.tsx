@@ -1,6 +1,5 @@
-// components/SubscriptionInfo.tsx
 import React from 'react';
-import { Typography, List, ListItem } from '@mui/material';
+import { Typography,  } from '@mui/material';
 
 interface SubscriptionInfoProps {
   title: string;

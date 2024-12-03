@@ -51,7 +51,6 @@
 //   );
 // };
 import { Button, CircularProgress } from '@mui/material';
-import { palette } from '@/theme/constants';
 
 interface iButtonProps {
   method?: () => void;

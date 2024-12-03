@@ -18,7 +18,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Ref, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DeleteMemoryModal, DeleteStoryModal, MemoryDetail, StoryDetail } from './components';
+import { DeleteMemoryModal, DeleteStoryModal, MemoryDetail } from './components';
 import { AddCollaborators } from './components/AddCollaborators';
 import type { FloatingMemoriesHandle, FloatingMemoriesProps } from './components/FloatingMemories';
 import MemoryFloatingActionButtons from './components/MemoryFloatingActionButtons';

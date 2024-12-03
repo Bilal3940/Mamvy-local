@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import LoginForm from '@/components/LoginAccountPopup/LoginForm';
 import { authSelector, purchaseSelector, storySelector } from '@/store/selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearDataPurchase, getUserPurchases } from '@/store/actions';
+import { clearDataPurchase } from '@/store/actions';
 
 const steps = [
   { label: 'Create Account', icon: '1' },

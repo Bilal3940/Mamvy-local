@@ -4,9 +4,8 @@ import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, subscriptionSelector } from '@/store/selectors';
-import { createOrder, refreshUserData } from '@/store/actions';
+import { createOrder} from '@/store/actions';
 import { CardInputField } from './elements/CardInputField';
-import { MuiButton, MuiTextField } from '@/components';
 
 export const PaymentForm = ({ onPaymentSuccess, onPaymentError }: any) => {
   const stripe = useStripe();
@@ -21,20 +20,6 @@ export const PaymentForm = ({ onPaymentSuccess, onPaymentError }: any) => {
   const [expiryFocused, setExpiryFocused] = useState(false);
   const [cvcFocused, setCvcFocused] = useState(false);
 
-  const [hasCardNumber, setHasCardNumber] = useState(false);
-  const [hasExpiry, setHasExpiry] = useState(false);
-  const [hasCvc, setHasCvc] = useState(false);
-  const handleCardNumberChange = (event: any) => {
-    setHasCardNumber(event.complete);
-  };
-
-  const handleExpiryChange = (event: any) => {
-    setHasExpiry(event.complete);
-  };
-
-  const handleCvcChange = (event: any) => {
-    setHasCvc(event.complete);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

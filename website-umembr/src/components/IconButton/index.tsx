@@ -102,7 +102,7 @@ interface IAditionalProps {
   altIcon: string;
   label?: string;
   labelColor?: string;
-  method?: (event: any) => void;
+  method?: (event?: any) => void;
   positionIcon?: string;
   isRounded?: boolean;
   disableRipple?: boolean;

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import CloseIcon from '@mui/icons-material/Close';
-import { Dialog, DialogTitle, DialogContent, IconButton, Avatar, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Typography, Avatar } from '@mui/material';
 import { styled } from '@mui/system';
 import Image from 'next/image'; 
 import { cdn_url } from '@/utils';
-import { RtfComponent } from '@/components';
+import { MuiIconButton, RtfComponent } from '@/components';
 
 
 type MediaType = 'image' | 'audio' | 'video' | 'text';
@@ -133,20 +132,13 @@ const MediaModal: React.FC<MediaModalProps> = ({ extendedPalette, open, onClose,
         }}>
         <Avatar src={mediaContent.userImage} alt={mediaContent.username} sx={{ marginRight: 2 }} />
         {mediaContent.title}
-        <IconButton
-          edge='end'
-          color='inherit'
-          onClick={onClose}
-          sx={{
+        <MuiIconButton sx={{
             position: 'absolute',
             top: 0,
             right: 15,
             padding: '0.5px',
-          }}>
-          <CloseIcon />
-        </IconButton>
+          }} icon='/icons/close' altIcon='close' background={'transparent'} method={onClose} /> 
       </StyledDialogTitle>
-
       <StyledDialogContent
         sx={{
           backgroundColor: extendedPalette.cardMediaBackground,

@@ -89,8 +89,6 @@ function* updateTemplateAsync({ payload }: any): any {
 // Worker Saga: Delete a template
 function* deleteTemplateAsync({ payload }: any): any {
   try {
-    console.log("i am the payload", payload)
-    const { user } = yield select(authSelector);
     const url = `/tempconfig/${payload}`;
     yield call(FetchService, url, "DELETE");
     yield put(actionObject(DELETE_TEMPLATE_ASYNC, payload));

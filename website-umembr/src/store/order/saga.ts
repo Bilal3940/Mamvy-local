@@ -9,9 +9,7 @@ import {
 } from './action-types';
 import { authSelector } from '../selectors';
 import FetchService from '@/utils/FetchService';
-import { refreshUserData } from '../actions';
-import { useDispatch } from 'react-redux';
-// Saga to handle getting orders
+
 function* getOrdersAsync({ payload }: any): any {
     try {
         const { user } = yield select(authSelector);
@@ -29,7 +27,6 @@ function* getOrdersAsync({ payload }: any): any {
     }
 }
 
-// Saga to handle creating an order
 function* createOrderAsync({ payload }: any): any {
     try {
         const { user } = yield select(authSelector);
@@ -48,7 +45,6 @@ function* createOrderAsync({ payload }: any): any {
     }
 }
 
-// Watcher functions
 export function* watchGetOrders() {
     yield takeLatest(GET_ORDERS, getOrdersAsync);
 }

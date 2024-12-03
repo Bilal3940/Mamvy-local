@@ -37,7 +37,7 @@ import { UseFirstRender, UseIntermitence } from '@/hooks';
 import { actualStory,  registerUser, registerUserView, setGuest } from '@/store/actions';
 import { authSelector, collaboratorSelector, intermitenceSelector } from '@/store/selectors';
 
-import { Grid, Theme, Typography, useMediaQuery } from '@mui/material';
+import {  Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 
 
@@ -55,29 +55,10 @@ interface PopupModalProps {
 }
 
 import { Card, CardContent } from "@mui/material";
-import * as Yup from "yup";
 
-
-// Decoding utility function
-const decodeBase64 = (encodedString: string) =>
-  Buffer.from(encodedString, "base64").toString("utf-8");
-
-const validationSchema = Yup.object({
-  name: Yup.string().required("Full name is required"),
-  lastname: Yup.string().required("Last name is required"),
-  email: Yup.string().email("Invalid email format").required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Confirm password is required"),
-});
 
 const CreateAccount: React.FC<PopupModalProps> = ({open , onClose}) => {
-  const { t } = useTranslation();
   const router = useRouter();
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const { status: showPassword, switchStatus: switchShowPassword } = UseIntermitence();
   const { status: showConfirmPassword, switchStatus: switchShowConfirmPassword } = UseIntermitence();
   const authData = useSelector(authSelector);

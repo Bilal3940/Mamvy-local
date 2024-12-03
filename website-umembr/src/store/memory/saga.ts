@@ -1,4 +1,4 @@
-import { FetchService, actionObject, areUrlsEqual, showDialog } from '@/utils';
+import { FetchService, actionObject,showDialog } from '@/utils';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import {
   createMemoryActionG,
@@ -30,7 +30,6 @@ import {
   UPDATE_MEMORY_ASYNC,
   VIEW_MEMORY,
 } from './action-types';
-import { RefreshUserData } from '@/utils/fetchUserData';
 
 function* setCreateMemoryStep({ payload }: any) {
   yield put(actionObject(SET_STEP_CREATE_MEMORY_TRIGGER, payload));
@@ -309,6 +308,7 @@ function* viewMemoryAsync({ payload }: any): any {
     yield put(actionObject(UPDATE_USER_DATA_ASYNC, { ...user, ...result }));
   } catch (error: any) {
     let message = error?.message;
+    console.error(message)
   }
 }
 

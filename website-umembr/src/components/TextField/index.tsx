@@ -71,7 +71,7 @@ export const MuiTextField: FC<Props> = ({
         endAdornment: endIcon && (
           <InputAdornment position='end'>
             <IconButton onClick={iconMethod} edge='end'>
-              {/* <Image src={endIcon} alt={'icon'} width={iconWidth} height={iconHeight} /> */}
+              <Image src={endIcon} alt={'icon'} width={iconWidth} height={iconHeight} />
             </IconButton>
           </InputAdornment>
         ),

@@ -1,13 +1,11 @@
 import {
     CLEAR_DATA_PURCHASE,
     CREATE_USER_PURCHASE_ASYNC,
-    GET_USER_PURCHASES,
     GET_USER_PURCHASES_ASYNC,
 } from './action-types';
   
-  // Set up the initial state with the above type
   const initialState: any = {
-    userPurchases: [], // Initialize with an empty array
+    userPurchases: [],
     purchase:{},
     actionSuccess: null,
   };
@@ -18,7 +16,7 @@ import {
             case CREATE_USER_PURCHASE_ASYNC:
                 return { 
                   ...state, 
-                  purchase: payload, // Update the `purchase` field with the response payload
+                  purchase: payload, 
                   actionSuccess: true 
                 };
 

@@ -112,7 +112,7 @@ export const MuiBreadcrumbs = ({ route }: IBreadcrumbsProps) => {
     textColor: '#fff', // Default value
     accentColor: '#BF5700', // Default value
   });
-  const { user, isAuth } = useSelector(authSelector);
+  const { user} = useSelector(authSelector);
   const story = useSelector(currentStorySelector);
   const { template } = useSelector(templatesSelector);
 

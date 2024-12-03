@@ -4,7 +4,7 @@ import { MuiIconButton } from '@/components';
 import Wavesurfer from '@wavesurfer/react';
 import {  templatesSelector } from '@/store/selectors'
 import { palette } from '@/theme/constants';
-import { useDispatch, useSelector } from 'react-redux';
+import {useSelector } from 'react-redux';
 import { styles } from './styles';
 import { useRouter } from 'next/router';
 

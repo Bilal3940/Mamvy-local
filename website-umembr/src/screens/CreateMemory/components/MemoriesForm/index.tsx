@@ -54,6 +54,17 @@ const storyPrompts = [
       { checked: true, placeholder: 'share_a_memory_other4', value: '' },
     ],
   },
+  {
+    text: 'custom_event',
+    prompts: [
+      { checked: true, placeholder: 'share_a_test_prompt_1', value: '' },
+      { checked: true, placeholder: 'share_a_memory_test_prompt_2', value: '' },
+      { checked: true, placeholder: 'share_a_memory_challenge2_test_prompt_3', value: '' },
+      { checked: true, placeholder: 'share_a_memory_other4_test_prompt_4', value: '' },
+      { checked: true, placeholder: 'share_a_memory_other4_test_prompt_5', value: '' },
+      { checked: true, placeholder: 'share_a_memory_other4_test_prompt_6', value: '' },
+    ],
+  },
 ];
 export const MemoriesForm: FC<any> = () => {
   const { t } = useTranslation();

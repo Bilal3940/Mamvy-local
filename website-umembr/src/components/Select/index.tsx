@@ -63,7 +63,6 @@ export const MuiSelect: FC<Props> = ({
         sx={styles(isDarkTheme)}
         onChange={handleSelect}
         label={t(label)}
-        placeholder='Label'
         displayEmpty={true}
         MenuProps={{ style: { width: '50%', borderRadius: '50rem' } }}
         IconComponent={() => (

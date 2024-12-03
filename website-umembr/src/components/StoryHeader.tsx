@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React  from 'react';
 import { AppBar, Toolbar, Button, Box, Typography, Avatar, AvatarGroup, ThemeProvider, Divider } from '@mui/material';
 import Image from 'next/image';
 import { createTheme } from '@mui/material/styles';
 
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
-import { authSelector, currentStorySelector, intermitenceSelector, templatesSelector } from '@/store/selectors';
-import { useDispatch } from 'react-redux';
+import { authSelector} from '@/store/selectors';
 import { cdn_url } from '@/utils';
 
 interface StoryHeaderProps {
@@ -23,45 +22,6 @@ interface StoryHeaderProps {
   userId: string;
 }
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#2B3672',
-    },
-  },
-
-  shadows: Array(25).fill('none') as [
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-    'none',
-  ],
-});
-
 const StoryHeader: React.FC<StoryHeaderProps> = ({
   extendedPalette,
   imgSrc,
@@ -70,10 +30,9 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
   title,
   description,
   collaborators = [],
-  onBackClick,
   userId,
 }) => {
-  const { user, isAuth } = useSelector(authSelector);
+  const { user} = useSelector(authSelector);
 
   const images = collaborators && collaborators?.map((collaborator: any) => ({
     src: collaborator.user.picture
@@ -83,9 +42,9 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
   }))
 
   return (
-    <ThemeProvider theme={theme}>
+
       <div>
-        <AppBar position='relative' style={{ backgroundColor: 'inherit', marginTop: '5rem' }}>
+        <AppBar position='relative' style={{ boxShadow:'none', backgroundColor: 'inherit', marginTop: '5rem' }}>
           {user.id === userId && (
             <Toolbar
               sx={{
@@ -120,7 +79,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                    // Replace with your desired hover color// Optional: change text color on hover
                 }}
                 startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} />}>
-                <Link href={`/app/story/${title}/update`} style={{ textDecoration: 'none' }}>
+                <Link href={`/app/story/${title}/update`} style={{ textDecoration: 'none' , color:extendedPalette.edittextColor}}>
                   Edit this Memvy
                 </Link>
               </Button>
@@ -258,7 +217,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
           </Typography>
         </Box>
       </div>
-    </ThemeProvider>
+
   );
 };
 

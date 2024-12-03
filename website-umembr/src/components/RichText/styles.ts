@@ -1,10 +1,10 @@
 import { palette } from '../../theme/constants';
 
-export const styles = {
+export const styles = (color?:string)=>({
   paper: {
     width: '100%',
     border: `1px solid ${palette.cardBorder} `,
-    background: `${palette.cardBackground} !important`,
+    background: `${color} !important`,
   },
   dropdown: {
     width: '2.75rem',
@@ -19,4 +19,4 @@ export const styles = {
     height: '1.5rem',
     width: 0,
   },
-};
+});

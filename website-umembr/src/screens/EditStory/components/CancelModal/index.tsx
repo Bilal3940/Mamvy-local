@@ -10,9 +10,10 @@ interface ModalDetailProps {
   open: boolean;
   onClose: () => void;
   confirmRoute: string;
+  color?:string;
 }
 
-export const CancelModal = ({ open, onClose, confirmRoute }: ModalDetailProps) => {
+export const CancelModal = ({color, open, onClose, confirmRoute }: ModalDetailProps) => {
   const { t } = useTranslation();
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -55,7 +56,12 @@ export const CancelModal = ({ open, onClose, confirmRoute }: ModalDetailProps) =
         <Divider sx={styles.divider} />
         <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
           <Box marginRight={'1rem'}>
-            <MuiButton type='button' loading={false} variant={'outlined'} method={onClose}>
+            <MuiButton type='button' loading={false} variant={'outlined'} method={onClose}
+             sx={{'&:hover': {
+      borderColor: color  // Change the border color on hover
+              // Change the text color on hover
+    },
+  }}>
               <Typography variant='button' color={palette.white}>
                 {t('cancel')}
               </Typography>
@@ -63,7 +69,13 @@ export const CancelModal = ({ open, onClose, confirmRoute }: ModalDetailProps) =
           </Box>
           <Box marginRight={'1rem'}>
             <Link href={confirmRoute}>
-              <MuiButton type='submit' loading={false} variant={'contained'} disabled={false}>
+              <MuiButton type='submit' loading={false} variant={'contained'} backgroundColor={color} disabled={false}
+              sx={{
+    backgroundColor: color,
+    '&:hover': {
+      backgroundColor: color, // Add your hover color
+    },
+  }}>
                 <Typography variant='button' color={palette.white}>
                   {t('confirm')}
                 </Typography>

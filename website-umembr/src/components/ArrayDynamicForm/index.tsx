@@ -5,7 +5,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { DynamicForm, MuiButton, MuiIconButton } from '..';
 import { styles } from './styles';
 
-const ArrayDynamicForm: FC<any> = ({ setSubmit, fieldsConfig, submitHandler, defaultValues, isEdit, onError }) => {
+const ArrayDynamicForm: FC<any> = ({ color,setSubmit, fieldsConfig, submitHandler, defaultValues, isEdit, onError }) => {
   const { t } = useTranslation();
   const [fields, setFields] = useState([{ fields: fieldsConfig?.fields }]);
   const [values, setValues] = useState<any>([]);
@@ -91,7 +91,13 @@ const ArrayDynamicForm: FC<any> = ({ setSubmit, fieldsConfig, submitHandler, def
           </Typography>
         )}
         <Box width={isMobile ? 'inherit' : '3.8125rem'}>
-          <MuiButton variant={'contained'} boxShadow='none' height='2.25rem' method={handleAddField}>
+          <MuiButton variant={'contained'} boxShadow='none' height='2.25rem' method={handleAddField} backgroundColor={color}
+          sx={{
+    backgroundColor: color,
+    '&:hover': {
+      backgroundColor: color, // Add your hover color
+    },
+  }}>
             <Typography variant='subtitle2' color={palette.white}>
               {t('add')}
             </Typography>

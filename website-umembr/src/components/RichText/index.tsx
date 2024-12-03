@@ -10,6 +10,10 @@ import { MuiIconButton } from '..';
 import { styles } from './styles';
 import { UseIntermitence } from '@/hooks';
 import Image from 'next/image';
+import { templatesSelector } from '@/store/selectors';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+
 
 interface IRichTextProps {
   name: string;
@@ -53,6 +57,8 @@ const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 const FONT_SIZE = ['12px', '14px', '16px', '18px', '20px', '22px', '24px', '26px', '28px', '30px'];
 
+
+
 export const RichText: FC<IRichTextProps> = ({
   name,
   error = false,
@@ -68,10 +74,61 @@ export const RichText: FC<IRichTextProps> = ({
   const editor: any = useMemo(() => withHistory(withReact(createEditor())), []);
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
   const renderElement = useCallback((props: any) => <Element {...props} />, []);
+  const router=useRouter();
   const [wordCount, setWordCount] = useState(0);
   const [letterCount, setLetterCount] = useState(0);
   const { status, switchStatus } = UseIntermitence();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const [adminPalette, setAdminPalette] = useState({
+    storyBackgroundColor: '', // Default value
+    textColor: '', // Default value
+    accentColor: '', // Default value
+  });
+   const { template } = useSelector(templatesSelector);
+  console.log("I am template in edit", template)
+  useEffect(() => {
+    if (template?.template?.colors) {
+      const colors = template.template.colors.reduce((acc:any, color:any) => {
+        // Map each color to the corresponding palette key
+        switch (color.PLabel) {
+          case 'storyBackground':
+            acc.storyBackgroundColor = color.PValue;
+            break;
+          case 'TextColor':
+            acc.textColor = color.PValue;
+            break;
+          case 'AccentColor':
+            acc.accentColor = color.PValue;
+            break;
+          default:
+            break;
+        }
+        return acc;
+      }, {});
+
+      // Set the colors to the adminPalette state
+      setAdminPalette({
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
+        textColor: colors.textColor || '#fff', // Fallback
+        accentColor: colors.accentColor || '#BF5700', // Fallback
+      });
+    }
+  }, [template]); // Make sure to add template to the dependency array
+
+  const backgroundColorEdit=adminPalette.storyBackgroundColor
+  const accentColor = adminPalette.accentColor;
+ const buttonBackground =
+    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
+      ? accentColor // Custom background for the specific page
+      : palette?.cardBackground;
+      const notificationBackground =
+    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
+      ? accentColor // Custom background for the specific page
+      : palette?.primary;
+      const EditStoryBackground =
+    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
+      ? backgroundColorEdit // Custom background for the specific page
+      : palette?.primary;
 
   const initialValue: any = [
     {
@@ -136,7 +193,7 @@ export const RichText: FC<IRichTextProps> = ({
         {t(label)}
       </Typography>
 
-      <Paper elevation={0} data-cy={testId} sx={styles.paper}>
+      <Paper elevation={0} data-cy={testId} sx={styles(EditStoryBackground).paper}>
         <Slate editor={editor} initialValue={editorValue} onChange={handleChange}>
           <Box
             display={isMobile ? 'grid' : 'flex'}
@@ -146,19 +203,19 @@ export const RichText: FC<IRichTextProps> = ({
             borderBottom={`0.0625rem solid ${palette.cardBorder}`}>
             <HistoryButton format='undo' icon='undo' method={undo} />
             <HistoryButton format='redo' icon='redo' method={redo} />
-            {!isMobile && <Divider orientation='vertical' sx={styles.divider} />}
+            {!isMobile && <Divider orientation='vertical' sx={styles().divider} />}
 
             <MarkButton format='bold' icon='bold' />
             <MarkButton format='italic' icon='italic' />
             <MarkButton format='underline' icon='underline' />
             <MarkButton format='strike_trought' icon='strike-through' />
 
-            {!isMobile && <Divider orientation='vertical' sx={styles.divider} />}
+            {!isMobile && <Divider orientation='vertical' sx={styles().divider} />}
             <BlockButton format='left' icon='align-left' />
             <BlockButton format='center' icon='align-center' />
             <BlockButton format='right' icon='align-right' />
             <BlockButton format='justify' icon='align-justify' />
-            {!isMobile && <Divider orientation='vertical' sx={styles.divider} />}
+            {!isMobile && <Divider orientation='vertical' sx={styles().divider} />}
             <BlockButton format='numbered-list' icon='list-number' />
             <BlockButton format='bulleted-list' icon='list-dots' />
             <Box position={'relative'}>
@@ -169,7 +226,7 @@ export const RichText: FC<IRichTextProps> = ({
                 <Image src={`/icons/chevron-down.svg`} alt={'chevron-down'} width={12} height={12} quality={80} />
               </IconButton>
               {status && (
-                <Paper elevation={2} sx={styles.dropdown}>
+                <Paper elevation={2} sx={styles().dropdown}>
                   <MenuList>
                     {FONT_SIZE?.map((item: any) => {
                       return (

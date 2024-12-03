@@ -1,7 +1,7 @@
 import { ArrayDynamicForm, DynamicForm, MuiButton, MuiStepper } from '@/components';
 import { UseFirstRender, UseIntermitence } from '@/hooks';
 import { actualStory, getUploadSignedUrl, updateStory, updateStoryViewG } from '@/store/actions';
-import { authSelector, currentStorySelector, intermitenceSelector } from '@/store/selectors';
+import { authSelector, currentStorySelector, intermitenceSelector, templatesSelector } from '@/store/selectors';
 import { palette } from '@/theme/constants';
 import {
   cdn_url,
@@ -45,6 +45,11 @@ export const EditStory: FC<any> = () => {
   const [values, setValues] = useState<any>({});
   const submit = useRef<any>(null);
   const { status, switchStatus } = UseIntermitence();
+   const [adminPalette, setAdminPalette] = useState({
+    storyBackgroundColor: '', // Default value
+    textColor: '', // Default value
+    accentColor: '', // Default value
+  });
 
   UseFirstRender(() => {
     if (!story?.id) {
@@ -77,7 +82,7 @@ export const EditStory: FC<any> = () => {
           borderRight={selectedForm == field.name ? `0.25rem solid ${palette.primary}` : 'none'}>
           <Typography
             variant='subtitle2'
-            color={selectedForm == field.name ? palette.primary : palette.codGray}
+            color={selectedForm == field.name ? accentColor : palette.codGray}
             marginX={'1rem'}>
             {t(field.label)}
           </Typography>
@@ -241,6 +246,63 @@ export const EditStory: FC<any> = () => {
     },
     [values, story],
   );
+  const { template } = useSelector(templatesSelector);
+  console.log("I am template in edit", template)
+  useEffect(() => {
+    if (template?.template?.colors) {
+      const colors = template.template.colors.reduce((acc:any, color:any) => {
+        // Map each color to the corresponding palette key
+        switch (color.PLabel) {
+          case 'storyBackground':
+            acc.storyBackgroundColor = color.PValue;
+            break;
+          case 'TextColor':
+            acc.textColor = color.PValue;
+            break;
+          case 'AccentColor':
+            acc.accentColor = color.PValue;
+            break;
+          default:
+            break;
+        }
+        return acc;
+      }, {});
+
+      // Set the colors to the adminPalette state
+      setAdminPalette({
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
+        textColor: colors.textColor || '#fff', // Fallback
+        accentColor: colors.accentColor || '#BF5700', // Fallback
+      });
+    }
+  }, [template]); // Make sure to add template to the dependency array
+
+  const backgroundColorEdit=adminPalette.storyBackgroundColor
+  const accentColor = adminPalette.accentColor;
+ const buttonBackground =
+    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
+      ? accentColor // Custom background for the specific page
+      : palette?.cardBackground;
+      const notificationBackground =
+    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
+      ? accentColor // Custom background for the specific page
+      : palette?.primary;
+      const EditStoryBackground =
+    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
+      ? backgroundColorEdit // Custom background for the specific page
+      : palette?.primary;
+
+       useEffect(() => {
+    if (EditStoryBackground) {
+      // Dynamically set the body background color with !important
+      console.log("I am color in edit story",EditStoryBackground)
+      document.body.style.setProperty('background-color', `${EditStoryBackground} `, 'important');
+     
+      return () => {
+        document.body.style.removeProperty('background-color');
+      };
+    }
+  }, [template,EditStoryBackground]);
 
   const updateButton = () => {
     submitAction();
@@ -254,6 +316,7 @@ export const EditStory: FC<any> = () => {
         padding={isMobile ? '0 1rem' : '0 0.7rem 0 1rem'}
         width={'100%'}
         justifyContent={'flex-start'}
+        // bgcolor={EditStoryBackground}
         flexDirection={'column'}
         height={isMobile ? '100vh' : '100%'}
         alignItems={isMobile ? 'flex-start' : 'center'}
@@ -312,7 +375,12 @@ export const EditStory: FC<any> = () => {
               sx={{ backdropFilter: 'blur(1.5625rem)' }}>
               <Box display={'flex'} justifyContent={'flex-end'}>
                 <Box width={'5.75rem'} marginRight={'1rem'}>
-                  <MuiButton type='submit' disabled={false} loading={false} method={switchStatus} variant={'outlined'}>
+                  <MuiButton type='submit' disabled={false} loading={false} method={switchStatus} variant={'outlined'}
+                   sx={{'&:hover': {
+      borderColor: buttonBackground,  // Change the border color on hover
+              // Change the text color on hover
+    },
+  }}>
                     <Typography variant='button' color={palette.white}>
                       {t('cancel')}
                     </Typography>
@@ -324,8 +392,15 @@ export const EditStory: FC<any> = () => {
                     type='submit'
                     disabled={false}
                     loading={intermitenceData?.loading}
+                    backgroundColor={buttonBackground}
                     variant={'contained'}
-                    method={updateButton}>
+                    method={updateButton}
+                    sx={{
+    backgroundColor: buttonBackground,
+    '&:hover': {
+      backgroundColor: buttonBackground, // Add your hover color
+    },
+  }}>
                     <Typography variant='button'>{t('save')}</Typography>
                   </MuiButton>
                 </Box>
@@ -375,6 +450,7 @@ export const EditStory: FC<any> = () => {
                 ? currentForm?.map((item: any, index: number) =>
                     item?.type === 'array' ? (
                       <ArrayDynamicForm
+                      color={accentColor}
                         setSubmit={(sub: any) => setSubmitArray(index, sub)}
                         submitHandler={(values: any) => handleSubmitArray(values, item?.subtitle || item?.title)}
                         key={index}
@@ -462,7 +538,7 @@ export const EditStory: FC<any> = () => {
           </Box>
         </Box>
       </Box>
-      <CancelModal open={status} onClose={switchStatus} confirmRoute={`/app/story/${story?.url}`} />
+      <CancelModal color={accentColor} open={status} onClose={switchStatus} confirmRoute={`/app/story/${story?.url}`} />
     </>
   );
 };

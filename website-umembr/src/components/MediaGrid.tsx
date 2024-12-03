@@ -585,6 +585,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   //   return types.filter((type) => memoriesLoaded?.includes(type.id));
   // }, [memoriesLoaded?.length]);
   useEffect (()=>{
+    console.log(story,'its story')
   if(user &&  user.id ){
   dispatch(getUserPurchases( user && user?.id));
   }

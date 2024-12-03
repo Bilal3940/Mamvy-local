@@ -120,7 +120,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                    // Replace with your desired hover color// Optional: change text color on hover
                 }}
                 startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} />}>
-                <Link href={`/app/story/${title}/update`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Link href={`/app/story/${title}/update`} style={{ textDecoration: 'none' }}>
                   Edit this Memvy
                 </Link>
               </Button>

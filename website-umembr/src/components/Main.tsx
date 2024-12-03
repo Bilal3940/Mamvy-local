@@ -42,6 +42,7 @@ import StoryHeader from './StoryHeader';
 import MemoryFloatingActionButtons from '@/screens/Memories/components/MemoryFloatingActionButtons';
 import { PrivateStoryModal } from '@/screens/Memories/components/PrivateStoryModal';
 import { AddCollaborators } from '@/screens/Memories/components';
+import { Template } from 'webpack';
 
 
 const template = createTheme({
@@ -372,6 +373,27 @@ const Main: React.FC = () => {
         document.body.style.removeProperty('background-color');
       };
     }
+  }, [template]);
+  useEffect(() => {
+    // Dynamically inject scrollbar styles
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = `
+    
+      *::-webkit-scrollbar-thumb {
+        background-color: ${accentColor};
+        border-radius: 12px;
+      }
+      html {
+        scrollbar-color: ${accentColor} ${accentColor}; /* thumb track */
+        scrollbar-width: thin; /* Can also be 'none' or 'auto' */
+      }
+    `;
+    document.head.appendChild(styleElement);
+
+    // Cleanup on unmount
+    return () => {
+      document.head.removeChild(styleElement);
+    };
   }, [template]);
   //   useEffect(() => {
   //   if (containerRef.current) {

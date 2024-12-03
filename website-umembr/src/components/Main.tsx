@@ -374,20 +374,34 @@ const Main: React.FC = () => {
       };
     }
   }, [template]);
+ 
   useEffect(() => {
-    // Dynamically inject scrollbar styles
+    // Detect if the browser is Firefox
+    const isFirefox = typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().includes('firefox');
+
     const styleElement = document.createElement('style');
-    styleElement.innerHTML = `
-    
-      *::-webkit-scrollbar-thumb {
-        background-color: ${accentColor};
-        border-radius: 12px;
-      }
-      html {
-        scrollbar-color: ${accentColor} ${accentColor}; /* thumb track */
-        scrollbar-width: thin; /* Can also be 'none' or 'auto' */
-      }
-    `;
+
+    if (isFirefox) {
+      // Firefox-specific styles
+      styleElement.innerHTML = `
+        html {
+          scrollbar-color: ${accentColor} ${accentColor}; /* thumb track */
+          scrollbar-width: thin; /* Can also be 'none' or 'auto' */
+        }
+      `;
+    } else {
+      // WebKit-based browsers styles
+      styleElement.innerHTML = `
+      
+        *::-webkit-scrollbar-thumb {
+          background-color: ${accentColor};
+          border-radius: 12px;
+        }
+       
+      `;
+    }
+
+    // Append the styles to the head
     document.head.appendChild(styleElement);
 
     // Cleanup on unmount

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, Box, Paper, Grid, Typography} from '@mui/material';
 
 import { theme } from '@/theme';
@@ -11,11 +11,16 @@ import Image from 'next/image';
 
 interface PopupModalProps {
   open: boolean;
-  onClose: () => void;
+  onClose: (step : any) => void;
 }
 
 const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
   const {extraContent} = useSelector(extrasSelector);
+  const [step, setStep]= useState(0);
+
+  const callbackStepper=(stepp:any)=>{
+setStep(stepp);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -67,7 +72,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
             top: 0,
             right: 15,
             padding: '0.5px',
-          }} icon='/icons/close' altIcon='close' background={'transparent'} method={onClose} />
+          }} icon='/icons/close' altIcon='close' background={'transparent'} method={()=>onClose(step)} />
 
             <Grid container spacing={2}  >
               {/* Left Card (Description & Pricing) */}
@@ -165,7 +170,7 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
 
               {/* Right Card (Payment Form) */}
               <Grid item xs={12} md={6}>
-                <IconBasedStepper />
+                <IconBasedStepper callbackthecurrentStep={(stepp:any)=> callbackStepper(stepp)}/>
               </Grid>
             </Grid>
           </Paper>

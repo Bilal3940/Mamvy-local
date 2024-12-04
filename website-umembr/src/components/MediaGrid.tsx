@@ -442,7 +442,7 @@ import { styles } from './AppBar/CancelModal/styles';
 import { getExtraContent, getMemories, getUserPurchases } from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, extrasSelector, homeSelector, memorySelector, purchaseSelector } from '@/store/selectors';
-import { cdn_url, formatDate, hasUserPurchasedTheStory } from '@/utils';
+import { cdn_url, checkPermissions, formatDate, hasUserPurchasedTheStory } from '@/utils';
 import { FilterDropdown, MuiIconButton, RtfComponent } from '@/components';
 import Image1Icon from '../../public/icons/image1';
 
@@ -459,6 +459,7 @@ import {useRouter } from 'next/router';
 import {Masonry} from '@mui/lab';
 import PopupModal from './PayWallModal';
 import VideoThumbnail from './VideoThumbnail';
+import purchase from '@/store/purchase/reducer';
 
 type MediaType = 'image' | 'audio' | 'video' | 'text';
 
@@ -513,8 +514,20 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const ITEMS_PER_PAGE = 10;
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE); // Number of items initially visible
   const [modalOpen, setModalOpen] = useState(false);
+  const {purchase} = useSelector(purchaseSelector);
+  const [step, setStep]=useState(0)
+  const handleClose = (step:any): void =>{
+    if (step===2) {
+        setStep(step);
+        setModalOpen(false);
+        // router.reload();
+      }else{
+        setModalOpen(false);
 
-  const handleClose = (): void => setModalOpen(false);
+      }
+    
+   
+  } 
   const { isDivider } = extendedPalette.isDividerCheck.isDivider || true;
   const callbackfunction =(flag:boolean)=>{
     console.log('im the callback ', flag);
@@ -573,9 +586,10 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   // }, [memoriesLoaded?.length]);
   useEffect (()=>{
   if(user &&  user.id ){
+   
   dispatch(getUserPurchases( user && user?.id));
   }
-},[])
+},[step])
 const AllowOpenModel = (item:any) => {
     // Dispatch to fetch user purchases
   // Check if extraContent is available
@@ -588,14 +602,18 @@ const AllowOpenModel = (item:any) => {
     if (extraContent.isPaid) {
       if (isAuth) {
         // Check if the user has purchased the story
-        if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
+        if (hasUserPurchasedTheStory(user.id, story.id, userPurchases) || (checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
+        user?.id === story?.user_id ||
+        user?.roles?.find(
+          (role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner',
+        ))) {
           // console.log('User has purchased it');
 
           setModalOpen(false);  
           handleOpenModal(item);
           window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);// Close the modal if the user has purchased
         } else {
-          // console.log('User has not purchased it');
+           console.log('User has not purchased it');
           setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
         }
       } else {
@@ -621,14 +639,18 @@ if (extraContent) {
   if (extraContent.isPaid) {
     if (isAuth) {
       // Check if the user has purchased the story
-      if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)) {
+      if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)|| (checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
+      user?.id === story?.user_id ||
+      user?.roles?.find(
+        (role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner',
+      ))) {
         // console.log('User has purchased it');
 
         setModalOpen(false);  
         handleLoadMore();
        // window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);// Close the modal if the user has purchased
       } else {
-        // console.log('User has not purchased it');
+         console.log('User has not purchased it');
         setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
       }
     } else {
@@ -1151,7 +1173,7 @@ const filteredMediaItems = memoriesLoaded
           )}
         </Box>
       </Box>
-      <PopupModal open={modalOpen} onClose={handleClose} />
+      <PopupModal open={modalOpen} onClose  ={ (step :any)=> handleClose(step)} />
       <MemoryDetail
         open={Boolean(selectedMedia)}
         onClose={closeMemory}

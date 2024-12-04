@@ -13,15 +13,17 @@ import { useEffect, useState } from 'react';
 import LoginForm from '@/components/LoginAccountPopup/LoginForm';
 import { authSelector, purchaseSelector, storySelector } from '@/store/selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearDataPurchase } from '@/store/actions';
+import { clearDataPurchase, getUserPurchases } from '@/store/actions';
 
 const steps = [
   { label: 'Create Account', icon: '1' },
   { label: 'One-time payment', icon: '2' },
   { label: 'Access the Story', icon: '3' },
 ];
-
-export default function IconBasedStepper() {
+interface CustomPropsForStepper{
+  callbackthecurrentStep?:(stepp:any)=>void;
+}
+export default function IconBasedStepper({callbackthecurrentStep}:CustomPropsForStepper) {
   const { user, isAuth } = useSelector(authSelector);
   const [activeStep, setActiveStep] = React.useState(0);
   const [openLogin , setOpenLogin]= useState(true);
@@ -31,35 +33,30 @@ export default function IconBasedStepper() {
   const handleStepClick = (stepIndex: number) => {
     setActiveStep(stepIndex);
   };
+  
+useEffect (()=>{
+  if(callbackthecurrentStep){
+callbackthecurrentStep(activeStep);
+  }
+},[activeStep])
 
   useEffect(()=>{
      
       // console.log("USer purchases are", userPurchases)
   },[userPurchases])
   const paymentSuccessfull = () => {
-    // Fetch user purchases
-  // console.log('successsfull')
+  
     if (purchase && purchase) {
       if(purchase.userId===user.id && purchase.storyId === story.id && purchase.orderStatus==="successful"){
      setActiveStep(2);
       }
       dispatch(clearDataPurchase());
-      // Loop through the userPurchases array
-      // console.log('No matching',story.id);
-      // const matchedPurchase = userPurchases.find((purchase:any) => purchase.storyId === story.id && purchase.userId === user?.id); // Replace `1` with the storyId you want to match
-      
-      // if (matchedPurchase) {
-      //   // Do something with the matched purchase, if found
-      //   console.log("Purchase matched:", matchedPurchase);
-      //   setActiveStep(2);
-      // } else {
-      //   console.log("No matching purchase found for the given storyId");
-      // }
-      
-    // }
+
+     
 }
-     // Move to the next step
+     
   }
+  
   const handleOpenLogup = ( )=>{
     setOpenLogin(false);
   };

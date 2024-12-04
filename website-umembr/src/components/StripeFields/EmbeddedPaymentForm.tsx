@@ -181,7 +181,7 @@ const EmbeddedPaymentForm: React.FC<PaymentProps> = ({onSuccessfullPayment}) => 
             color: "#fff",
             border: "none",
             borderRadius: "8px",
-            fontSize: "12px",
+            fontSize: "16px",
             marginTop:"55px"
           }}
         >

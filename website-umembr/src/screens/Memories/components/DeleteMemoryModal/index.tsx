@@ -12,10 +12,11 @@ import { deleteMemoryViewG } from '@/store/actions';
 interface ModalDetailProps {
   open: boolean;
   onClose: () => void;
-  confirmMethod?: () => void
+  confirmMethod?: () => void;
+  extendedPalette?: any;
 }
 
-export const DeleteMemoryModal = ({ open, onClose, confirmMethod }: ModalDetailProps) => {
+export const DeleteMemoryModal = ({extendedPalette ,open, onClose, confirmMethod }: ModalDetailProps) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const {user} = useSelector(authSelector)
@@ -64,7 +65,11 @@ export const DeleteMemoryModal = ({ open, onClose, confirmMethod }: ModalDetailP
         <Divider sx={styles.divider} />
         <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
           <Box marginRight={'1rem'}>
-            <MuiButton type='button' loading={false} variant={'outlined'} method={onClose}>
+            <MuiButton type='button' sx={{
+              '&:hover':{
+                borderColor: extendedPalette.buttonbackgroundIcon,
+              }
+            }} loading={false} variant={'outlined'} method={onClose}>
               <Typography variant='button' color={palette.white}>
                 {t('cancel')}
               </Typography>

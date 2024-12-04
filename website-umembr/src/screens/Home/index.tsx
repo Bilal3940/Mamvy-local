@@ -2,18 +2,17 @@ import { palette } from '@/theme/constants';
 import { Box, CircularProgress, Fab, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
 
-import { clearExtraContent, getProfileStories, showActualSection } from '@/store/actions';
+import { clearExtraContent, clearTemplatesData, getProfileStories, showActualSection } from '@/store/actions';
 import { authSelector, extrasSelector, homeSelector, intermitenceSelector } from '@/store/selectors';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { UseFirstRender, UseIntermitence, UseScrollMargin } from '@/hooks';
 
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-// import EventBenefitsPopup from '@/components/EventPopup/EventBenefitsPopup';
 
 const StoryItem = dynamic(() => import('./elements/StoryItem'), {
   loading: () => <CircularProgress sx={{ color: palette.primary }} />,
@@ -74,7 +73,9 @@ export const Home = () => {
     }
   };
   
-
+  useEffect(()=>{
+    dispatch(clearTemplatesData())
+  },[])
 
   const handlePublication = () => {
     switchPublication();

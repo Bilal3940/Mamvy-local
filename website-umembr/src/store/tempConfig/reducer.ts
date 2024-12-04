@@ -27,7 +27,7 @@ import {
       case GET_TEMPLATE:
         return {
           ...state,
-          actionSuccess: null,
+          actionSuccess: true,
         };
   
       case CREATE_TEMPLATE_ASYNC:

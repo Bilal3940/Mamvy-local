@@ -6,7 +6,7 @@ import { UPDATE_STORY_ASYNC } from "../story/action-types";
 
 function* setInviteCollaborator({ payload }: any): any {
     try {
-      // console.log("i am the invitation payload", payload)
+      console.log("i am the invitation payload in saga", payload)
       const { user } = yield select(authSelector);
       const response = yield call(FetchService, 'main/stories/invite', 'POST', payload, user?.token);
       yield call(showDialog, response?.result?.message, 'success');

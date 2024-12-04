@@ -15,7 +15,7 @@ export const styles = (isMobile: boolean,bgColor?: string) => ({
     padding: '0 0.5rem',
     width: '100%',
     ':hover': {
-      backgroundColor: {bgColor},
+      backgroundColor: bgColor,
     },
   },
 });

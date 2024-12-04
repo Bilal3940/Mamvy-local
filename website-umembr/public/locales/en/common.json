@@ -347,6 +347,7 @@
   "are_you_sure_want_remove": "Are you sure you want to remove this Collaborator?",
   "sport_minus": "Sport",
   "confirm": "CONFIRM",
+  "purchased": "Purchased",
   "are_you_sure_cancel": "Are you sure you want to cancel?",
   "data_going_lost": "The following data will be lost.",
   "manage_notifications_collab": "Manage Collaborators Notifications",
@@ -367,5 +368,6 @@
   "pending_acceptance": "Pending Acceptance",
   "general_notes_minus_minus": "General Notes",
   "this_might_take_some_time":"This might take some time.",
-  "uploading_video":"Uploading Video"
+  "uploading_video":"Uploading Video",
+  "athletes":"Athletes"
 }

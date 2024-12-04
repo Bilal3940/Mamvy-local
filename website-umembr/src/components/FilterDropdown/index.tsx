@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { homeSelector, memorySelector, storySelector } from '@/store/selectors';
 import { getMemories, searchStories } from '@/store/actions';
 import { useRouter } from 'next/router';
-
 const MotionContainer = motion(Box);
 const MotionList = motion(MenuList);
 const MotionItem = motion(MenuItem);
@@ -30,9 +29,11 @@ interface CustomPopperProps {
   isOpen: boolean;
   callbackfunction?:(flag:boolean) => void;
   listItem: any;
+  top?:any
+  extendedPalette?:any
 }
 
-export const FilterDropdown = ({ isOpen, listItem, callbackfunction }: CustomPopperProps) => {
+export const FilterDropdown = ({extendedPalette,top, isOpen, listItem, callbackfunction }: CustomPopperProps) => {
   const { t } = useTranslation();
  const [adminPalette, setAdminPalette] = useState({
     storyBackgroundColor: '#333333', // Default value
@@ -52,7 +53,6 @@ export const FilterDropdown = ({ isOpen, listItem, callbackfunction }: CustomPop
   const { template } = useSelector(templatesSelector);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
-  console.log("home",homeData?.criterias?.prompts)
 
   const handleCheckPrompts = (value: any) => {
     if (value === undefined) return;
@@ -170,34 +170,11 @@ useEffect(()=>{
   }, [template]); // Make sure to add template to the dependency array
 
   const accentColor = adminPalette.accentColor;
-  const backgroundColor = adminPalette.storyBackgroundColor;
+  let backgroundColor:any;
 
-  let bgColor =    router.pathname ===   '/app/home' ? palette.cardBackground :accentColor;
-  let bgColorCheck =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
-console.log("i ma bg color in propmts",bgColor)
-
-  // const types = useMemo(() => {
-  //   const types = [
-  //     {
-  //       id: 'video',
-  //       label: 'Video',
-  //     },
-  //     {
-  //       id: 'image',
-  //       label: 'Image',
-  //     },
-  //     {
-  //       id: 'audio',
-  //       label: 'Audio',
-  //     },
-  //     {
-  //       id: 'text',
-  //       label: 'Text',
-  //     },
-  //   ];
-
-  //   return types.filter((type) => memoryTypes?.includes(type.id));
-  // }, [memoryTypes?.length]);
+  let bgColor: any;
+  let bgColorCheck:any;
+  
 
   const filterTabs = useMemo(() => {
     const filterTabs = [...tabs];
@@ -207,6 +184,15 @@ console.log("i ma bg color in propmts",bgColor)
     return filterTabs;
   }, [listItem[2]?.length, listItem[0]?.length, listItem[1]?.length, listItem, tabs]);
 
+  let marginTtopFilter:any;
+
+  useEffect(()=>{
+   bgColor =    router.pathname ===   '/app/home' ? palette.primary:accentColor;
+  bgColorCheck =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
+  backgroundColor  = router.pathname === '/app/home' ? 'transparent' : adminPalette.storyBackgroundColor
+  },[router, router?.pathname])
+
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -214,8 +200,8 @@ console.log("i ma bg color in propmts",bgColor)
           initial={!isOpen ? 'open' : 'closed'}
           exit={!isOpen ? 'open' : 'closed'}
           position={'absolute'}
-          top={isMobile? '1rem' : '4rem'}
-          right={0}
+          top={isMobile ? '1rem' : top}
+          right={'1rem'}
           width={'20rem'}
           zIndex={10}
           sx={styles(isMobile).dropDown}
@@ -258,8 +244,7 @@ console.log("i ma bg color in propmts",bgColor)
                 width='100%'
                 qty={filterTabs.length}
                 extraStyle={{
-                  width: '100%',
-                  // color:'red',
+                  width: '100%'
                 }}
               />
             </Box>
@@ -284,12 +269,12 @@ console.log("i ma bg color in propmts",bgColor)
                                   padding: '0.5rem 0.35rem 0.5rem 0',
                                   '&.Mui-checked': {
                                     color: bgColorCheck,
-                                    alignSelf: 'flex-start', // Ensures the checkbox aligns to the top
-      marginTop: '0.25rem',
+                                    alignSelf: 'flex-start',
+                                    marginTop:'0.25rem',
                                   },
                                 }}
                               />
-                              <Typography variant={isMobile ? 'body2' : 'body1'} whiteSpace={'break-spaces'} sx={{ marginTop: '0.30rem' }}>
+                              <Typography variant={isMobile ? 'body2' : 'body1'} whiteSpace={'break-spaces'} sx={{marginTop:'0.28rem'}}>
                                 {t(item.label)}{' '}
                                 {story?.story_details?.type_of_story == 'none_of_this_story' &&
                                   `${t('from')} ${story?.title}`}
@@ -429,6 +414,131 @@ console.log("i ma bg color in propmts",bgColor)
                     </Box>
                   </Box>
                 )}
+                {!!listItem[1]?.[0]?.athelete?.length && (
+                  <Box>
+                    <Typography variant='body1' marginBottom={isMobile ? '0.5rem' : '1rem'}>
+                      {t('Athletes')}
+                    </Typography>
+
+                    <Box display={'flex'} flexDirection={'column'} marginBottom={'1rem'}>
+                      {listItem[1]?.[0]?.athelete?.map((item: any) => {
+                        return (
+                          <FormControlLabel
+                            key={item.label}
+                            control={
+                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                                <Box
+                                  display={'flex'}
+                                  onChange={() => handleCheckCollaborators(item.id)}
+                                  justifyContent={'flex-start'}
+                                  alignItems={'center'}>
+                                  <Checkbox
+                                    checked={homeData?.criterias?.collaborators?.includes(item.id)}
+                                    sx={{
+                                      color: palette.white,
+                                      padding: '0.5rem 0.35rem 0.5rem 0',
+                                      '&.Mui-checked': {
+                                        color: bgColorCheck,
+                                      },
+                                    }}
+                                  />
+                                  <Typography variant={isMobile ? 'body2' : 'body1'} whiteSpace={'break-spaces'}>
+                                    {t(item.label)}
+                                  </Typography>
+                                </Box>
+                              </MotionItem>
+                            }
+                            label={undefined}
+                          />
+                        );
+                      })}
+                    </Box>
+                  </Box>
+                )}
+                {!!listItem[1]?.[0]?.players?.length && (
+                  <Box>
+                    <Typography variant='body1' marginBottom={isMobile ? '0.5rem' : '1rem'}>
+                      {t('Player')}
+                    </Typography>
+
+                    <Box display={'flex'} flexDirection={'column'} marginBottom={'1rem'}>
+                      {listItem[1]?.[0]?.players?.map((item: any) => {
+                        return (
+                          <FormControlLabel
+                            key={item.label}
+                            control={
+                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                                <Box
+                                  display={'flex'}
+                                  onChange={() => handleCheckCollaborators(item.id)}
+                                  justifyContent={'flex-start'}
+                                  alignItems={'center'}>
+                                  <Checkbox
+                                    checked={homeData?.criterias?.collaborators?.includes(item.id)}
+                                    sx={{
+                                      color: palette.white,
+                                      padding: '0.5rem 0.35rem 0.5rem 0',
+                                      '&.Mui-checked': {
+                                        color: bgColorCheck,
+                                      },
+                                    }}
+                                  />
+                                  <Typography variant={isMobile ? 'body2' : 'body1'} whiteSpace={'break-spaces'}>
+                                    {t(item.label)}
+                                  </Typography>
+                                </Box>
+                              </MotionItem>
+                            }
+                            label={undefined}
+                          />
+                        );
+                      })}
+                    </Box>
+                  </Box>
+                )}
+                {!!listItem[1]?.[0]?.fans?.length && (
+                  <Box>
+                    <Typography variant='body1' marginBottom={isMobile ? '0.5rem' : '1rem'}>
+                      {t('Fans')}
+                    </Typography>
+
+                    <Box display={'flex'} flexDirection={'column'} marginBottom={'1rem'}>
+                      {listItem[1]?.[0]?.fans?.map((item: any) => {
+                        return (
+                          <FormControlLabel
+                            key={item.label}
+                            control={
+                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                                <Box
+                                  display={'flex'}
+                                  onChange={() => handleCheckCollaborators(item.id)}
+                                  justifyContent={'flex-start'}
+                                  alignItems={'center'}>
+                                  <Checkbox
+                                    checked={homeData?.criterias?.collaborators?.includes(item.id)}
+                                    sx={{
+                                      color: palette.white,
+                                      padding: '0.5rem 0.35rem 0.5rem 0',
+                                      '&.Mui-checked': {
+                                        color: bgColorCheck,
+                                      },
+                                    }}
+                                  />
+                                  <Typography variant={isMobile ? 'body2' : 'body1'} whiteSpace={'break-spaces'}>
+                                    {t(item.label)}
+                                  </Typography>
+                                </Box>
+                              </MotionItem>
+                            }
+                            label={undefined}
+                          />
+                        );
+                      })}
+                    </Box>
+                  </Box>
+                )}
+
+                
               </Box>
             ) : (
               <Box sx={{ overflowY: 'auto' }} minHeight={'15rem'} maxHeight={'70vh'}>

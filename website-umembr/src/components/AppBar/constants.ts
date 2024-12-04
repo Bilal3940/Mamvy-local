@@ -94,7 +94,11 @@ export const getCollaboratorsOptions = (collaborators: any[], story: any) => {
   if (story?.id) {
     const friendsStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type === 'friends');
     const familyStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type === 'family') || [];
-    const othersStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type !== 'family' && roleUser?.user_type !== 'friends');
+    const fansStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type === 'fans') || [];
+    const atheleteStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type === 'athelete') || [];
+    const playersStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type === 'players') || [];
+
+    const othersStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type !== 'family' && roleUser?.user_type !== 'friends'  && roleUser?.user_type !== 'players' && roleUser?.user_type !== 'fans' && roleUser?.user_type !== 'athelete'   );
 
     familyStory.push({ user: story?.user })
     return [
@@ -104,6 +108,18 @@ export const getCollaboratorsOptions = (collaborators: any[], story: any) => {
           id: roleUser?.user?.id,
         })),
         family: familyStory?.map((roleUser: any) => ({
+          label: `${roleUser?.user?.name} ${roleUser?.user?.lastname}`,
+          id: roleUser?.user?.id,
+        })),
+        fans: fansStory?.map((roleUser: any) => ({
+          label: `${roleUser?.user?.name} ${roleUser?.user?.lastname}`,
+          id: roleUser?.user?.id,
+        })),
+        athelete: atheleteStory?.map((roleUser: any) => ({
+          label: `${roleUser?.user?.name} ${roleUser?.user?.lastname}`,
+          id: roleUser?.user?.id,
+        })),
+        players: playersStory?.map((roleUser: any) => ({
           label: `${roleUser?.user?.name} ${roleUser?.user?.lastname}`,
           id: roleUser?.user?.id,
         })),
@@ -117,7 +133,10 @@ export const getCollaboratorsOptions = (collaborators: any[], story: any) => {
 
   const friends = collaborators?.filter((collaborator: any) => collaborator?.user_type === 'friends') || [];
   const family = collaborators?.filter((collaborator: any) => collaborator?.user_type === 'family') || [];
-  const others = collaborators?.filter((collaborator: any) => collaborator?.user_type !== 'family' && collaborator.user_type !== 'friends') || [];
+  const fansStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type === 'fans') || [];
+  const atheleteStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type === 'athelete') || [];
+  const playersStory = story?.roleUsers?.filter((roleUser: any) => roleUser?.user_type === 'players') || [];
+  const others = collaborators?.filter((collaborator: any) => collaborator?.user_type !== 'family' && collaborator.user_type !== 'friends' && collaborator.user_type !== 'fans' && collaborator.user_type !== 'athelete' && collaborator.user_type !== 'players') || [];
 
   return [
     {
@@ -132,6 +151,18 @@ export const getCollaboratorsOptions = (collaborators: any[], story: any) => {
       others: others?.map((collaborator: any) => ({
         label: `${collaborator?.name} ${collaborator?.lastname}`,
         id: collaborator?.id,
+      })),
+      fans: fansStory?.map((roleUser: any) => ({
+        label: `${roleUser?.user?.name} ${roleUser?.user?.lastname}`,
+        id: roleUser?.user?.id,
+      })),
+      athelete: atheleteStory?.map((roleUser: any) => ({
+        label: `${roleUser?.user?.name} ${roleUser?.user?.lastname}`,
+        id: roleUser?.user?.id,
+      })),
+      players: playersStory?.map((roleUser: any) => ({
+        label: `${roleUser?.user?.name} ${roleUser?.user?.lastname}`,
+        id: roleUser?.user?.id,
       })),
     },
   ]

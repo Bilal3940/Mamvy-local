@@ -232,9 +232,9 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
 
       // Set the colors to the adminPalette state
       setAdminPalette({
-        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
-        textColor: colors.textColor || '#fff', // Fallback
-        accentColor: colors.accentColor || '#BF5700', // Fallback
+        storyBackgroundColor: colors.storyBackgroundColor || palette.background, // Fallback if color is missing
+        textColor: colors.textColor || palette.white, // Fallback
+        accentColor: colors.accentColor || palette.primary, // Fallback
       });
     }
   }, [template]); // Make sure to add template to the dependency array
@@ -319,6 +319,11 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                 disabled={false}
                 loading={false}
                 variant={'outlined'}
+                sx={{
+                  "&:hover":{
+                    borderColor:accentColor,
+                  }
+                }}
                 method={handleCloseButton}>
                 <Typography variant='button'>{t('close')}</Typography>
               </MuiButton>
@@ -436,7 +441,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
 
       <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
         <Box position={'relative'}>
-          <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators]} />
+          <FilterDropdown  extendedPalette={extendedPalette} top={'10rem'}  isOpen={openFilters} listItem={[prompts, collaborators]} />
         </Box>
       </ClickAwayListener>
       <CancelModal open={status} onClose={switchStatus} confirmMethod={closeProcess} />

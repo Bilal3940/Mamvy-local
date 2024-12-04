@@ -11,7 +11,6 @@ import Image from 'next/image';
 import { RemoveCollaborator } from '../RemoveCollaborator';
 import { UseFirstRender } from '@/hooks';
 import { styles } from '../styles';
-import { cdn_url } from '@/utils';
 
 export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
   const { t } = useTranslation();
@@ -27,6 +26,7 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
   const [nonValidatedCollaborators, setNonValidatedCollaborators] = useState([]);
 
   const handleSubmit = async () => {
+    console.log("i am the colabrator in frontend form", values.collaborators)
     dispatch(inviteCollaborator({ collaborators: values.collaborators, story_id: story?.id }));
     onClose();
   };
@@ -81,13 +81,12 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
       setErrors({ email: t('duplicates_collaborators') });
       return;
     }
-
-    const newCollaborators = emails.map((email: any) => ({
-      email,
+    const newCollaborators = emails.map((email: string) => ({
+      email: email.toLowerCase(),
       type: 'other',
       role: 'collaborator',
     }));
-
+    console.log("new collab in frontend: >>>>>>>",newCollaborators)
     setFieldValue('collaborators', [...values.collaborators, ...newCollaborators]);
     setFieldValue('email', '');
     setErrors({ email: '' });
@@ -414,8 +413,8 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
                           { id: 'family', name: 'Family' },
                           { id: 'friends', name: 'Friends' },
                           {id:'fans', name:'Fans'},
-                          {id:'athelete', name:'Athelete'},
-                          {id:'players', name:'players'},
+                          {id:'athelte', name:'Athlete'},
+                          {id:'players', name:'Players'},
                           {}
 
 

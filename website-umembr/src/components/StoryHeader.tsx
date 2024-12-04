@@ -79,7 +79,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                    // Replace with your desired hover color// Optional: change text color on hover
                 }}
                 startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} />}>
-                <Link href={`/app/story/${title}/update`} style={{ textDecoration: 'none' , color:extendedPalette.edittextColor}}>
+                <Link href={`/app/story/${title}/update`} style={{ textDecoration: 'none' , color:'white'}}>
                   Edit this Memvy
                 </Link>
               </Button>
@@ -120,7 +120,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
             <Image src={coverImage} alt='Cover Image' width={200} height={200} style={{ objectFit: 'contain' }} />
           )}
         </Box> */}
-        <Box
+        {/* <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
@@ -171,7 +171,71 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
               <Image src={coverImage} alt='Cover Image' layout='intrinsic' width={200} height={200} />
             </Box>
           )}
+        </Box> */}
+        <Box
+  sx={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: { xs: '10px', sm: '20px' },
+    margin: { xs: '5px 10px', sm: '5px 40px' },
+    flexWrap: 'wrap', // Ensure this is needed; otherwise, remove if wrapping is not required
+  }}
+>
+  {imgSrc !== '' && secondImgSrc !== '' ? (
+    <>
+      {imgSrc && (
+        <Box
+          sx={{
+            display: 'flex', // Ensures internal content alignment
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: { xs: 150, sm: 200 },
+            height: { xs: 75, sm: 100 },
+          }}
+        >
+          <Image src={imgSrc} alt="Extra Asset 1" layout="intrinsic" width={200} height={100} />
         </Box>
+      )}
+      <Divider
+        orientation="vertical"
+        flexItem
+        sx={{
+          alignSelf: 'center', // Ensures the divider aligns with the content
+          height: '100px',
+          borderColor: extendedPalette.dividerColor,
+          margin: '15px 10px',
+        }}
+      />
+      {secondImgSrc && (
+        <Box
+          sx={{
+            display: 'flex', // Ensures internal content alignment
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: { xs: 150, sm: 200 },
+            height: { xs: 75, sm: 100 },
+          }}
+        >
+          <Image src={secondImgSrc} alt="Extra Asset 2" layout="intrinsic" width={200} height={100} />
+        </Box>
+      )}
+    </>
+  ) : (
+    <Box
+      sx={{
+        display: 'flex', // Ensures internal content alignment
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: { xs: 150, sm: 200 },
+        height: { xs: 150, sm: 200 },
+      }}
+    >
+      <Image src={coverImage} alt="Cover Image" layout="intrinsic" width={200} height={200} />
+    </Box>
+  )}
+</Box>
+
 
         <Typography
           variant='h3'
@@ -212,7 +276,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
             margin: '10px 20px',
             marginBottom: '10px',
           }}>
-          <Typography variant='body1' style={{ ...extendedPalette.description }}>
+          <Typography variant='body1' fontFamily={'DM Sans'} style={{ ...extendedPalette.description }}>
             {description}
           </Typography>
         </Box>

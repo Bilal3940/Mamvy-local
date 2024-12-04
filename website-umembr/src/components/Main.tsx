@@ -75,6 +75,7 @@ const Main: React.FC = () => {
     accentColor: '',
   });
   const { user, isAuth } = useSelector(authSelector);
+  console.log("I am user",user)
   const dispatch = useDispatch();
   const story = useSelector(currentStorySelector);
   const { showPublishModal } = useSelector(intermitenceSelector);

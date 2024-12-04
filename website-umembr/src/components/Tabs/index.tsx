@@ -60,9 +60,6 @@ export const MuiTabs: FC<ITabsProps> = ({ color,tabs, value, width, extraStyle, 
           '&.Mui-selected': {
             color: bgColor, // Set label color to red for the selected tab
           },
-          '&:focus': {
-            color: 'red', // Ensure focus color is red too
-          },
         }}
       />
     );

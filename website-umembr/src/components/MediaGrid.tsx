@@ -783,8 +783,9 @@ const filteredMediaItems = memoriesLoaded
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     }
   });
-
-
+console.log("i am memories Loaded",filteredMediaItems)
+console.log("I am user",user)
+console.log("i am collabortors",collaborators)
   const allItemsLoaded = visibleItems >= filteredMediaItems.length;
   // loadmore button handler
   const handleLoadMore = () => {
@@ -851,7 +852,11 @@ const filteredMediaItems = memoriesLoaded
             // onClear={() => setSearch('')}
             placeholder='Search'
             size='small'
-            sx={{ ...extendedPalette.searchField }}
+            sx={{ ...extendedPalette.searchField,
+              '& .MuiInputBase-input': {
+      color: 'white', // Replace with your desired color
+    },
+            }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position='start'>
@@ -1010,7 +1015,7 @@ const filteredMediaItems = memoriesLoaded
       <Typography
         variant="body2"
         sx={{
-          fontFamily: 'PolySans Trial, sans-serif',
+          fontFamily: 'DM Sans',
           fontSize: { xs: '14px', sm: '16px' }, // Responsive font size
           fontWeight: 400,
           lineHeight: { xs: '16.8px', sm: '19.2px' }, // Adjust line height for mobile
@@ -1023,9 +1028,9 @@ const filteredMediaItems = memoriesLoaded
       <Typography
         variant="caption"
         sx={{
-          fontFamily: 'PolySans Trial, sans-serif',
+          fontFamily: 'DM Sans',
           fontSize: { xs: '10px', sm: '12px' }, // Responsive font size for date
-          fontWeight: 400,
+          fontWeight: 300,
           lineHeight: { xs: '12px', sm: '14.4px' }, // Adjust line height for mobile
           textAlign: 'left',
         }}

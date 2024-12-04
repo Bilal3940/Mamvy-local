@@ -174,9 +174,7 @@ useEffect(()=>{
 
   let bgColor =    router.pathname ===   '/app/home' ? palette.cardBackground :accentColor;
   let bgColorCheck =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
-
-
-
+console.log("i ma bg color in propmts",bgColor)
 
   // const types = useMemo(() => {
   //   const types = [
@@ -216,7 +214,7 @@ useEffect(()=>{
           initial={!isOpen ? 'open' : 'closed'}
           exit={!isOpen ? 'open' : 'closed'}
           position={'absolute'}
-          top={isMobile? '1rem' : '3rem'}
+          top={isMobile? '1rem' : '4rem'}
           right={0}
           width={'20rem'}
           zIndex={10}
@@ -261,7 +259,7 @@ useEffect(()=>{
                 qty={filterTabs.length}
                 extraStyle={{
                   width: '100%',
-                  color:'red',
+                  // color:'red',
                 }}
               />
             </Box>
@@ -278,7 +276,7 @@ useEffect(()=>{
                               display={'flex'}
                               onChange={() => handleCheckPrompts(item.label)}
                               justifyContent={'flex-start'}
-                              alignItems={'center'}>
+                              alignItems={'flex-start'}>
                               <Checkbox
                                 checked={homeData?.criterias?.prompts?.includes(item.label)}
                                 sx={{
@@ -286,10 +284,12 @@ useEffect(()=>{
                                   padding: '0.5rem 0.35rem 0.5rem 0',
                                   '&.Mui-checked': {
                                     color: bgColorCheck,
+                                    alignSelf: 'flex-start', // Ensures the checkbox aligns to the top
+      marginTop: '0.25rem',
                                   },
                                 }}
                               />
-                              <Typography variant={isMobile ? 'body2' : 'body1'} whiteSpace={'break-spaces'}>
+                              <Typography variant={isMobile ? 'body2' : 'body1'} whiteSpace={'break-spaces'} sx={{ marginTop: '0.30rem' }}>
                                 {t(item.label)}{' '}
                                 {story?.story_details?.type_of_story == 'none_of_this_story' &&
                                   `${t('from')} ${story?.title}`}

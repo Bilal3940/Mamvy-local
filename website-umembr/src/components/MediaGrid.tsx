@@ -620,6 +620,7 @@ if (extraContent) {
           method={switchDeleteMemory}
         />
         <DeleteMemoryModal
+        
           extendedPalette={extendedPalette}
           open={deleteStatusMemory}
           onClose={switchDeleteMemory}

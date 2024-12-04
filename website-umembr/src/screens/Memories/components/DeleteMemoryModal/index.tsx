@@ -31,7 +31,7 @@ export const DeleteMemoryModal = ({extendedPalette ,open, onClose, confirmMethod
   return (
     <Modal open={open} onClose={onClose} sx={styles.modal}>
       <Box
-        width={isMobile ? '90%' : '38.1875rem'}
+        width={isMobile ? '90%' : '40.1875rem'}
         height={'25vh'}
         display={'flex'}
         flexDirection={'column'}

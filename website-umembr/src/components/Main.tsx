@@ -303,9 +303,7 @@ const Main: React.FC = () => {
       boxShadow: '0px 4px 14px 0px #00000029',
       '&:hover': {
         backgroundColor: adminPalette.accentColor, // Hover background color
-        opacity: 1, // Optional: Increase opacity on hover
-        transform: 'scale(1.05)', // Optional: Add a slight zoom effect
-        transition: 'all 0.3s ease-in-out', // Optional: Smooth transition
+        opacity: 1, // Optional: Increase opacity on hover // Optional: Smooth transition
       },
     },
     storyTitle: adminPalette.textColor,

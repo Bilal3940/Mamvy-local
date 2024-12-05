@@ -312,7 +312,8 @@ if (extraContent) {
   //       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   //     }
   //   });
-  const [isChronological, setIsChronological] = useState(memoriesLoaded?.[0]?.isChronological || false);
+  const [isChronological, setIsChronological] = useState(story?.isChronological || false);
+  console.log("I am chronologiveal", isChronological)
 
 
     const toggleSortingOrder = () => {
@@ -330,9 +331,10 @@ if (extraContent) {
     )
     ?.sort((a: any, b: any) => {
       if (isChronological) {
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+         return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       } else {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+       
       }
     });
 
@@ -341,6 +343,9 @@ if (extraContent) {
   const handleLoadMore = () => {
     setVisibleItems((prev) => prev + ITEMS_PER_PAGE); // Load 10 more items on button click
   };
+  const handleRefresh = () => {
+  dispatch(getMemories(story?.id));
+};
 
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const sizeText = isSmallScreen ? '25px' : '30px';
@@ -434,13 +439,13 @@ if (extraContent) {
                     ? ` ${palette.black}  !important`
                     : `${extendedPalette.buttonbackgroundIcon} !important`
                 }
-                borderColor={palette.black}
+                // borderColor={palette.black}
                 width={40}
                 height={40}
-                iconHeight={12}
+                iconHeight={18}
                 iconWidth={20}
                 sx={{
-                  transform: isChronological ? 'rotate(0deg)' : 'rotate(180deg)',
+                  transform: isChronological ? 'rotate(180deg)' : 'rotate(0deg)',
                   transition: 'transform 0.3s ease',
                   '&:hover': {
                     // Hover background color
@@ -448,6 +453,25 @@ if (extraContent) {
                   },
                 }}
                 method={(event: any) => toggleSortingOrder()} // Toggle state on click
+              />
+               <MuiIconButton
+                icon='/icons/regenerate'
+                altIcon='filter'
+                background={extendedPalette.buttonbackgroundIcon}
+                // borderColor={palette.black}
+                width={40}
+                height={40}
+                iconHeight={25}
+                iconWidth={20}
+                sx={{
+                  // transform: isChronological ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease',
+                  '&:hover': {
+                    // Hover background color
+                    backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this color as needed
+                  },
+                }}
+                method={(event: any) => handleRefresh()} // Toggle state on click
               />
               <MuiIconButton
                 icon='/icons/filter'

@@ -433,6 +433,7 @@ const Main: React.FC = () => {
           )}
           <StoryHeader
             extendedPalette={extendedPalette}
+            
             themeId={story?.themeId ? story?.themeId : '1'}
             coverImage={story?.cover_image ? `${cdn_url}${story.cover_image}` : ''} // Fallback cover image
             imgSrc={story?.extraAsset1 ? `${cdn_url}${story.extraAsset1}` : ''} // First extra image

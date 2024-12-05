@@ -315,7 +315,7 @@ if (extraContent) {
   const [isChronological, setIsChronological] = useState(story?.isChronological || false);
   console.log("I am chronologiveal", isChronological)
 
-
+const [rotate, setRotate] = useState(false);
     const toggleSortingOrder = () => {
     setIsChronological((prev?:any) => !prev);
   };
@@ -344,7 +344,10 @@ if (extraContent) {
     setVisibleItems((prev) => prev + ITEMS_PER_PAGE); // Load 10 more items on button click
   };
   const handleRefresh = () => {
+    console.log("Umar I am refresh")
+    setRotate(true);
   dispatch(getMemories(story?.id));
+  setTimeout(() => setRotate(false), 1000);
 };
 
   const isSmallScreen = useMediaQuery('(max-width:600px)');
@@ -408,11 +411,18 @@ if (extraContent) {
               // onClear={() => setSearch('')}
               placeholder='Search'
               size='small'
+              
               sx={{
                 ...extendedPalette.searchField,
                 '& .MuiInputBase-input': {
-                  color: 'white', // Replace with your desired color
+                  color: 'white',
+ // Replace with your desired color
                 },
+                width: {
+            xs: '12rem', // Small screens
+            sm: '16rem', // Large screens
+          },
+
               }}
               InputProps={{
                 startAdornment: (
@@ -425,7 +435,7 @@ if (extraContent) {
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: { xs: 'center', sm: 'flex-end' }, // Center on mobile, align to the right on larger screens
+                justifyContent: { xs: 'flex-end', sm: 'flex-end' }, // Center on mobile, align to the right on larger screens
                 flexGrow: 1,
                 flexWrap: { xs: 'wrap', sm: 'nowrap' },
                 gap: 1, // Add some spacing between buttons if needed
@@ -463,14 +473,14 @@ if (extraContent) {
                 height={40}
                 iconHeight={25}
                 iconWidth={20}
+                
                 sx={{
-                  // transform: isChronological ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease',
-                  '&:hover': {
-                    // Hover background color
-                    backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this color as needed
-                  },
-                }}
+        transition: 'transform 2s ease',
+        transform: rotate ? 'rotate(1080deg)' : 'rotate(0deg)', // 1080deg = 3 full rotations
+        '&:hover': {
+          backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this
+        },
+      }}
                 method={(event: any) => handleRefresh()} // Toggle state on click
               />
               <MuiIconButton

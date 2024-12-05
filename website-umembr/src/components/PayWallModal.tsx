@@ -92,9 +92,9 @@ setStep(stepp);
                       height: 'auto',
                     },
                   }}>
-                  <Image width={200} height={200} alt='memvy' src='/icons/Union.svg' />
+                  <Image width={64} height={31.59} alt='memvy' src='/icons/Union.svg' />
        
-                  {
+                  {/* {
   extraContent?.teaserContent && extraContent.teaserContent.map((item: any, index: any) => {
     // Check if the item contains an <h1> tag
     if (item.includes('<h1>')) {
@@ -121,36 +121,35 @@ setStep(stepp);
     // Default rendering for other content like <p> and text nodes
     return <div key={index} dangerouslySetInnerHTML={{ __html: item }} />;
   })
-}
+} */}
 
-                  {/* <Typography>
-                    <Typography fontSize={'1.5rem'}>Welcome to Memvy</Typography>
-                    <Typography fontSize={'1.1rem'} color={'#CCCCCC'} lineHeight={'20px'}>
-                      The Future of Enjoying the Past
+               {extraContent?.teaserContent &&  <> <Typography>
+                    <Typography fontSize={'1.55rem'}>{extraContent.teaserContent[0] }</Typography>
+                    <Typography fontSize={'1.2rem'} color={'#CCCCCC'} lineHeight={'20px'}>
+                    {extraContent.teaserContent[1]}
                     </Typography>
                   </Typography>
 
-                  <Typography fontSize={'1.125rem'} lineHeight={'21.6px'} marginTop={'10px'}>
-                    We’ve partnered with the SEC to make the Championship Game truly unforgettable. Gain exclusive
-                    access to a curated Memvy story for only $5.
+                  <Typography fontSize={'0.95rem'} lineHeight={'21.6px'} marginTop={'10px'}>
+                    {extraContent.teaserContent[2]}
                   </Typography>
 
-                  <Typography gap={'16px'} marginTop={'10px'}>
-                    <Typography variant='body2' display={'flex'} alignItems={'flex-start'}>
-                      <img src='/icons/RedTick.svg' style={{ marginRight: '8px' }} />
-                      Exclusive content from name, name, name and many more
+                  <Typography  marginTop={'10px'}>
+                    <Typography variant='body2'fontSize={'0.95rem'} display={'flex'} alignItems={'flex-start'}>
+                      <img src='/icons/RedTick.svg'  style={{ marginRight: '8px' }} />
+                      {extraContent.teaserContent[3]}
                     </Typography>
 
-                    <Typography variant='body2' display={'flex'} alignItems={'flex-start'}>
+                    <Typography variant='body2'fontSize={'0.95rem'} display={'flex'} alignItems={'flex-start'}>
                       <img src='/icons/RedTick.svg' style={{ marginRight: '8px' }} />
-                      Immerse yourself in stories, video, photo, and audio collections
+                      {extraContent.teaserContent[4]}
                     </Typography>
 
-                    <Typography variant='body2' display={'flex'} alignItems={'flex-start'}>
+                    <Typography variant='body2' fontSize={'0.95rem'} display={'flex'} alignItems={'flex-start'}>
                       <img src='/icons/RedTick.svg' style={{ marginRight: '8px' }} />
-                      Experience the excitement of gameday again and again
+                      {extraContent.teaserContent[5]}
                     </Typography>
-                  </Typography> */}
+                  </Typography>
 
                   <Typography
                     sx={{
@@ -164,7 +163,7 @@ setStep(stepp);
                       }}>
                       ${extraContent?.price}.00
                     </Typography>
-                  </Typography>
+                  </Typography></>}
                 </Box>
               </Grid>
 

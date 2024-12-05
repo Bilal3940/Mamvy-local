@@ -117,6 +117,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({story, extendedPalette }) => {
     if (story?.id) {
       setLoading(true);
       dispatch(getMemories(story?.id));
+      dispatch(getExtraContent(router.query?.id as string))
     }
     setLoading(false);
   }, [story?.id, dispatch]);
@@ -160,11 +161,13 @@ const MediaGrid: React.FC<MediaGridProps> = ({story, extendedPalette }) => {
   const AllowOpenModel = (item:any) => {
     // Dispatch to fetch user purchases
   // Check if extraContent is available
-  dispatch(getExtraContent(router.query?.id as string))
+  // alert('called');
+ 
   if(user &&  user.id ){
   dispatch(getUserPurchases( user && user?.id));
   }
   if (extraContent) {
+    // alert('called iff');
     // Only check if the content is paid
     if (extraContent.isPaid) {
       if (isAuth) {

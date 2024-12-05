@@ -76,6 +76,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({story, extendedPalette }) => {
   const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();
   // Define state for filter and selected media item
   const [filter, setFilter] = useState('All');
+  
   const { stories } = useSelector(homeSelector);
   const prompts = getPropmtsOptions(stories, story);
   const { userPurchases } = useSelector(purchaseSelector);
@@ -83,6 +84,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({story, extendedPalette }) => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
+  // const [isChronological, setIsChronological] = useState(true);
   const [openFilters, setOpenFilters] = useState(false);
   const [openPeople, setOpenPeople] = useState(false);
   const { status, switchStatus } = UseIntermitence();
@@ -284,6 +286,7 @@ if (extraContent) {
     router.push(`/app/story/${story?.url}`);
     switchStatus();
   };
+  console.log("I am story Umar", story)
 
 
   const [isFilterActive, setIsFilterActive] = useState(false);
@@ -291,7 +294,30 @@ if (extraContent) {
   useEffect(() => {
   }, [isFilterActive]);
 
-  const isChronological = true; 
+  // const isChronological = true; 
+
+  // const filteredMediaItems = memoriesLoaded
+  //   ?.filter(
+  //     (item: any) =>
+  //       (filter === 'All' || item.type === filter.toLowerCase()) &&
+  //       (!search ||
+  //         (search.length >= 3 &&
+  //           (item.title?.toLowerCase().includes(search.toLowerCase()) ||
+  //             item.username?.toLowerCase().includes(search.toLowerCase())))),
+  //   )
+  //   ?.sort((a: any, b: any) => {
+  //     if (isChronological) {
+  //       return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+  //     } else {
+  //       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  //     }
+  //   });
+  const [isChronological, setIsChronological] = useState(memoriesLoaded?.[0]?.isChronological || false);
+
+
+    const toggleSortingOrder = () => {
+    setIsChronological((prev?:any) => !prev);
+  };
 
   const filteredMediaItems = memoriesLoaded
     ?.filter(
@@ -309,7 +335,6 @@ if (extraContent) {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
     });
-    
 
   const allItemsLoaded = visibleItems >= filteredMediaItems.length;
   // loadmore button handler
@@ -401,6 +426,29 @@ if (extraContent) {
                 gap: 1, // Add some spacing between buttons if needed
               }}>
               {/* Sort Dropdown */}
+    <MuiIconButton
+                icon='/icons/sortIcon'
+                altIcon='filter'
+                background={
+                  isChronological
+                    ? ` ${palette.black}  !important`
+                    : `${extendedPalette.buttonbackgroundIcon} !important`
+                }
+                borderColor={palette.black}
+                width={40}
+                height={40}
+                iconHeight={12}
+                iconWidth={20}
+                sx={{
+                  transform: isChronological ? 'rotate(0deg)' : 'rotate(180deg)',
+                  transition: 'transform 0.3s ease',
+                  '&:hover': {
+                    // Hover background color
+                    backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this color as needed
+                  },
+                }}
+                method={(event: any) => toggleSortingOrder()} // Toggle state on click
+              />
               <MuiIconButton
                 icon='/icons/filter'
                 altIcon='filter'

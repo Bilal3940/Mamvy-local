@@ -23,9 +23,10 @@ interface ModalDetailProps {
   onClose: () => void;
   mediaContent?: any;
   method: () => void;
+  isLocked?: boolean | false;
 }
 
-export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetailProps) => {
+export const MemoryDetail = ({isLocked, open, onClose, mediaContent, method }: ModalDetailProps) => {
   const { t } = useTranslation();
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -178,10 +179,10 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
             </Typography>
 
             <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={isMobile ? '100%' : '50%'}>
-              {((checkPermissions(user?.roles || [], 'CLIENT_MEMORY_DELETE', story?.id) &&
+              { !isLocked && ( (checkPermissions(user?.roles || [], 'CLIENT_MEMORY_DELETE', story?.id) &&
                 user?.id === mediaContent?.user_id) ||
                 user?.id === story?.user_id ||
-                user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')) && (
+                user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')  )  && (
                 <Box width={'6.5rem'} marginRight={'1rem'}>
                   <MuiButton type='button' loading={false} variant={'outlined'} method={method} sx={{
     '&:hover': {
@@ -195,7 +196,7 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
                   </MuiButton>
                 </Box>
               )}
-              {!approve &&
+              {!approve && !isLocked && 
                 (checkPermissions(user?.roles || [], 'CLIENT_STORY_UPDATE', story?.id) ||
                   user?.id === story?.user_id ||
                   user?.roles?.find(
@@ -225,7 +226,7 @@ export const MemoryDetail = ({ open, onClose, mediaContent, method }: ModalDetai
                     </MuiButton>
                   </Box>
                 )}
-              {((checkPermissions(user?.roles || [], 'CLIENT_MEMORY_UPDATE', story?.id) &&
+              {!isLocked &&  ((checkPermissions(user?.roles || [], 'CLIENT_MEMORY_UPDATE', story?.id) &&
                 user?.id === mediaContent?.user_id) ||
                 user?.id === story?.user_id ||
                 user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')) && (

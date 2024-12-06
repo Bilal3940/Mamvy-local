@@ -3,7 +3,6 @@ import {
   actualStory,
   changeBackground,
   closePublishModal,
-  deleteStory,
   getCollaboratorStory,
   getTemplate,
   hideGradient,
@@ -21,9 +20,9 @@ import {
   templatesSelector,
 } from '@/store/selectors';
 import { cdn_url } from '@/utils';
-import { Box, BoxProps, Button, CircularProgress, Theme, useMediaQuery } from '@mui/material';
+import { Box, CircularProgress, Theme, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
-import { Ref, useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import MediaGrid from './MediaGrid';
 import EllipseLeftImage from '../../public/images/EllipseLeft';
@@ -39,8 +38,6 @@ const Main: React.FC = () => {
     router.push('/app/home');
   };
   const [selectedMemorie, setSelectedMemorie] = useState<any>(null);
-  const { status, switchStatus } = UseIntermitence();
-  const { status: deleteStatusStory, switchStatus: switchDeleteStory } = UseIntermitence();
   const { status: privateStatus, switchStatus: switchPublication } = UseIntermitence();
   const [adminPalette, setAdminPalette] = useState({
     storyBackgroundColor: '',
@@ -53,13 +50,13 @@ const Main: React.FC = () => {
   const { showPublishModal } = useSelector(intermitenceSelector);
   const { template, actionSuccess } = useSelector(templatesSelector);
   const { collaborators } = useSelector(collaboratorSelector);
+  const [loading, setLoading]=useState(false);
   const { extraContent } = useSelector(extrasSelector);
   const [viewStory, setViewStory] = useState(false);
-
+  const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('md'));
   const router = useRouter();
   const [tryCode, setTryCode] = useState(true);
   const [foundRole, setFoundRole] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
 
   UseFirstRender(() => {
     if (router.query?.id && !router.query.code) {
@@ -111,20 +108,6 @@ const Main: React.FC = () => {
   }, [router.query?.id, story?.url]);
 
   useEffect(() => {}, [extraContent]);
-
-  const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('md'));
-
-  const deleteStoryAction = () => {
-    switchDeleteStory();
-    dispatch(deleteStory(story?.id));
-    router.push(`/app/home`);
-  };
-
-  const closeMemory = () => {
-    setSelectedMemorie(null);
-    router.push(`/app/story/${story?.url}`);
-    switchStatus();
-  };
 
   UseFirstRender(() => {
     if (user && isAuth) {
@@ -204,19 +187,16 @@ const Main: React.FC = () => {
     if (Number(mobileHeight.replace('vh', '')) > 10) dispatch(hideGradient(false));
   }, [mobileHeight]);
 
-  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (story?.themeId) {
-      dispatch(getTemplate(story?.themeId ? story?.themeId : '1')); // Dispatch Redux action to fetch template data based on themeId
+      dispatch(getTemplate(story?.themeId ? story?.themeId : '1'));
     }
   }, [story?.themeId, dispatch, actionSuccess]);
   let backgroundColor: any;
   let accentColor: any;
   useEffect(() => {
     if (template?.template?.colors) {
-      // Assuming the colors array from the API response
       const colors = template.template.colors.reduce((acc: any, color: any) => {
-        // Map each color to the corresponding palette key
         switch (color.PLabel) {
           case 'storyBackground':
             acc.storyBackgroundColor = color.PValue;
@@ -245,11 +225,13 @@ const Main: React.FC = () => {
   useEffect(() => {
     if (backgroundColor) {
       document.body.style.setProperty('background-color', backgroundColor, 'important');
-
+      setLoading(true);
       return () => {
         document.body.style.removeProperty('background-color');
       };
+     
     }
+    
   }, [template]);
 
   useEffect(() => {
@@ -260,8 +242,8 @@ const Main: React.FC = () => {
     if (isFirefox) {
       styleElement.innerHTML = `
         html {
-          scrollbar-color: ${accentColor} ${accentColor}; /* thumb track */
-          scrollbar-width: thin; /* Can also be 'none' or 'auto' */
+          scrollbar-color: ${accentColor} ${accentColor};
+          scrollbar-width: thin;
         }
       `;
     } else {
@@ -302,8 +284,9 @@ const Main: React.FC = () => {
       marginRight: { xs: '0', md: '50px' },
       boxShadow: '0px 4px 14px 0px #00000029',
       '&:hover': {
-        backgroundColor: adminPalette.accentColor, // Hover background color
-        opacity: 1, // Optional: Increase opacity on hover // Optional: Smooth transition
+        backgroundColor: adminPalette.accentColor,
+        opacity: 1,
+     
       },
     },
     storyTitle: adminPalette.textColor,
@@ -322,10 +305,9 @@ const Main: React.FC = () => {
       width: '16rem',
       background: 'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%), #333',
       boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.5) inset',
-      borderRadius: '16px',
-      border: 'none', // Removes border
-  outline: 'none', 
-      // border: '1px solid rgba(255, 255, 255, 0.2)', // Example for a subtle border
+      borderRadius:'16px',
+      border:'none',
+      outline:'none',
     },
 
     filterButton: (filter: any, label: any) => ({
@@ -356,10 +338,10 @@ const Main: React.FC = () => {
     buttonHoverColor: '#BA0C2F',
 
     cardMediaBackground: {
-      borderRadius: '10px', // Use camelCase for border-radius
+      borderRadius: '10px',
       border: '1px solid rgba(204, 204, 204, 0.20)',
       background: 'linear-gradient(180deg, rgba(34, 34, 34, 0.45) 0%, rgba(17, 17, 17, 0.45) 100%)',
-      backdropFilter: 'blur(25px)', // Use camelCase for backdrop-filter
+      backdropFilter: 'blur(25px)',
     },
 
     cardMediaColor: adminPalette.textColor,
@@ -387,22 +369,20 @@ const Main: React.FC = () => {
     filterIconsHoverColor: adminPalette.accentColor,
   };
 
-  console.log('action success', actionSuccess);
-
   return (
     <>
-      {actionSuccess && extendedPalette ? (
+      {(actionSuccess && extendedPalette && adminPalette && loading ) ? (
         <div style={{ backgroundColor: extendedPalette.storyBackground, minHeight: '200vh' }}>
           {extendedPalette.isEllipseCheck.isEllipseLeft && (
             <Box
               sx={{
                 position: 'absolute',
-                left: '0%', // Adjust the right position as needed
-                top: '0%', // Center vertically
-                zIndex: 0, // Behind the content
-                width: '80rem', // Adjust width for the desired size
+                left: '0%',
+                top: '0%',
+                zIndex: 0,
+                width: '80rem',
                 height: '20%',
-                pointerEvents: 'none', // Make it non-interactive
+                pointerEvents: 'none',
                 backgroundRepeat: 'no-repeat, no-repeat',
                 backgroundSize: 'contain, contain',
               }}>
@@ -418,14 +398,13 @@ const Main: React.FC = () => {
             <Box
               sx={{
                 position: 'absolute',
-                right: '-9%', // Adjust the right position as needed
-                top: '45%', // Center vertically
-                // transform: 'translateY(-50%)',
-                zIndex: 0, // Behind the content
-                width: '60%', // Ellipse size
+                right: '-9%',
+                top: '45%',
+
+                zIndex: 0,
+                width: '60%',
                 height: '73rem',
-                // borderRadius: '50%',
-                // Blue with transparency, adjust color
+
                 backgroundRepeat: 'no-repeat, no-repeat',
                 pointerEvents: 'none',
               }}>
@@ -436,12 +415,12 @@ const Main: React.FC = () => {
             </Box>
           )}
           <StoryHeader
+            isLocked={story && story?.isLocked}
             extendedPalette={extendedPalette}
-            
             themeId={story?.themeId ? story?.themeId : '1'}
-            coverImage={story?.cover_image ? `${cdn_url}${story.cover_image}` : ''} // Fallback cover image
-            imgSrc={story?.extraAsset1 ? `${cdn_url}${story.extraAsset1}` : ''} // First extra image
-            secondImgSrc={story?.extraAsset2 ? `${cdn_url}${story.extraAsset2}` : ''} // Second extra image
+            coverImage={story?.cover_image ? `${cdn_url}${story.cover_image}` : ''}
+            imgSrc={story?.extraAsset1 ? `${cdn_url}${story.extraAsset1}` : ''}
+            secondImgSrc={story?.extraAsset2 ? `${cdn_url}${story.extraAsset2}` : ''}
             title={story?.title}
             createdDate={story?.created_at}
             description={story?.description}
@@ -449,8 +428,6 @@ const Main: React.FC = () => {
             onBackClick={handleBackClick}
             userId={story?.user_id}
           />
-
-          {/* Grid Layout */}
           {/* <GridLayoutCheck /> */}
           <MediaGrid extendedPalette={extendedPalette} story={story && story} />
           <MemoryFloatingActionButtons
@@ -469,15 +446,10 @@ const Main: React.FC = () => {
             mediaContent={selectedMemorie}
             method={() => closeCollaboratorsModal()}
           />
-          {/* <Button variant="contained" color="primary" onClick={handleOpen}>
-        Open Modal
-      </Button> */}
-
-          {/* <PopupModal open={modalOpen} onClose={handleClose} /> */}
         </div>
       ) : (
-        <Box width={'100%'} height={'100vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-          <CircularProgress sx={{ color: palette.primary }} />
+        <Box width={'100%'} sx={{backgroundColor:'black'}} height={'100vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <CircularProgress sx={{ color: palette.faintGray }} />
         </Box>
       )}
     </>

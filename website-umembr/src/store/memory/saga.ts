@@ -40,59 +40,6 @@ function* setMediaType({ payload }: any) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function* createMemory({ payload }: any): any {
   try {
     const { user } = yield select(authSelector);

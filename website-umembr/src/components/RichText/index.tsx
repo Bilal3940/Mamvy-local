@@ -14,7 +14,6 @@ import { templatesSelector } from '@/store/selectors';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
-
 interface IRichTextProps {
   name: string;
   error?: boolean;
@@ -37,7 +36,7 @@ interface CustomElement {
   children: CustomDescendant[];
 }
 
-// Combine custom text and elements into a descendant type
+
 type CustomDescendant = CustomElement | CustomText;
 
 declare module 'slate' {
@@ -57,8 +56,6 @@ const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 const FONT_SIZE = ['12px', '14px', '16px', '18px', '20px', '22px', '24px', '26px', '28px', '30px'];
 
-
-
 export const RichText: FC<IRichTextProps> = ({
   name,
   error = false,
@@ -74,22 +71,21 @@ export const RichText: FC<IRichTextProps> = ({
   const editor: any = useMemo(() => withHistory(withReact(createEditor())), []);
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
   const renderElement = useCallback((props: any) => <Element {...props} />, []);
-  const router=useRouter();
+  const router = useRouter();
   const [wordCount, setWordCount] = useState(0);
   const [letterCount, setLetterCount] = useState(0);
   const { status, switchStatus } = UseIntermitence();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [adminPalette, setAdminPalette] = useState({
-    storyBackgroundColor: '', // Default value
-    textColor: '', // Default value
-    accentColor: '', // Default value
+    storyBackgroundColor: '', 
+    textColor: '', 
+    accentColor: '', 
   });
-   const { template } = useSelector(templatesSelector);
-  console.log("I am template in edit", template)
+  const { template } = useSelector(templatesSelector);
   useEffect(() => {
     if (template?.template?.colors) {
-      const colors = template.template.colors.reduce((acc:any, color:any) => {
-        // Map each color to the corresponding palette key
+      const colors = template.template.colors.reduce((acc: any, color: any) => {
+        
         switch (color.PLabel) {
           case 'storyBackground':
             acc.storyBackgroundColor = color.PValue;
@@ -106,29 +102,29 @@ export const RichText: FC<IRichTextProps> = ({
         return acc;
       }, {});
 
-      // Set the colors to the adminPalette state
+      
       setAdminPalette({
-        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
-        textColor: colors.textColor || '#fff', // Fallback
-        accentColor: colors.accentColor || '#BF5700', // Fallback
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', 
+        textColor: colors.textColor || '#fff', 
+        accentColor: colors.accentColor || '#BF5700', 
       });
     }
-  }, [template]); // Make sure to add template to the dependency array
+  }, [template]); 
 
-  const backgroundColorEdit=adminPalette.storyBackgroundColor
+  const backgroundColorEdit = adminPalette.storyBackgroundColor;
   const accentColor = adminPalette.accentColor;
- const buttonBackground =
-    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
-      ? accentColor // Custom background for the specific page
+  const buttonBackground =
+    router.pathname === '/app/story/[id]/update' 
+      ? accentColor 
       : palette?.cardBackground;
-      const notificationBackground =
-    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
-      ? accentColor // Custom background for the specific page
+  const notificationBackground =
+    router.pathname === '/app/story/[id]/update' 
+      ? accentColor 
       : palette?.primary;
-      const EditStoryBackground =
-    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
-      ? backgroundColorEdit // Custom background for the specific page
-      : palette?.primary;
+  const EditStoryBackground =
+    router.pathname === '/app/story/[id]/update' 
+      ? backgroundColorEdit 
+      : palette.cardBackground;
 
   const initialValue: any = [
     {
@@ -147,17 +143,17 @@ export const RichText: FC<IRichTextProps> = ({
         },
       });
 
-      // Removes empty node
+      
       Transforms.removeNodes(editor, {
         at: [0],
       });
 
-      // Insert array of children nodes
+      
       Transforms.insertNodes(editor, value);
 
       setEditorValue(value);
 
-      /* Transforms.insertNodes(editor, value); */
+     
       const counts = countWordsAndLetters(value);
       setWordCount(counts.wordCount);
       setLetterCount(counts.letterCount);
@@ -409,7 +405,7 @@ const Leaf = ({ attributes, children, leaf }: any) => {
   }
 
   if (leaf.fontSize) {
-    children = <span style={{ fontSize: leaf.fontSize }}>{children}</span>; //fontSize: leaf.fontSize || 'inherit'
+    children = <span style={{ fontSize: leaf.fontSize }}>{children}</span>; 
   }
 
   return <span {...attributes}>{children}</span>;

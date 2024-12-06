@@ -89,6 +89,7 @@ function* actualStory({ payload }: ReturnType<typeof actualStoryAction>) {
     const { result } = yield call(FetchService, `stories/${id}${confirmPassword}`, 'GET', {}, user?.token);
     yield put(actualStoryAsync(result));
   } catch (error: any) {
+    router?.push("/404")
   //  if (user.token) router?.push('/app/home');
    // else {
       // router?.push('/app/login');

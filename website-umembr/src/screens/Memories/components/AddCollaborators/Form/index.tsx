@@ -12,7 +12,7 @@ import { RemoveCollaborator } from '../RemoveCollaborator';
 import { UseFirstRender } from '@/hooks';
 import { styles } from '../styles';
 
-export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
+export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   const { t } = useTranslation();
   const { story } = useSelector(storySelector);
   const dispatch = useDispatch();
@@ -26,7 +26,6 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
   const [nonValidatedCollaborators, setNonValidatedCollaborators] = useState([]);
 
   const handleSubmit = async () => {
-    console.log("i am the colabrator in frontend form", values.collaborators)
     dispatch(inviteCollaborator({ collaborators: values.collaborators, story_id: story?.id }));
     onClose();
   };
@@ -50,8 +49,6 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
     }
     return 'inherit';
   };
-
-
 
   const isEmailValid = (email: any) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -86,7 +83,6 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
       type: 'other',
       role: 'collaborator',
     }));
-    console.log("new collab in frontend: >>>>>>>",newCollaborators)
     setFieldValue('collaborators', [...values.collaborators, ...newCollaborators]);
     setFieldValue('email', '');
     setErrors({ email: '' });
@@ -96,7 +92,7 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
 
   const handleCollaborator = (user: any, values?: any) => {
     setSelectedUser(user);
-    if (values) setNoRegister(values)
+    if (values) setNoRegister(values);
     setOpenRemoveCollaborator(true);
   };
 
@@ -109,15 +105,13 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
     setNonValidatedCollaborators(collaborators?.collaborators?.filter((user: any) => !user?.validated));
   }, [collaborators]);
 
-
   const capitalizeAndRemoveS = (string: any) => {
     let result = string?.charAt(0)?.toUpperCase() + string?.slice(1);
     if (result && result?.endsWith('s')) {
       result = result?.slice(0, -1);
     }
     return result || '';
-  }
-
+  };
 
   return (
     <form ref={formRef} onSubmit={formikSubmit} style={{ width: '100%' }}>
@@ -126,26 +120,47 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
           {t('collaborators')}
         </Typography>
         {validatedCollaborators?.length > 0 &&
-          validatedCollaborators
-            .map((user: any) => {
-              return (
-                <Grid key={user?.id} container spacing={2}>
-                  {isMobile ? (
-                    <Grid item xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                      <Grid display={'flex'} item xs={9} flexDirection={'column'}>
+          validatedCollaborators.map((user: any) => {
+            return (
+              <Grid key={user?.id} container spacing={2}>
+                {isMobile ? (
+                  <Grid item xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid display={'flex'} item xs={9} flexDirection={'column'}>
                       <Grid>
-                          <Image width={100} height={100} src={user?.picture}  alt='hello'/>
-                        </Grid>
-                        <Grid>
-                          <Typography align='left'>{user?.user?.email}</Typography>
-                        </Grid>
-                        <Grid>
-                          <Typography align='left'>
-                            {capitalizeAndRemoveS(user?.user_type)} | {user?.role?.name.replace(/_/g, ' ')}
-                          </Typography>
-                        </Grid>
+                        <Image width={100} height={100} src={user?.picture} alt='hello' />
                       </Grid>
-                      <Grid item textAlign={'right'} xs={3}>
+                      <Grid>
+                        <Typography align='left'>{user?.user?.email}</Typography>
+                      </Grid>
+                      <Grid>
+                        <Typography align='left'>
+                          {capitalizeAndRemoveS(user?.user_type)} | {user?.role?.name.replace(/_/g, ' ')}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid item textAlign={'right'} xs={3}>
+                      <Image
+                        src='/icons/close.svg'
+                        alt='close'
+                        style={{ cursor: 'pointer' }}
+                        width={18}
+                        height={18}
+                        onClick={() => handleCollaborator(user)}
+                      />
+                    </Grid>
+                  </Grid>
+                ) : (
+                  <>
+                    <Grid item xs={6}>
+                      <Typography align='center'>{user?.user?.email}</Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Typography align='right'>
+                        {capitalizeAndRemoveS(user?.user_type)} | {user?.role?.name.replace(/_/g, ' ')}
+                      </Typography>
+                    </Grid>
+                    <Grid item textAlign={'center'} xs={2}>
+                      {auth?.user?.email !== user?.user?.email && (
                         <Image
                           src='/icons/close.svg'
                           alt='close'
@@ -154,33 +169,13 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
                           height={18}
                           onClick={() => handleCollaborator(user)}
                         />
-                      </Grid>
+                      )}
                     </Grid>
-                  ) : (
-                    <>
-                      <Grid item xs={6}>
-                        <Typography align='center'>{user?.user?.email}</Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography align='right'>
-                          {capitalizeAndRemoveS(user?.user_type)} | {user?.role?.name.replace(/_/g, ' ')}
-                        </Typography>
-                      </Grid>
-                      <Grid item textAlign={'center'} xs={2}>
-                        {auth?.user?.email !== user?.user?.email && <Image
-                          src='/icons/close.svg'
-                          alt='close'
-                          style={{ cursor: 'pointer' }}
-                          width={18}
-                          height={18}
-                          onClick={() => handleCollaborator(user)}
-                        />}
-                      </Grid>
-                    </>
-                  )}
-                </Grid>
-              );
-            })}
+                  </>
+                )}
+              </Grid>
+            );
+          })}
 
         {(nonValidatedCollaborators?.length > 0 || Object.keys(story?.inviteNoRegister ?? {}).length > 0) && (
           <Grid container marginTop={'1rem'} gap={2}>
@@ -218,7 +213,6 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
                         </Grid>
                       ) : (
                         <>
-
                           <Grid item xs={6}>
                             <Typography align='center'>{user?.user?.email}</Typography>
                           </Grid>
@@ -228,14 +222,16 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
                             </Typography>
                           </Grid>
                           <Grid item textAlign={'center'} xs={2}>
-                            {auth?.user?.email !== user?.user?.email && <Image
-                              src='/icons/close.svg'
-                              alt='close'
-                              style={{ cursor: 'pointer' }}
-                              width={18}
-                              height={18}
-                              onClick={() => handleCollaborator(user)}
-                            />}
+                            {auth?.user?.email !== user?.user?.email && (
+                              <Image
+                                src='/icons/close.svg'
+                                alt='close'
+                                style={{ cursor: 'pointer' }}
+                                width={18}
+                                height={18}
+                                onClick={() => handleCollaborator(user)}
+                              />
+                            )}
                           </Grid>
                         </>
                       )}
@@ -300,12 +296,11 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
         )}
 
         <RemoveCollaborator
-        color={extendedPalette.buttonbackgroundIcon}
+          color={extendedPalette.buttonbackgroundIcon}
           open={openRemoveCollaborator}
           onClose={() => setOpenRemoveCollaborator(false)}
           values={selectedUser}
           noRegister={noRegister}
-        // role={user?.role}
         />
 
         <Grid item xs={12} container alignItems='flex-start' gap={1}>
@@ -318,13 +313,11 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
                 handleOnTouched('email');
               }}
               status={changeInputStatus(values.email, errors.email && touched.email)}
-              // onChange={handleChange}
               onChange={(e) => setFieldValue('email', e.target.value)}
               value={values.email}
               placeholder={t('enter email of collaborator')}
               errorMessage={errors.email}
               error={!!errors.email && touched.email}
-            // isDarkTheme={false}
             />
           </Grid>
           <Grid item>
@@ -336,12 +329,12 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
               backgroundColor={extendedPalette.buttonbackgroundIcon}
               loading={false}
               variant={'contained'}
-               sx={{
-    backgroundColor: extendedPalette.buttonbackgroundIcon,
-    '&:hover': {
-      backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
-    },
-  }}>
+              sx={{
+                backgroundColor: extendedPalette.buttonbackgroundIcon,
+                '&:hover': {
+                  backgroundColor: extendedPalette.buttonbackgroundIcon,
+                },
+              }}>
               <Typography variant={isMobile ? 'caption' : 'button'}>{t('add')}</Typography>
             </MuiButton>
           </Grid>
@@ -412,13 +405,10 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
                           { id: 'other', name: 'Other' },
                           { id: 'family', name: 'Family' },
                           { id: 'friends', name: 'Friends' },
-                          {id:'fans', name:'Fans'},
-                          {id:'athelte', name:'Athlete'},
-                          {id:'players', name:'Players'},
-                          {}
-
-
-
+                          { id: 'fans', name: 'Fans' },
+                          { id: 'athlete', name: 'Athlete' },
+                          { id: 'players', name: 'Players' },
+                          {},
                         ]}
                       />
                     </Box>
@@ -452,22 +442,33 @@ export const Form: FC<any> = ({ formRef, onClose,extendedPalette }) => {
             ),
         )}
         <Box width={'100%'} display={'flex'} justifyContent={'space-between'} gap={'1rem'}>
-          <MuiButton type='button' disabled={false} loading={false} variant={'outlined'} method={() => onClose()}
-             sx={{'&:hover': {
-      borderColor: extendedPalette.buttonbackgroundIcon,  // Change the border color on hover
-              // Change the text color on hover
-    },
-  }}>
+          <MuiButton
+            type='button'
+            disabled={false}
+            loading={false}
+            variant={'outlined'}
+            method={() => onClose()}
+            sx={{
+              '&:hover': {
+                borderColor: extendedPalette.buttonbackgroundIcon,
+              },
+            }}>
             <Typography color={palette.white} variant='button'>
               {t('cancel')}
             </Typography>
           </MuiButton>
-          <MuiButton type='submit' disabled={values?.collaborators?.length < 1} loading={false} backgroundColor={extendedPalette.buttonbackgroundIcon} variant={'contained'}  sx={{
-    backgroundColor: extendedPalette.buttonbackgroundIcon,
-    '&:hover': {
-      backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
-    },
-  }}>
+          <MuiButton
+            type='submit'
+            disabled={values?.collaborators?.length < 1}
+            loading={false}
+            backgroundColor={extendedPalette.buttonbackgroundIcon}
+            variant={'contained'}
+            sx={{
+              backgroundColor: extendedPalette.buttonbackgroundIcon,
+              '&:hover': {
+                backgroundColor: extendedPalette.buttonbackgroundIcon,
+              },
+            }}>
             <Typography variant='button'>{t('invite')}</Typography>
           </MuiButton>
         </Box>

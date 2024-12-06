@@ -424,19 +424,19 @@ export const CreateStory = () => {
     }
   
     // Get the file size for the story being created
-    const file = values.story_title_image?.cover_image;
-    const fileSizeBytes = calculateFileSize(file);
+    // const file = values.story_title_image?.cover_image;
+    // const fileSizeBytes = calculateFileSize(file);
   
-    // Check storage limits before proceeding
-    const usedStorage = userData?.usedStorage || 0;
-    const totalStorage = userData?.totalStorage || 0;
+    // // Check storage limits before proceeding
+    // const usedStorage = userData?.usedStorage || 0;
+    // const totalStorage = userData?.totalStorage || 0;
   
-    if (usedStorage + fileSizeBytes > totalStorage) {
-      alert("There is not enough storage in your account.")
-      setCreating(false);
+    // if (usedStorage + fileSizeBytes > totalStorage) {
+    //   alert("There is not enough storage in your account.")
+    //   setCreating(false);
 
-      return;
-    }
+    //   return;
+    // }
   
     // Proceed with story creation if storage is sufficient
     setCreating(true);

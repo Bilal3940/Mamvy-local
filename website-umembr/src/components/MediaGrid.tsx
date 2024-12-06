@@ -3,7 +3,6 @@ import {
   Box,
   Paper,
   Typography,
-  Button,
   TextField,
   Divider,
   InputAdornment,
@@ -20,8 +19,15 @@ import { styles } from './AppBar/CancelModal/styles';
 import { getExtraContent, getMemories, getUserPurchases, removeMemory } from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, extrasSelector, homeSelector, memorySelector, purchaseSelector } from '@/store/selectors';
-import { cdn_url, checkPermissions, ExtractCallbackType, formatDate, hasUserPurchasedTheStory, promisifiedCallback } from '@/utils';
-import { FilterDropdown, MuiIconButton, RtfComponent } from '@/components';
+import {
+  cdn_url,
+  checkPermissions,
+  ExtractCallbackType,
+  formatDate,
+  hasUserPurchasedTheStory,
+  promisifiedCallback,
+} from '@/utils';
+import { FilterDropdown, MuiButton, MuiIconButton, RtfComponent } from '@/components';
 import Image1Icon from '../../public/icons/image1';
 
 import Video1Icon from '../../public/icons/video1';
@@ -32,7 +38,7 @@ import Audio1Icon from '../../public/icons/audio1';
 import { getCollaboratorsOptions, getPropmtsOptions } from '@/components/AppBar/constants';
 
 import Audio2Icon from '../../public/icons/audioGradient';
-import { DeleteMemoryModal, DeleteStoryModal, MemoryDetail } from '@/screens/Memories/components';
+import { DeleteMemoryModal, MemoryDetail } from '@/screens/Memories/components';
 import { useRouter } from 'next/router';
 import { Masonry } from '@mui/lab';
 import PopupModal from './PayWallModal';
@@ -65,27 +71,24 @@ interface MediaGridProps {
   extendedPalette?: any;
 }
 
-const MediaGrid: React.FC<MediaGridProps> = ({story, extendedPalette }) => {
+const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const dispatch = useDispatch();
   const { memoriesLoaded } = useSelector(memorySelector);
-  const [avatarError, setAvatarError] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [search, setSearch] = useState('');
   const router = useRouter();
   const { extraContent } = useSelector(extrasSelector);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();
-  // Define state for filter and selected media item
+
   const [filter, setFilter] = useState('All');
-  
+  const [rotate, setRotate] = useState(false);
   const { stories } = useSelector(homeSelector);
   const prompts = getPropmtsOptions(stories, story);
   const { userPurchases } = useSelector(purchaseSelector);
   const { user, isAuth } = useSelector(authSelector);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
-  // const [isChronological, setIsChronological] = useState(true);
   const [openFilters, setOpenFilters] = useState(false);
   const [openPeople, setOpenPeople] = useState(false);
   const { status, switchStatus } = UseIntermitence();
@@ -94,37 +97,31 @@ const MediaGrid: React.FC<MediaGridProps> = ({story, extendedPalette }) => {
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
   const [Types, setTypes] = useState([]);
   const ITEMS_PER_PAGE = 10;
-  const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE); // Number of items initially visible
+  const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
   const [modalOpen, setModalOpen] = useState(false);
-  const {purchase} = useSelector(purchaseSelector);
-  const [step, setStep]=useState(0)
-  const handleClose = (step:any): void =>{
-    if (step===2) {
-        setStep(step);
-        setModalOpen(false);
-        // router.reload();
-      }else{
-        setModalOpen(false);
-
-      }
-    
-   
-  } 
-  console.log("i am the colab", collaborators)
+  const [step, setStep] = useState(0);
+  const handleClose = (step: any): void => {
+    if (step === 2) {
+      setStep(step);
+     
+      dispatch(getUserPurchases(user && user?.id));
+      setModalOpen(false);
+    } else {
+      setModalOpen(false);
+    }
+  };
   const { isDivider } = extendedPalette.isDividerCheck.isDivider || true;
   const callbackfunction = (flag: boolean) => {
-
     setIsFilterActive(flag);
   };
   useEffect(() => {
     if (story?.id) {
       setLoading(true);
       dispatch(getMemories(story?.id));
-      dispatch(getExtraContent(router.query?.id as string))
+      dispatch(getExtraContent(router.query?.id as string));
     }
     setLoading(false);
-  }, [story?.id, dispatch]);
-  // console.log('i am the memory loded', memoriesLoaded);
+  }, [story?.id, dispatch, step]);
 
   const handleOpenModal = (item: MediaItem) => {
     setSelectedMedia(item);
@@ -135,7 +132,6 @@ const MediaGrid: React.FC<MediaGridProps> = ({story, extendedPalette }) => {
   };
 
   const setShowFilters = (event: any) => {
-    // console.log('I am clicked');
     event.preventDefault();
     event.stopPropagation();
     setOpenFilters((openFilters) => !openFilters);
@@ -154,91 +150,69 @@ const MediaGrid: React.FC<MediaGridProps> = ({story, extendedPalette }) => {
     }
   };
 
-
-
   useEffect(() => {
+    if (user && user.id) {
+   
+      dispatch(getUserPurchases(user && user?.id));
+    }
+  }, [step , setStep]);
+  const AllowOpenModel = (item: any) => {
+    if (user && user.id) {
+      
+      dispatch(getUserPurchases(user && user?.id));
+    }
+    if (extraContent) {
+      if (extraContent.isPaid) {
+        if (isAuth) {
+          if (
+            hasUserPurchasedTheStory(user.id, story.id, userPurchases) ||
+            checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
+            user?.id === story?.user_id ||
+            user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')
+          ) {
+            setModalOpen(false);
+            handleOpenModal(item);
+            window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
+          } else {
+            setModalOpen(true);
+          }
+        } else {
+          setModalOpen(true);
+        }
+      } else {
+        setModalOpen(false);
+        handleOpenModal(item);
+      }
+    }
+  };
+  const AllowHandleLoadMore = () => {
+    dispatch(getExtraContent(router.query?.id as string));
     if (user && user.id) {
       dispatch(getUserPurchases(user && user?.id));
     }
-  }, []);
-  const AllowOpenModel = (item:any) => {
-    // Dispatch to fetch user purchases
-  // Check if extraContent is available
-  // alert('called');
- 
-  if(user &&  user.id ){
-  dispatch(getUserPurchases( user && user?.id));
-  }
-  if (extraContent) {
-    // alert('called iff');
-    // Only check if the content is paid
-    if (extraContent.isPaid) {
-      if (isAuth) {
-        // Check if the user has purchased the story
-        if (hasUserPurchasedTheStory(user.id, story.id, userPurchases) || (checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
-        user?.id === story?.user_id ||
-        user?.roles?.find(
-          (role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner',
-        ))) {
-          // console.log('User has purchased it');
-
-          setModalOpen(false);  
-          handleOpenModal(item);
-          window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);// Close the modal if the user has purchased
+    if (extraContent) {
+      if (extraContent.isPaid) {
+        if (isAuth) {
+          if (
+            hasUserPurchasedTheStory(user.id, story.id, userPurchases) ||
+            checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
+            user?.id === story?.user_id ||
+            user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')
+          ) {
+            setModalOpen(false);
+            handleLoadMore();
+          } else {
+            setModalOpen(true);
+          }
         } else {
-           console.log('User has not purchased it');
-          setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
+          setModalOpen(true);
         }
       } else {
-        // console.log('User is not authenticated');
-        setModalOpen(true); // Open the modal if the user is not authenticated
+        setModalOpen(false);
       }
-    } else {
-      // console.log('Content is not paid');
-      setModalOpen(false);  // Close the modal if the content is not paid
     }
-  }
-}
-const AllowHandleLoadMore = () => {
-  // Dispatch to fetch user purchases
-// Check if extraContent is available
-dispatch(getExtraContent(router.query?.id as string))
-if(user &&  user.id ){
-  // console.log('calling purchases')
-dispatch(getUserPurchases( user && user?.id));
-}
-if (extraContent) {
-  // Only check if the content is paid
-  if (extraContent.isPaid) {
-    if (isAuth) {
-      // Check if the user has purchased the story
-      if (hasUserPurchasedTheStory(user.id, story.id, userPurchases)|| (checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
-      user?.id === story?.user_id ||
-      user?.roles?.find(
-        (role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner',
-      ))) {
-        // console.log('User has purchased it');
-
-        setModalOpen(false);  
-        handleLoadMore();
-       // window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);// Close the modal if the user has purchased
-      } else {
-         console.log('User has not purchased it');
-        setModalOpen(true);   // Keep the modal open if the user hasn't purchased it
-      }
-    } else {
-      // console.log('User is not authenticated');
-      setModalOpen(true); // Open the modal if the user is not authenticated
-    }
-  } else {
-    // console.log('Content is not paid');
-    setModalOpen(false);  // Close the modal if the content is not paid
-  }
-}
-}
+  };
   const types = useMemo(() => {
-    // console.log(memoriesLoaded);
-
     const types = [
       {
         id: 'video',
@@ -260,8 +234,6 @@ if (extraContent) {
 
     return types.filter((type) => memoriesLoaded?.some((memory: any) => memory.type === type.id));
   }, [memoriesLoaded]);
-
-  console.log("memories loaded", memoriesLoaded)
 
   UseFirstRender(() => {
     if (router?.query?.memoryId && memoriesLoaded.current) {
@@ -287,38 +259,14 @@ if (extraContent) {
     router.push(`/app/story/${story?.url}`);
     switchStatus();
   };
-  console.log("I am story Umar", story)
-
-
   const [isFilterActive, setIsFilterActive] = useState(false);
 
-  useEffect(() => {
-  }, [isFilterActive]);
+  useEffect(() => {}, [isFilterActive]);
 
-  // const isChronological = true; 
-
-  // const filteredMediaItems = memoriesLoaded
-  //   ?.filter(
-  //     (item: any) =>
-  //       (filter === 'All' || item.type === filter.toLowerCase()) &&
-  //       (!search ||
-  //         (search.length >= 3 &&
-  //           (item.title?.toLowerCase().includes(search.toLowerCase()) ||
-  //             item.username?.toLowerCase().includes(search.toLowerCase())))),
-  //   )
-  //   ?.sort((a: any, b: any) => {
-  //     if (isChronological) {
-  //       return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-  //     } else {
-  //       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-  //     }
-  //   });
   const [isChronological, setIsChronological] = useState(story?.isChronological || false);
-  console.log("I am chronologiveal", isChronological)
 
-const [rotate, setRotate] = useState(false);
-    const toggleSortingOrder = () => {
-    setIsChronological((prev?:any) => !prev);
+  const toggleSortingOrder = () => {
+    setIsChronological((prev?: any) => !prev);
   };
 
   const filteredMediaItems = memoriesLoaded
@@ -331,25 +279,24 @@ const [rotate, setRotate] = useState(false);
               item.username?.toLowerCase().includes(search.toLowerCase())))),
     )
     ?.sort((a: any, b: any) => {
-      if (isChronological) {
-         return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      if (!isChronological) {
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       } else {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-       
       }
     });
 
   const allItemsLoaded = visibleItems >= filteredMediaItems.length;
-  // loadmore button handler
+
   const handleLoadMore = () => {
-    setVisibleItems((prev) => prev + ITEMS_PER_PAGE); // Load 10 more items on button click
+    setVisibleItems((prev) => prev + ITEMS_PER_PAGE);
   };
+
   const handleRefresh = () => {
-    console.log("Umar I am refresh")
     setRotate(true);
-  dispatch(getMemories(story?.id));
-  setTimeout(() => setRotate(false), 1000);
-};
+    dispatch(getMemories(story?.id));
+    setTimeout(() => setRotate(false), 1000);
+  };
 
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const sizeText = isSmallScreen ? '25px' : '30px';
@@ -375,35 +322,20 @@ const [rotate, setRotate] = useState(false);
   return (
     <>
       <div>
-        {/* // <Box sx={{ maxWidth: '100%', margin: '0 auto', padding: 2 }}> */}
         <Box
           sx={{
-            maxWidth: '100%',
-            minheight: '100vh',
-            margin: '0 auto',
-            paddingLeft: '20px',
-            paddingRight: '20px',
-            paddingTop: 2,
-            paddingBottom: 2,
+            padding:'10px 1px 10px 8px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+            backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
+            flexDirection:'row',
+            borderRadius: '16px',
+            margin:'8px',
           }}>
-          {/* Search and Filter Controls */}
-          <Box
-            sx={{
-              // padding: '10px 10px',
-              padding: '10px 1px 10px 8px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 2,
-              backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
-              // flexDirection: { xs: 'row', sm: 'row' },
-              flexDirection: 'row',
-  // flexWrap: 'nowrap',
-              borderRadius: '16px',
-              margin: '8px',
-            }}>
-            
-            <Search
+          
+          <Search
             color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -411,103 +343,121 @@ const [rotate, setRotate] = useState(false);
               sx={{ width: {
             xs: '12rem', // Small screens
             sm: '16rem', // Large screens
-          }, }}
-            />
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: { xs: 'flex-end', sm: 'flex-end' }, // Center on mobile, align to the right on larger screens
-                flexGrow: 1,
-                flexWrap: { xs: 'nowrap', sm: 'nowrap' },
-                gap: 1, // Add some spacing between buttons if needed
-              }}>
-              {/* Sort Dropdown */}
-    <MuiIconButton
-                icon='/icons/sortIcon'
-                altIcon='filter'
-                background={
-                  isChronological
-                    ? ` ${palette.black}  !important`
-                    : `${extendedPalette.buttonbackgroundIcon} !important`
-                }
-                // borderColor={palette.black}
-                width={40}
-                height={40}
-                iconHeight={18}
-                iconWidth={20}
-                sx={{
-                  transform: isChronological ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease',
-                  '&:hover': {
-                    // Hover background color
-                    backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this color as needed
-                  },
-                }}
-                method={(event: any) => toggleSortingOrder()} // Toggle state on click
-              />
-               <MuiIconButton
-                icon='/icons/regenerate'
-                altIcon='filter'
-                background={extendedPalette.buttonbackgroundIcon}
-                // borderColor={palette.black}
-                width={40}
-                height={40}
-                iconHeight={25}
-                iconWidth={20}
-                
-                sx={{
-        transition: 'transform 2s ease',
-        transform: rotate ? 'rotate(1080deg)' : 'rotate(0deg)', // 1080deg = 3 full rotations
-        '&:hover': {
-          backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this
-        },
-      }}
-                method={(event: any) => handleRefresh()} // Toggle state on click
-              />
-              <MuiIconButton
-                icon='/icons/filter'
-                altIcon='filter'
-                background={
-                  isFilterActive
-                    ? `${extendedPalette.buttonbackgroundIcon} !important`
-                    : ` ${palette.black}  !important`
-                }
-                borderColor={palette.black}
-                width={40}
-                height={40}
-                iconHeight={12}
-                iconWidth={20}
-                sx={{
-                  transform: openFilters ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease',
-                  '&:hover': {
-                    // Hover background color
-                    backgroundColor: extendedPalette.buttonbackgroundIcon, // Adjust this color as needed
-                  },
-                }}
-                method={(event: any) => setShowFilters(event)} // Toggle state on click
-              />
-
-              <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
-                <Box position={'relative'}>
-                  <FilterDropdown
-                    callbackfunction={(flag: boolean) => callbackfunction(flag)}
-                    top={'4rem'}
-                    isOpen={openFilters}
-                    listItem={[prompts, collaborators, types]}
-                  />
-                </Box>
-              </ClickAwayListener>
-            </Box>
-          </Box>
-
-          {isDivider && <Divider sx={styles.divider} />}
-
-          {/* Media Grid */}
-              
+          },
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              border: 'none', // Remove border
+              color:"white"
+            },
+            '& input': {
+              color: 'white', // Change the text and password dots color to white
+            },
+      
+          },
           
-          <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={2} sx={{ margin: 0 }}>
-            {filteredMediaItems  &&  filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
+      
+          '& .MuiOutlinedInput-root.Mui-focused': {
+            '& fieldset': {
+              border: 'none', // Ensure no border on focus
+            },
+          },
+          '& input:-webkit-autofill': {
+            WebkitBoxShadow: '0 0 0 100px black inset', // Match the background color
+            WebkitTextFillColor: 'white', // Match the text color
+            transition: 'background-color 5000s ease-in-out 0s', // Prevent autofill background reset
+          },
+         }}
+            />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: { xs: 'flex-end', sm: 'flex-end' },
+              flexGrow: 1,
+              flexWrap: { xs: 'nowrap', sm: 'nowrap' },
+              gap: '2px',
+              margin:'0',
+            }}>
+            {/* Sort Dropdown */}
+            <MuiIconButton
+              icon='/icons/sortIcon'
+              altIcon='filter'
+              background={
+                isChronological ? ` ${palette.black}  !important` : `${extendedPalette.buttonbackgroundIcon} !important`
+              }
+              width={40}
+              height={40}
+              iconHeight={18}
+              iconWidth={20}
+              sx={{
+                transform: !isChronological ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.9s ease',
+                '&:hover': {
+                  backgroundColor: extendedPalette.buttonbackgroundIcon,
+                },
+              }}
+              method={(event: any) => toggleSortingOrder()}
+            />
+            <MuiIconButton
+              icon='/icons/regenerate'
+              altIcon='filter'
+              background={palette?.black}
+              width={40}
+              height={40}
+              iconHeight={25}
+              iconWidth={20}
+              sx={{
+                transition: 'transform 3s ease',
+                transform: rotate ? 'rotate(2000deg)' : 'rotate(0deg)',
+                '&:hover': {
+                  backgroundColor: extendedPalette.buttonbackgroundIcon,
+                },
+              }}
+              method={(event: any) => handleRefresh()}
+            />
+            <MuiIconButton
+              icon='/icons/filter'
+              altIcon='filter'
+              background={
+                isFilterActive ? `${extendedPalette.buttonbackgroundIcon} !important` : ` ${palette.black}  !important`
+              }
+              borderColor={palette.black}
+              width={40}
+              height={40}
+              iconHeight={12}
+              iconWidth={20}
+              sx={{
+                transform: openFilters ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.3s ease',
+                '&:hover': {
+                  backgroundColor: extendedPalette.buttonbackgroundIcon,
+                },
+              }}
+              method={(event: any) => setShowFilters(event)}
+            />
+
+            <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
+              <Box position={'relative'}>
+                <FilterDropdown
+                  extendedPalette={extendedPalette}
+                  callbackfunction={(flag: boolean) => callbackfunction(flag)}
+                  top={'4rem'}
+                  isOpen={openFilters}
+                  listItem={[prompts, collaborators, types]}
+                />
+              </Box>
+            </ClickAwayListener>
+          </Box>
+        </Box>
+
+        {isDivider && <Divider sx={styles.divider} />}
+
+        {/* Media Grid */}
+
+          {memoriesLoaded.length > 0 ? (
+        <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={2} sx={{ margin: 0 }}>
+
+     
+          {  filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
               <Paper
                 onClick={() => AllowOpenModel(item)}
                 key={index}
@@ -519,7 +469,7 @@ const [rotate, setRotate] = useState(false);
                   display: 'flex',
                   flexDirection: 'column',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
-                  cursor: 'pointer', // Add cursor style to indicate clickability
+                  cursor: 'pointer',
                 }}>
                 {/* Card Header */}
                 <Box
@@ -528,7 +478,7 @@ const [rotate, setRotate] = useState(false);
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '8px 16px',
-                    // backgroundColor: extendedPalette.cardHeaderBackground,
+
                     color: extendedPalette.cardHeaderText,
                   }}>
                   {/* Media Icon and Text */}
@@ -541,9 +491,9 @@ const [rotate, setRotate] = useState(false);
                         variant='body2'
                         sx={{
                           fontFamily: 'DM Sans',
-                          fontSize: { xs: '14px', sm: '16px' }, // Responsive font size
+                          fontSize: { xs: '14px', sm: '16px' },
                           fontWeight: 400,
-                          lineHeight: { xs: '16.8px', sm: '19.2px' }, // Adjust line height for mobile
+                          lineHeight: { xs: '16.8px', sm: '19.2px' },
                           textAlign: 'left',
                         }}>
                         {item.title}
@@ -553,9 +503,9 @@ const [rotate, setRotate] = useState(false);
                         variant='caption'
                         sx={{
                           fontFamily: 'DM Sans',
-                          fontSize: { xs: '10px', sm: '12px' }, // Responsive font size for date
+                          fontSize: { xs: '10px', sm: '12px' },
                           fontWeight: 400,
-                          lineHeight: { xs: '12px', sm: '14.4px' }, // Adjust line height for mobile
+                          lineHeight: { xs: '12px', sm: '14.4px' },
                           textAlign: 'left',
                         }}>
                         {formatDate(item.created_at)}
@@ -566,11 +516,10 @@ const [rotate, setRotate] = useState(false);
                   {/* User Avatar */}
 
                   <Avatar
-                    src={item?.user?.picture ? `${cdn_url}${item?.user?.picture}` :'/icons/image1.svg'} // Use dummy avatar if image fails
+                    src={item?.user?.picture ? `${cdn_url}${item?.user?.picture}` : '/icons/image1.svg'}
                     alt={item.username}
                     sx={{ width: 32, height: 32 }}
-                   title={`${item?.user?.name} ${item?.user?.lastname}`} // Show full name on hover
-                    onError={() => setAvatarError(true)} // Set error state if image fails to load
+                    title={`${item?.user?.name} ${item?.user?.lastname}`}
                   />
                 </Box>
 
@@ -579,14 +528,12 @@ const [rotate, setRotate] = useState(false);
                   onClick={() => {
                     AllowOpenModel(item);
                   }}>
-                  {/* {item.type === 'image' && <Image src={`${cdn_url}${item.asset}`} alt={item.title} width={100} height={100} />} */}
                   {item.type === 'image' && (
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', borderRadius: '12px' }}>
                       <Image
                         src={`${cdn_url}${item.asset}`}
                         alt={item.title}
                         layout='responsive'
-                        
                         width={100}
                         height={100}
                         style={{ borderRadius: '12px' }}
@@ -608,11 +555,9 @@ const [rotate, setRotate] = useState(false);
                         style={{
                           position: 'relative',
                           cursor: 'pointer',
-                          width: '50px', // Default size for larger screens
-                          maxWidth: '15%', // Responsive width for smaller screens
-                        }}
-                        // onClick={() => handleOpenModal(item)}
-                      >
+                          width: '50px',
+                          maxWidth: '15%',
+                        }}>
                         <Image src={'/icons/playbut.svg'} alt={'icon'} layout='responsive' width={50} height={50} />
                       </div>
 
@@ -624,27 +569,25 @@ const [rotate, setRotate] = useState(false);
                           flex: '1',
                           display: 'flex',
                           justifyContent: 'center',
-                          maxWidth: '70%', // Limits width for smaller screens
+                          maxWidth: '70%',
                         }}>
                         <Audio2Icon
                           color={extendedPalette.audioGradientColor2}
                           color2={extendedPalette.audioGradientColor2}
                         />
-                        {/* <Image src={'/icons/audiolay.svg'} alt={'icon'} layout="responsive" width={199} height={55} /> */}
                       </div>
                     </div>
                   )}
                   {item.type === 'text' && (
                     <Box
                       sx={{
-                        maxHeight: { xs: '80px', sm: '80px', md: '100px' }, // Approximate height for 3 lines
-                        width: { xs: '100%', sm: '100%', md: '100%' }, // Responsive width
+                        maxHeight: { xs: '80px', sm: '80px', md: '135px' },
+                        width: { xs: '100%', sm: '100%', md: '100%' },
                         overflow: 'hidden',
                         position: 'relative',
-                        WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)', // Gradual fade effect
+                        WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
                         maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
-                        // maskSize: '100% 100%',
-                        // WebkitMaskSize: '100% 100%',
+
                         '&:after': {
                           content: '""',
                           position: 'absolute',
@@ -652,7 +595,7 @@ const [rotate, setRotate] = useState(false);
                           left: 0,
                           right: 0,
                           height: '15px',
-                          background: 'linear-gradient(to bottom, rgba(43, 54, 114, 0))', // Enhances the blur effect
+                          background: 'linear-gradient(to bottom, rgba(43, 54, 114, 0))',
                         },
                       }}>
                       <RtfComponent rtf={item?.type === 'text' ? JSON.parse(item?.asset) : ''} label={'p'} />
@@ -660,33 +603,48 @@ const [rotate, setRotate] = useState(false);
                   )}
                 </Box>
               </Paper>
-            ))}
-          </Masonry>
+            ))
+          }
+          
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-            {!allItemsLoaded && (
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={AllowHandleLoadMore}
-                sx={{
-                  textTransform: 'none', // To maintain consistent typography with primary styling
-                  fontWeight: '500',
-                }}>
-                Load More
-              </Button>
-            )}
-          </Box>
+
+        </Masonry>
+):(
+
+  <Box width={'100%'} height={'50vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+  <CircularProgress sx={{ color: palette.faintGray }} />
+</Box>
+)
+}
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+          {!allItemsLoaded && (
+            <MuiButton
+              type='button'
+              loading={false}
+              backgroundColor={extendedPalette.buttonbackgroundIcon}
+              variant={'contained'}
+              sx={{
+                '&:hover': {
+                  backgroundColor: extendedPalette.buttonbackgroundIcon,
+                },
+              }}
+              method={AllowHandleLoadMore}>
+              <Typography variant='button' color={palette.white}>
+                Load More{' '}
+              </Typography>
+            </MuiButton>
+          )}
         </Box>
-        <PopupModal open={modalOpen} onClose ={ (step :any)=> handleClose(step)} />
+        <PopupModal open={modalOpen} onClose={(step: any) => handleClose(step)} />
         <MemoryDetail
           open={Boolean(selectedMedia)}
+          isLocked={story && story.isLocked}
           onClose={closeMemory}
           mediaContent={selectedMedia}
           method={switchDeleteMemory}
         />
         <DeleteMemoryModal
-        
           extendedPalette={extendedPalette}
           open={deleteStatusMemory}
           onClose={switchDeleteMemory}

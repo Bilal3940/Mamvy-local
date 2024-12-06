@@ -136,9 +136,14 @@ export const AddCollaborators = ({ add, onClose,extendedPalette }: ModalDetailPr
                     type='button'
                     disabled={false}
                     loading={false}
-                    backgroundColor={extendedPalette.buttonbackgroundIcon}
                     variant={'contained'}
                     method={() => copyLink()}
+                    sx={{
+                      backgroundColor: extendedPalette.buttonbackgroundIcon,
+                      '&:hover': {
+                        backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
+                      },
+                    }}
                     >
                     <Typography variant={isMobile ? 'caption' : 'button'}>
                       {link ? t('copied') : t('copy link')}

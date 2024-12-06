@@ -10,6 +10,7 @@ import { cdn_url } from '@/utils';
 
 interface StoryHeaderProps {
   extendedPalette: any;
+  isLocked:boolean;
   imgSrc: string;
   secondImgSrc?: string;
   coverImage: string;
@@ -26,6 +27,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
   extendedPalette,
   imgSrc,
   secondImgSrc,
+  isLocked,
   coverImage,
   title,
   description,
@@ -45,7 +47,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
 
       <div>
         <AppBar position='relative' style={{ boxShadow:'none', backgroundColor: 'inherit', marginTop: '5rem' }}>
-          {user.id === userId && (
+          {user.id === userId && !isLocked &&  (
             <Toolbar
               sx={{
                 display: 'flex',
@@ -53,24 +55,6 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                 alignItems: 'center',
                 padding: { xs: '0 10px', md: '0 50px' },
               }}>
-              {/* <Button
-              style={{ ...extendedPalette.backButton, textTransform: 'none' }}
-              startIcon={<Image src={'/icons/backbu.svg'} alt={'icon'} width={8} height={14} />}
-              onClick={onBackClick}>
-              Back
-            </Button> */}
-
-              {/* <Button
-              variant='contained'
-              sx={{
-                ...extendedPalette.editButton,
-              }}
-              startIcon={<Image src={'/icons/editMem.svg'} alt={'icon'} width={13} height={13} />}>
-              <Link href={`/app/story/${title}/update`} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <Typography>{userId}</Typography>
-                Edit this Memvy
-              </Link>
-            </Button> */}
 
               <Button
                 variant='contained'
@@ -83,6 +67,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                   Edit this Memvy
                 </Link>
               </Button>
+
             </Toolbar>
           )}
         </AppBar>
@@ -259,9 +244,9 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
             alignItems: 'center',
             padding: '24px',
           }}>
-          <AvatarGroup max={4}>
+          <AvatarGroup max={6}>
             {images.map((collab, index) => (
-              <Avatar key={index} alt={collab.alt} src={collab.src} sx={{ width: 40, height: 40 }} />
+              <Avatar key={index} title={collab?.alt}  alt={collab?.alt} src={collab?.src} sx={{ width: 40, height: 40 }} />
             ))}
           </AvatarGroup>
         </Box>
@@ -273,7 +258,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
             alignItems: 'center',
             textAlign: 'center',
             margin: '10px 20px',
-            marginBottom: '20px',
+            marginBottom: '30px',
           }}>
           <Typography variant='body1' fontFamily={'DM Sans'} style={{ ...extendedPalette.description }}>
             {description}

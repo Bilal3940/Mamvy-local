@@ -27,15 +27,15 @@ const itemVariants: Variants = {
 
 interface CustomPopperProps {
   isOpen: boolean;
-  callbackfunction?:(flag:boolean) => void;
+  callbackfunction?: (flag: boolean) => void;
   listItem: any;
-  top?:any
-  extendedPalette?:any
+  top?: any;
+  extendedPalette?: any;
 }
 
-export const FilterDropdown = ({extendedPalette,top, isOpen, listItem, callbackfunction }: CustomPopperProps) => {
+export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbackfunction }: CustomPopperProps) => {
   const { t } = useTranslation();
- const [adminPalette, setAdminPalette] = useState({
+  const [adminPalette, setAdminPalette] = useState({
     storyBackgroundColor: '#333333', // Default value
     textColor: '#fff', // Default value
     accentColor: '#BF5700', // Default value
@@ -53,36 +53,33 @@ export const FilterDropdown = ({extendedPalette,top, isOpen, listItem, callbackf
   const { template } = useSelector(templatesSelector);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
-
   const handleCheckPrompts = (value: any) => {
     if (value === undefined) return;
-  
+
     let updatedPrompts = [...(homeData?.criterias?.prompts || [])];
     const index = updatedPrompts.findIndex((promptId) => promptId === value);
-  
+
     if (index > -1) {
       updatedPrompts.splice(index, 1); // Remove the prompt
     } else {
       updatedPrompts.push(value); // Add the prompt
     }
-  
+
     // Update `promptSelected` based on the updatedPrompts length
     if (updatedPrompts.length === 0) {
       setPromptSelected(false); // No prompts are selected
     } else {
       setPromptSelected(true); // At least one prompt is selected
     }
-  
+
     // Dispatch the appropriate action
     if (story?.id) {
       return dispatch(getMemories(story?.id, { ...homeData?.criterias, prompts: updatedPrompts }));
     }
     dispatch(searchStories({ ...homeData?.criterias, prompts: updatedPrompts }));
   };
-  
 
   // console.log("prompt selected",promptSelected);
-
 
   const handleCheckCollaborators = (value: any) => {
     if (value === undefined) return;
@@ -125,24 +122,19 @@ export const FilterDropdown = ({extendedPalette,top, isOpen, listItem, callbackf
   };
   // console.log("types selected", typesSelected)
 
-useEffect(()=>{
-  if (callbackfunction) {
-  if(promptSelected || collabSelected || typesSelected){
-  
-      callbackfunction(true); // Call it only if it's provided
-   
-  }
-  else{
-    callbackfunction(false);
-  }
-}
-},[promptSelected, typesSelected, collabSelected])
-
-
+  useEffect(() => {
+    if (callbackfunction) {
+      if (promptSelected || collabSelected || typesSelected) {
+        callbackfunction(true); // Call it only if it's provided
+      } else {
+        callbackfunction(false);
+      }
+    }
+  }, [promptSelected, typesSelected, collabSelected]);
 
   useEffect(() => {
     if (template?.template?.colors) {
-      const colors = template.template.colors.reduce((acc:any, color:any) => {
+      const colors = template.template.colors.reduce((acc: any, color: any) => {
         // Map each color to the corresponding palette key
         switch (color.PLabel) {
           case 'storyBackground':
@@ -170,11 +162,10 @@ useEffect(()=>{
   }, [template]); // Make sure to add template to the dependency array
 
   const accentColor = adminPalette.accentColor;
-  let backgroundColor:any;
+  let backgroundColor: any;
 
   let bgColor: any;
-  let bgColorCheck:any;
-  
+  let bgColorCheck: any;
 
   const filterTabs = useMemo(() => {
     const filterTabs = [...tabs];
@@ -184,14 +175,13 @@ useEffect(()=>{
     return filterTabs;
   }, [listItem[2]?.length, listItem[0]?.length, listItem[1]?.length, listItem, tabs]);
 
-  let marginTtopFilter:any;
 
-  useEffect(()=>{
-   bgColor =    router.pathname ===   '/app/home' ? palette.primary:accentColor;
-  bgColorCheck =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
-  backgroundColor  = router.pathname === '/app/home' ? 'transparent' : adminPalette.storyBackgroundColor
-  },[router, router?.pathname])
 
+  useEffect(() => {
+    bgColor = router.pathname === '/app/home' ? palette.primary : accentColor;
+    bgColorCheck = router.pathname === '/app/home' ? palette.primary : accentColor;
+    backgroundColor = router.pathname === '/app/home' ? 'transparent' : adminPalette.storyBackgroundColor;
+  }, [router, router?.pathname]);
 
   return (
     <AnimatePresence>
@@ -238,13 +228,13 @@ useEffect(()=>{
             style={{ pointerEvents: isOpen ? 'auto' : 'none' }}>
             <Box display={'flex'} justifyContent={'center'} marginBottom={'0.5rem'}>
               <MuiTabs
-              color={accentColor}
+                color={accentColor}
                 tabs={filterTabs}
                 value={showSection}
                 width='100%'
                 qty={filterTabs.length}
                 extraStyle={{
-                  width: '100%'
+                  width: '100%',
                 }}
               />
             </Box>
@@ -256,7 +246,7 @@ useEffect(()=>{
                       <FormControlLabel
                         key={item.label}
                         control={
-                          <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).item} disableRipple>
+                          <MotionItem variants={itemVariants} sx={styles(isMobile, bgColor).item} disableRipple>
                             <Box
                               display={'flex'}
                               onChange={() => handleCheckPrompts(item.label)}
@@ -268,13 +258,16 @@ useEffect(()=>{
                                   color: palette.white,
                                   padding: '0.5rem 0.35rem 0.5rem 0',
                                   '&.Mui-checked': {
-                                    color: bgColorCheck,
+                                    color: extendedPalette.buttonbackgroundIcon,
                                     alignSelf: 'flex-start',
-                                    marginTop:'0.25rem',
+                                    marginTop: '0.25rem',
                                   },
                                 }}
                               />
-                              <Typography variant={isMobile ? 'body2' : 'body1'} whiteSpace={'break-spaces'} sx={{marginTop:'0.28rem'}}>
+                              <Typography
+                                variant={isMobile ? 'body2' : 'body1'}
+                                whiteSpace={'break-spaces'}
+                                sx={{ marginTop: '0.28rem' }}>
                                 {t(item.label)}{' '}
                                 {story?.story_details?.type_of_story == 'none_of_this_story' &&
                                   `${t('from')} ${story?.title}`}
@@ -302,7 +295,10 @@ useEffect(()=>{
                           <FormControlLabel
                             key={item.label}
                             control={
-                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                              <MotionItem
+                                variants={itemVariants}
+                                sx={styles(isMobile, bgColor).itemCollaborators}
+                                disableRipple>
                                 <Box
                                   display={'flex'}
                                   onChange={() => handleCheckCollaborators(item.id)}
@@ -315,7 +311,7 @@ useEffect(()=>{
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: bgColorCheck,
+                                        color: extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -344,7 +340,10 @@ useEffect(()=>{
                           <FormControlLabel
                             key={item.label}
                             control={
-                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                              <MotionItem
+                                variants={itemVariants}
+                                sx={styles(isMobile, bgColor).itemCollaborators}
+                                disableRipple>
                                 <Box
                                   display={'flex'}
                                   onChange={() => handleCheckCollaborators(item.id)}
@@ -356,7 +355,7 @@ useEffect(()=>{
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: bgColorCheck,
+                                        color: extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -385,7 +384,10 @@ useEffect(()=>{
                           <FormControlLabel
                             key={item.label}
                             control={
-                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                              <MotionItem
+                                variants={itemVariants}
+                                sx={styles(isMobile, bgColor).itemCollaborators}
+                                disableRipple>
                                 <Box
                                   display={'flex'}
                                   onChange={() => handleCheckCollaborators(item.id)}
@@ -397,7 +399,7 @@ useEffect(()=>{
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: bgColorCheck,
+                                        color: extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -426,7 +428,10 @@ useEffect(()=>{
                           <FormControlLabel
                             key={item.label}
                             control={
-                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                              <MotionItem
+                                variants={itemVariants}
+                                sx={styles(isMobile, bgColor).itemCollaborators}
+                                disableRipple>
                                 <Box
                                   display={'flex'}
                                   onChange={() => handleCheckCollaborators(item.id)}
@@ -438,7 +443,7 @@ useEffect(()=>{
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: bgColorCheck,
+                                        color: extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -458,7 +463,7 @@ useEffect(()=>{
                 {!!listItem[1]?.[0]?.players?.length && (
                   <Box>
                     <Typography variant='body1' marginBottom={isMobile ? '0.5rem' : '1rem'}>
-                      {t('Player')}
+                      {t('Players')}
                     </Typography>
 
                     <Box display={'flex'} flexDirection={'column'} marginBottom={'1rem'}>
@@ -467,7 +472,10 @@ useEffect(()=>{
                           <FormControlLabel
                             key={item.label}
                             control={
-                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                              <MotionItem
+                                variants={itemVariants}
+                                sx={styles(isMobile, bgColor).itemCollaborators}
+                                disableRipple>
                                 <Box
                                   display={'flex'}
                                   onChange={() => handleCheckCollaborators(item.id)}
@@ -479,7 +487,7 @@ useEffect(()=>{
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: bgColorCheck,
+                                        color: extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -508,7 +516,10 @@ useEffect(()=>{
                           <FormControlLabel
                             key={item.label}
                             control={
-                              <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                              <MotionItem
+                                variants={itemVariants}
+                                sx={styles(isMobile, bgColor).itemCollaborators}
+                                disableRipple>
                                 <Box
                                   display={'flex'}
                                   onChange={() => handleCheckCollaborators(item.id)}
@@ -520,7 +531,7 @@ useEffect(()=>{
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: bgColorCheck,
+                                        color: extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -537,8 +548,6 @@ useEffect(()=>{
                     </Box>
                   </Box>
                 )}
-
-                
               </Box>
             ) : (
               <Box sx={{ overflowY: 'auto' }} minHeight={'15rem'} maxHeight={'70vh'}>
@@ -548,7 +557,10 @@ useEffect(()=>{
                       <FormControlLabel
                         key={item.label}
                         control={
-                          <MotionItem variants={itemVariants} sx={styles(isMobile,bgColor).itemCollaborators} disableRipple>
+                          <MotionItem
+                            variants={itemVariants}
+                            sx={styles(isMobile, bgColor).itemCollaborators}
+                            disableRipple>
                             <Box
                               display={'flex'}
                               onChange={() => handleCheckTypes(item.id)}
@@ -561,7 +573,7 @@ useEffect(()=>{
                                   color: palette.white,
                                   padding: '0.5rem 0.35rem 0.5rem 0',
                                   '&.Mui-checked': {
-                                    color: bgColorCheck,
+                                    color: extendedPalette.buttonbackgroundIcon,
                                   },
                                 }}
                               />

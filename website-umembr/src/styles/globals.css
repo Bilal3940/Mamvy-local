@@ -117,7 +117,6 @@ input[type='number'] {
   padding-top: 1rem;
 }
 .MuiOutlinedInput-root.Mui-focused fieldset {
-  outline: none !important;
   border-color: white !important;
   /* Force white outline on focus */
 }

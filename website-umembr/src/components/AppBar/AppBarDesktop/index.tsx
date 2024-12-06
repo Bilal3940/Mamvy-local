@@ -234,7 +234,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
       setAdminPalette({
         storyBackgroundColor: colors.storyBackgroundColor || palette.background, // Fallback if color is missing
         textColor: colors.textColor || palette.white, // Fallback
-        accentColor: colors.accentColor || palette.primary, // Fallback
+        accentColor: colors.accentColor || 'black', // Fallback
       });
     }
   }, [template]); // Make sure to add template to the dependency array
@@ -294,7 +294,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
                   user?.id === story?.user_id) && <Box width={'5.75rem'} marginLeft={'1rem'}>
                     <MuiButton
                       type='button'
-                      backgroundColor={accentColor}
+                      backgroundColor={accentColor || 'black'}
                       disabled={false}
                       loading={false}
                       variant={'contained'}

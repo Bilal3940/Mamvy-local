@@ -14,6 +14,7 @@ import LoginForm from '@/components/LoginAccountPopup/LoginForm';
 import { authSelector, purchaseSelector, storySelector } from '@/store/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearDataPurchase, getUserPurchases } from '@/store/actions';
+import { checkPermissions, hasUserPurchasedTheStory } from '@/utils';
 
 const steps = [
   { label: 'Create Account', icon: '1' },
@@ -22,8 +23,9 @@ const steps = [
 ];
 interface CustomPropsForStepper{
   callbackthecurrentStep?:(stepp:any)=>void;
+  closeModelCallback:()=> void;
 }
-export default function IconBasedStepper({callbackthecurrentStep}:CustomPropsForStepper) {
+export default function IconBasedStepper({callbackthecurrentStep, closeModelCallback}:CustomPropsForStepper) {
   const { user, isAuth } = useSelector(authSelector);
   const [activeStep, setActiveStep] = React.useState(0);
   const [openLogin , setOpenLogin]= useState(true);
@@ -34,6 +36,10 @@ export default function IconBasedStepper({callbackthecurrentStep}:CustomPropsFor
     setActiveStep(stepIndex);
   };
   
+  const closeTheModel = () =>{
+  
+    closeModelCallback()
+  }
 useEffect (()=>{
   if(callbackthecurrentStep){
 callbackthecurrentStep(activeStep);
@@ -64,7 +70,23 @@ callbackthecurrentStep(activeStep);
     setOpenLogin(true);
   };
   useEffect(() => {
-    if (isAuth) setActiveStep(1);
+    if (isAuth){
+      if (
+        hasUserPurchasedTheStory(user.id, story.id, userPurchases) ||
+        checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
+        user?.id === story?.user_id ||
+        user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')
+      )
+      {
+closeModelCallback();
+      }else{
+
+      
+      setActiveStep(1);
+    }
+    }
+      
+      
   }, [isAuth]);
 
   return (
@@ -74,7 +96,6 @@ callbackthecurrentStep(activeStep);
         {steps.map((step, index) => (
           <Box
             key={step.label}
-            onClick={() => handleStepClick(index)}
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -118,7 +139,7 @@ callbackthecurrentStep(activeStep);
         {activeStep === 1 && (
           <Elements stripe={stripePromise}>
             <Box>
-              <h1>Stripe Payment Integration</h1>
+              <h1>Submit Payment</h1>
               <EmbeddedPaymentForm onSuccessfullPayment={paymentSuccessfull} />
             </Box>
           </Elements>
@@ -126,16 +147,11 @@ callbackthecurrentStep(activeStep);
         {activeStep === 2 && (
           <Thankyou
             open={false}
-            onClose={function (): void {
-              throw new Error('Function not implemented.');
-            }}
+            onClose={closeTheModel}
           />
         )}
       </Box>
 
-      {/* <CreateAccount open={true} onClose={function (): void {
-        throw new Error("Function not implemented.");
-      } }/> */}
     </Box>
   );
 }

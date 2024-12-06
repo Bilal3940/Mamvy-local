@@ -44,9 +44,15 @@ export const Home = () => {
   const { status: privateStatus, switchStatus: switchPublication } = UseIntermitence();
   const router = useRouter();
   UseFirstRender(() => {
-    dispatch(getProfileStories());
-    dispatch(clearExtraContent())
-  }, []);
+    if(user?.token){
+
+      dispatch(getProfileStories());
+      dispatch(clearExtraContent())
+    }
+    else{
+      router?.push('/app/login')
+    }
+  }, [user]);
   // console.log("i am the extra in home", extraContent)
 
   const handleItemClick = (item: any) => {

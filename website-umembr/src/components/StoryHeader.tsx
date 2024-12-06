@@ -273,7 +273,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
             alignItems: 'center',
             textAlign: 'center',
             margin: '10px 20px',
-            marginBottom: '10px',
+            marginBottom: '20px',
           }}>
           <Typography variant='body1' fontFamily={'DM Sans'} style={{ ...extendedPalette.description }}>
             {description}

@@ -37,6 +37,7 @@ import { useRouter } from 'next/router';
 import { Masonry } from '@mui/lab';
 import PopupModal from './PayWallModal';
 import VideoThumbnail from './VideoThumbnail';
+import Search from './AppBar/Search';
 
 type MediaType = 'image' | 'audio' | 'video' | 'text';
 
@@ -388,56 +389,36 @@ const [rotate, setRotate] = useState(false);
           {/* Search and Filter Controls */}
           <Box
             sx={{
-              padding: '10px',
+              // padding: '10px 10px',
+              padding: '10px 1px 10px 8px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               mb: 2,
               backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
-              flexDirection: { xs: 'row', sm: 'row' },
+              // flexDirection: { xs: 'row', sm: 'row' },
+              flexDirection: 'row',
+  // flexWrap: 'nowrap',
               borderRadius: '16px',
+              margin: '8px',
             }}>
-            {/* Search Field */}
-            {/* <Search
+            
+            <Search
+            color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onClear={() => setSearch('')}
-              sx={{ width: '16rem' }}
-            /> */}
-            {/* Search Field */}
-            <TextField
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              // onClear={() => setSearch('')}
-              placeholder='Search'
-              size='small'
-              
-              sx={{
-                ...extendedPalette.searchField,
-                '& .MuiInputBase-input': {
-                  color: 'white',
- // Replace with your desired color
-                },
-                width: {
+              sx={{ width: {
             xs: '12rem', // Small screens
             sm: '16rem', // Large screens
-          },
-
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <Image src={'/icons/search.svg'} alt={'icon'} width={22} height={22} />
-                  </InputAdornment>
-                ),
-              }}
+          }, }}
             />
             <Box
               sx={{
                 display: 'flex',
                 justifyContent: { xs: 'flex-end', sm: 'flex-end' }, // Center on mobile, align to the right on larger screens
                 flexGrow: 1,
-                flexWrap: { xs: 'wrap', sm: 'nowrap' },
+                flexWrap: { xs: 'nowrap', sm: 'nowrap' },
                 gap: 1, // Add some spacing between buttons if needed
               }}>
               {/* Sort Dropdown */}
@@ -525,7 +506,7 @@ const [rotate, setRotate] = useState(false);
           {/* Media Grid */}
               
           
-          <Masonry columns={{ xs: 2, sm: 3, md: 4 }} spacing={2} sx={{ margin: 0 }}>
+          <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={2} sx={{ margin: 0 }}>
             {filteredMediaItems  &&  filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
               <Paper
                 onClick={() => AllowOpenModel(item)}
@@ -656,7 +637,7 @@ const [rotate, setRotate] = useState(false);
                   {item.type === 'text' && (
                     <Box
                       sx={{
-                        maxHeight: { xs: '80px', sm: '80px', md: '60px' }, // Approximate height for 3 lines
+                        maxHeight: { xs: '80px', sm: '80px', md: '100px' }, // Approximate height for 3 lines
                         width: { xs: '100%', sm: '100%', md: '100%' }, // Responsive width
                         overflow: 'hidden',
                         position: 'relative',

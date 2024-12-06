@@ -322,6 +322,10 @@ const Main: React.FC = () => {
       width: '16rem',
       background: 'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%), #333',
       boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.5) inset',
+      borderRadius: '16px',
+      border: 'none', // Removes border
+  outline: 'none', 
+      // border: '1px solid rgba(255, 255, 255, 0.2)', // Example for a subtle border
     },
 
     filterButton: (filter: any, label: any) => ({

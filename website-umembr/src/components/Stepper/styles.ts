@@ -1,7 +1,7 @@
 import { theme } from '@/theme';
 import { palette } from '@/theme/constants';
 
-export const styles = {
+export const styles:any =(buttonBackground?: string)=> ({
   stepper: {
     '& .MuiStepLabel-label': {
       color: palette.white,
@@ -50,7 +50,7 @@ export const styles = {
       margin: '0 0.2rem',
     },
     '.MuiMobileStepper-dotActive': {
-      backgroundColor: palette.primary,
+      backgroundColor: buttonBackground,
     },
   },
-};
+});

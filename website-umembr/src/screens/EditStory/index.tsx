@@ -516,6 +516,7 @@ export const EditStory: FC<any> = () => {
                     </MuiButton>
                   </Box>
                   <MuiStepper
+                  buttonBackground={buttonBackground}
                     steps={formCategories[story?.story_details?.type_of_story]}
                     actualStep={actualFormNumber}
                   />

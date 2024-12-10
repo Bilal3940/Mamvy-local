@@ -9,14 +9,16 @@ import { palette } from '@/theme/constants';
 interface ITabsProps {
   actualStep: number;
   steps: IItemsProps[];
+  buttonBackground?:any;
 }
 
 interface IItemsProps {
   label: string;
   value: number;
+  
 }
 
-export const MuiStepper: FC<ITabsProps> = ({ steps, actualStep }: any) => {
+export const MuiStepper: FC<ITabsProps> = ({ buttonBackground,steps, actualStep }: any) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
@@ -35,7 +37,7 @@ export const MuiStepper: FC<ITabsProps> = ({ steps, actualStep }: any) => {
                       <Box sx={actualStep == item?.value ? styles.activeIcon : styles.defaultIcon}>
                         <Typography
                           textAlign={'center'}
-                          color={actualStep == item?.value ? palette?.primary : palette?.white}
+                          color={actualStep == item?.value ? buttonBackground : palette?.white}
                           lineHeight={0}
                           variant='caption'>
                           {index + 1}
@@ -52,7 +54,7 @@ export const MuiStepper: FC<ITabsProps> = ({ steps, actualStep }: any) => {
       ) : (
         <MobileStepper
           steps={steps?.length || 0}
-          sx={styles.mobileStepper}
+          sx={styles(buttonBackground).mobileStepper}
           position='static'
           activeStep={actualStep}
           backButton={undefined}

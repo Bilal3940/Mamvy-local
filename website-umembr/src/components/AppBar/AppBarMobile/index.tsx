@@ -178,9 +178,19 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
   const accentColorWithOpacity = addOpacityToHex(adminPalette.accentColor, 0.3);
   // const accentColor = adminPalette.accentColor;
  const buttonBackground =
-    router.pathname === '/app/home/'  // Replace '/specific-page' with your desired route
-      ? palette?.cardBackground // Custom background for the specific page
-      :accentColorWithOpacity ;
+    router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
+      ? accentColorWithOpacity // Custom background for the specific page
+      : palette?.cardBackground;
+// let buttonBackground:any;
+// useEffect(() => {
+//     // Update button background based on the current route
+//     buttonBackground = 
+//       router.pathname === '/app/home/' 
+//         ? palette?.cardBackground 
+//         : accentColorWithOpacity;
+    
+//     // setButtonBackground(background);
+//   }, [router.pathname]);
 
 
 
@@ -224,7 +234,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                 <Link href={'/app/home'}>
                   <MuiIconButton
                     icon='/icons/left-arrow'
-                    background={buttonBackground}
+                    background={'transparent'}
                     borderColor={palette?.cardBorder}
                     iconHeight={16}
                     iconWidth={16}

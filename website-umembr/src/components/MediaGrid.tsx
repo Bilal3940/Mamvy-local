@@ -157,13 +157,18 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
     }
   }, [step , setStep]);
   const AllowOpenModel = (item: any) => {
+    
     if (user && user.id) {
       
       dispatch(getUserPurchases(user && user?.id));
     }
+    //console.log('called');
     if (extraContent) {
+      //console.log('if extra content');
       if (extraContent.isPaid) {
+        //console.log('if is paid');
         if (isAuth) {
+          //console.log('if is auth');
           if (
             hasUserPurchasedTheStory(user.id, story.id, userPurchases) ||
             checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
@@ -172,8 +177,10 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
           ) {
             setModalOpen(false);
             handleOpenModal(item);
+            //console.log('called1')
             window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
           } else {
+            //console.log('else no access');
             setModalOpen(true);
           }
         } else {
@@ -182,7 +189,14 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
       } else {
         setModalOpen(false);
         handleOpenModal(item);
+        window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
       }
+    }
+    else{
+    
+      handleOpenModal(item);
+    
+      window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
     }
   };
   const AllowHandleLoadMore = () => {
@@ -209,6 +223,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
         }
       } else {
         setModalOpen(false);
+        handleLoadMore();
       }
     }
   };

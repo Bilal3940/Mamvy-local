@@ -55,7 +55,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
   const hasChanges = useSelector(hasChangesSelector);
   const { stories } = useSelector(homeSelector);
   const { story } = useSelector(storySelector);
-  const { user } = useSelector(authSelector);
+  const { user, isAuth } = useSelector(authSelector);
   const prompts = getPropmtsOptions(stories, story);
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
   const { mediaScreenType } = useSelector(memorySelector);
@@ -281,11 +281,11 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
         }}>
         <Box display={'flex'} padding={'1rem'} justifyContent={'space-between'} alignItems={'center'}>
           <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-            <ProfilePopup
+         {  <ProfilePopup
               onClick={handleDrawerChange}
               user={{ ...user, avatar: user?.picture ? `${cdn_url}${user?.picture}` : '' }}
               showName
-            />
+            />}
             {showBreadCrumbs && (
               <Box marginLeft={'1rem'} display={'flex'} alignItems={'center'}>
                 {' '}
@@ -329,7 +329,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
               </MuiButton>
             </Box>
           )}
-          {showHomeElements && (
+          {showHomeElements  &&(
             <Box display={'flex'} width={'7rem'} justifyContent={'space-between'} alignItems={'center'}>
               <Box position='relative'>
                 <MuiIconButton

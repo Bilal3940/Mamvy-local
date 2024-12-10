@@ -279,6 +279,11 @@ export const EditStory: FC<any> = () => {
 
   const backgroundColorEdit=adminPalette.storyBackgroundColor
   const accentColor = adminPalette.accentColor;
+  const textColorButton=adminPalette.textColor;
+  const buttontext =
+    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
+      ? textColorButton // Custom background for the specific page
+      : palette?.primary;
  const buttonBackground =
     router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
       ? accentColor // Custom background for the specific page
@@ -414,11 +419,11 @@ export const EditStory: FC<any> = () => {
                       loading={false}
                       variant={'text'}
                       method={() => backForm()}>
-                      <ChevronLeftIconComponent color={actualFormNumber == 0 ? palette.gray : palette.primary} />
+                      <ChevronLeftIconComponent color={actualFormNumber == 0 ? palette.gray : buttontext } />
                       <Typography
                         marginLeft={'0.5rem'}
                         variant='body1'
-                        color={actualFormNumber == 0 ? palette.gray : palette.primary}>
+                        color={actualFormNumber == 0 ? palette.gray : buttontext}>
                         {t('back_minus')}
                       </Typography>
                     </MuiButton>
@@ -436,11 +441,11 @@ export const EditStory: FC<any> = () => {
                       <Typography
                         variant='body1'
                         marginRight={'0.5rem'}
-                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : palette.primary}>
+                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : buttontext}>
                         {t('next_minus')}
                       </Typography>
                       <ChevronRightIconComponent
-                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : palette.primary}
+                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : buttontext}
                       />
                     </MuiButton>
                   </Box>
@@ -501,11 +506,11 @@ export const EditStory: FC<any> = () => {
                       loading={false}
                       variant={'text'}
                       method={() => backForm()}>
-                      <ChevronLeftIconComponent color={actualFormNumber == 0 ? palette.gray : palette.primary} />
+                      <ChevronLeftIconComponent color={actualFormNumber == 0 ? palette.gray : buttontext} />
                       <Typography
                         marginLeft={'0.5rem'}
                         variant='body1'
-                        color={actualFormNumber == 0 ? palette.gray : palette.primary}>
+                        color={actualFormNumber == 0 ? palette.gray : buttontext}>
                         {t('back_minus')}
                       </Typography>
                     </MuiButton>
@@ -524,11 +529,11 @@ export const EditStory: FC<any> = () => {
                       <Typography
                         variant='body1'
                         marginRight={'0.5rem'}
-                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : palette.primary}>
+                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : buttontext}>
                         {t('next_minus')}
                       </Typography>
                       <ChevronRightIconComponent
-                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : palette.primary}
+                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : buttontext}
                       />
                     </MuiButton>
                   </Box>

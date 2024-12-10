@@ -6,7 +6,7 @@ import { AudioPlayer, RtfComponent, VideoPlayer } from '@/components';
 import { calculateAspectRatio, cdn_url } from '@/utils';
 import { useCallback, useEffect, useState } from 'react';
 
-export const MainContent = ({ description, media, boxRef, height }: any) => {
+export const MainContent = ({ extendedPalette,description, media, boxRef, height }: any) => {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [aspectRatio, setAspectRatio] = useState('16/9');
 
@@ -94,7 +94,7 @@ export const MainContent = ({ description, media, boxRef, height }: any) => {
     <>
       <Box
         borderRadius={'1.25rem'}
-        border={(media?.type === 'image' || media?.asset_type?.includes('image')) || media?.cover_image ? 'none' : `2px solid ${palette.primary}`}
+        border={(media?.type === 'image' || media?.asset_type?.includes('image')) || media?.cover_image ? 'none' : `2px solid ${extendedPalette.cardIconColor}`}
         width={'100%'}
         ref={boxRef}
         position={'relative'}

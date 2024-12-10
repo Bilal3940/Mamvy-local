@@ -24,9 +24,10 @@ interface ModalDetailProps {
   mediaContent?: any;
   method: () => void;
   isLocked?: boolean | false;
+  extendedPalette?:any;
 }
 
-export const MemoryDetail = ({isLocked, open, onClose, mediaContent, method }: ModalDetailProps) => {
+export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaContent, method }: ModalDetailProps) => {
   const { t } = useTranslation();
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -56,7 +57,7 @@ export const MemoryDetail = ({isLocked, open, onClose, mediaContent, method }: M
     switch (media) {
       case 'home':
         return (
-          <MainContent description={mediaContent?.description} media={mediaContent} boxRef={boxRef} height={height} />
+          <MainContent extendedPalette={extendedPalette} description={mediaContent?.description} media={mediaContent} boxRef={boxRef} height={height} />
         );
       case 'image':
         return <ImageContent color={accentColor} mediaData={mediaContent?.memory_details?.complementaryImage} boxRef={boxRef} />;

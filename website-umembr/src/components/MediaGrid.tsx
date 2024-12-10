@@ -653,6 +653,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
         </Box>
         <PopupModal open={modalOpen} onClose={(step: any) => handleClose(step)} />
         <MemoryDetail
+        extendedPalette={extendedPalette}
           open={Boolean(selectedMedia)}
           isLocked={story && story.isLocked}
           onClose={closeMemory}

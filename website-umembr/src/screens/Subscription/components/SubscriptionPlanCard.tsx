@@ -86,7 +86,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
           {price.description}
         </Typography>
        
-<Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+{/* <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
         <Button
   sx={{
 
@@ -103,7 +103,26 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
   Choose {price.interval} Plan
   </Typography>
 </Button>
-</Box>
+</Box> */}
+{selectedPlan !== price.priceId && ( // Conditionally render the button
+      <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+        <Button
+          sx={{
+            bgcolor: '#0072CE',
+            height: '3.18rem',
+            width: '13.75rem',
+            borderRadius: '12.5rem',
+            '&:hover': {
+              bgcolor: '#0072CE', // Ensure the background color stays the same
+            },
+          }}
+        >
+          <Typography variant="button">
+            Choose {price.interval} Plan
+          </Typography>
+        </Button>
+      </Box>
+    )}
       </CardContent>
     </Card>
   );

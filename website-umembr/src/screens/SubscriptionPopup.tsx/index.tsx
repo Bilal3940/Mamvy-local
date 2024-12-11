@@ -21,7 +21,7 @@ export const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ open, onCl
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={true} onClose={handleClose}>
       <Container
         sx={{
           display: 'flex',

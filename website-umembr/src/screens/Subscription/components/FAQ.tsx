@@ -17,11 +17,13 @@ export default function FAQ() {
         backgroundColor:'rgba(43, 54, 114, 1)',
         color:palette.dirtyWhite,
         fontSize:'1rem',
-        margin:'0.2rem',
+        margin:'1rem',
         height:'4.688rem',
-        display:'flex',
+        // display:'flex',
         justifyContent:'center',
         alignItems:'center',
+        borderRadius:'0.5rem',
+        alignContent:'center',
         fontWeight:'400'
       }} >
         <AccordionSummary

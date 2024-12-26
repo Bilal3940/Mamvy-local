@@ -276,7 +276,7 @@ const Main: React.FC = () => {
     editButton: {
       color: '#33333',
       opacity: 0.7,
-      backgroundColor: '#3333',
+      backgroundColor: adminPalette.accentColor,
       fontSize: '14px',
       textTransform: 'none',
       borderRadius: '20px',
@@ -339,10 +339,11 @@ const Main: React.FC = () => {
     buttonHoverColor: '#BA0C2F',
 
     cardMediaBackground: {
-      borderRadius: '10px',
-      border: '1px solid rgba(204, 204, 204, 0.20)',
-      background: 'linear-gradient(180deg, rgba(34, 34, 34, 0.45) 0%, rgba(17, 17, 17, 0.45) 100%)',
-      backdropFilter: 'blur(25px)',
+      // borderRadius: '10px',
+      // border: '1px solid rgba(204, 204, 204, 0.20)',
+      // background: 'linear-gradient(180deg, rgba(34, 34, 34, 0.45) 0%, rgba(17, 17, 17, 0.45) 100%)',
+      // backdropFilter: 'blur(25px)',
+      background:adminPalette.storyBackgroundColor,
     },
 
     cardMediaColor: adminPalette.textColor,
@@ -357,12 +358,12 @@ const Main: React.FC = () => {
 
     isDividerCheck: { isDivider: false } as DividerType,
     isEllipseCheck: { isEllipseLeft: true } as EllipseType,
-    isEllipseRightCheck: { isEllipseRight: false } as EllipseType,
+    isEllipseRightCheck: { isEllipseRight: true } as EllipseType,
 
     ellipseLeftGradientColor: adminPalette.accentColor,
     ellipseLeftGradientOpacity: 0.17,
     ellipseRightGradientColor: '#F1E0FF',
-    ellipseRightGradientOpacity: 0.15,
+    ellipseRightGradientOpacity: 0.20,
 
     cardIconColor: adminPalette.accentColor,
     filterIconsColor: 'rgba(102, 102, 102, 1)',
@@ -400,11 +401,11 @@ const Main: React.FC = () => {
               sx={{
                 position: 'absolute',
                 right: '-9%',
-                top: '45%',
+                top: '20%',
 
                 zIndex: 0,
                 width: '60%',
-                height: '73rem',
+                height: '20%',
 
                 backgroundRepeat: 'no-repeat, no-repeat',
                 pointerEvents: 'none',

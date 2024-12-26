@@ -6,7 +6,7 @@ import { createTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector} from '@/store/selectors';
-import { cdn_url, checkRoleAndPermission } from '@/utils';
+import { cdn_url, checkRoleAndPermission, formatDate } from '@/utils';
 import { useRouter } from 'next/router';
 import { openModal, openSubscriptionPopup, refreshUserData } from '@/store/actions';
 
@@ -32,6 +32,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
   secondImgSrc,
   isLocked,
   coverImage,
+  createdDate,
   title,
   description,
   collaborators = [],
@@ -80,7 +81,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                 padding: { xs: '0 10px', md: '0 50px' },
               }}>
 
-              <Button
+              {/* <Button
                 variant='contained'
                 sx={{
                   ...extendedPalette.editButton,
@@ -90,7 +91,24 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                 <Button  onClick={EditMemvy} style={{ textDecoration: 'none' , color:extendedPalette.edittextColor}}>
                   Edit this Memvy
                 </Button>
-              </Button>
+              </Button> */}
+              <Button
+  variant="contained"
+  sx={{
+    ...extendedPalette.editButton,
+    padding: '12px 12px', // Adjust padding to reduce size
+    fontSize: '12px', // Smaller text size
+    minWidth: 'auto', // Prevents the button from having a default width
+    minHeight: 'auto',
+    color: extendedPalette.edittextColor,
+    textDecoration:'none', // Prevents the button from having a default height
+  }}
+  startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} />}
+  onClick={EditMemvy} // Move the onClick here, as the inner Button is redundant
+>
+  Edit this Memvy
+</Button>
+
 
             </Toolbar>
           )}
@@ -236,11 +254,13 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
         display: 'flex', // Ensures internal content alignment
         justifyContent: 'center',
         alignItems: 'center',
-        width: { xs: 150, sm: 200 },
-        height: { xs: 150, sm: 200 },
+        width: { xs: 200, sm: 200 },
+        height: { xs: 200, sm: 200 },
       }}
     >
-      <Image src={coverImage} alt="Cover Image" layout="intrinsic" width={200} height={200} />
+      <Image src={coverImage} alt="Cover Image" layout="intrinsic" width={200} height={200} style={{
+        borderRadius:'10px',
+      }}/>
     </Box>
   )}
 </Box>
@@ -249,16 +269,17 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
           variant='h3'
           sx={{
             fontFamily: 'sans-serif',
-            fontSize: '55px',
+            fontSize: { xs: '35px', sm: '55px' },
             color: extendedPalette.storyTitle,
-
             textAlign: 'center',
             marginBottom: '10px',
           }}>
           {title}
         </Typography>
-        <Typography variant='h6' sx={{ ...extendedPalette.dateStyle }}>
+        <Typography variant='h6' sx={{ ...extendedPalette.dateStyle, fontSize: { xs: '12px', sm: '16px' }, }}>
           {/* Created {format(new Date(), 'MMM dd, yyyy')} */}
+          Created {formatDate(createdDate)}
+          
         </Typography>
 
         <Box
@@ -270,7 +291,9 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
           }}>
           <AvatarGroup max={6}>
             {images.map((collab, index) => (
-              <Avatar key={index} title={collab?.alt}  alt={collab?.alt} src={collab?.src} sx={{ width: 40, height: 40 }} />
+              <Avatar key={index} title={collab?.alt}  alt={collab?.alt} src={collab?.src} sx={{ 
+                width: { xs: 36, sm: 40 },
+                height: { xs: 36, sm: 40 }, }} />
             ))}
           </AvatarGroup>
         </Box>

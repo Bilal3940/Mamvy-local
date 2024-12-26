@@ -20,7 +20,7 @@ import {
   storySelector,
 } from '@/store/selectors';
 import { extendedPalette, palette } from '@/theme/constants';
-import { cdn_url, checkPermissions, logoutWithFacebook } from '@/utils';
+import { cdn_url, checkPermissions, checkRoleAndPermission, logoutWithFacebook } from '@/utils';
 import { AppBar, Box, ClickAwayListener, Stack, Typography } from '@mui/material';
 import { currentStorySelector, templatesSelector } from '@/store/selectors';
 import { motion } from 'framer-motion';
@@ -35,9 +35,8 @@ import NotificationBadge from '../../../../public/icons/components/notificationB
 import { CancelModal } from '../CancelModal';
 const MotionAppBar = motion(AppBar);
 import { UseFirstRender, UseIntermitence } from '@/hooks';
-import { usePathname } from 'next/navigation';
 
-export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
+export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) => {
   const dispatch = useDispatch();
   const intermitenceData = useSelector(intermitenceSelector);
   const router = useRouter();
@@ -55,16 +54,10 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
   const hasChanges = useSelector(hasChangesSelector);
   const { stories } = useSelector(homeSelector);
   const { story } = useSelector(storySelector);
-  const { user, isAuth } = useSelector(authSelector);
+  const { user} = useSelector(authSelector);
   const prompts = getPropmtsOptions(stories, story);
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
-  const { mediaScreenType } = useSelector(memorySelector);
-  const query = router.pathname;
-  const [adminPalette, setAdminPalette] = useState({
-    storyBackgroundColor: '', // Default value
-    textColor: '', // Default value
-    accentColor: '', // Default value
-  });
+
 
 //  console.log("query", query)
   
@@ -208,36 +201,9 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
       router.push('/app/home');
     }
   };
-  const { template } = useSelector(templatesSelector);
 
-  useEffect(() => {
-    if (template?.template?.colors) {
-      const colors = template.template.colors.reduce((acc:any, color:any) => {
-        // Map each color to the corresponding palette key
-        switch (color.PLabel) {
-          case 'storyBackground':
-            acc.storyBackgroundColor = color.PValue;
-            break;
-          case 'TextColor':
-            acc.textColor = color.PValue;
-            break;
-          case 'AccentColor':
-            acc.accentColor = color.PValue;
-            break;
-          default:
-            break;
-        }
-        return acc;
-      }, {});
 
-      // Set the colors to the adminPalette state
-      setAdminPalette({
-        storyBackgroundColor: colors.storyBackgroundColor || palette.background, // Fallback if color is missing
-        textColor: colors.textColor || palette.white, // Fallback
-        accentColor: colors.accentColor || 'black', // Fallback
-      });
-    }
-  }, [template]); // Make sure to add template to the dependency array
+
 
   const accentColor = adminPalette.accentColor;
  const buttonBackground =
@@ -312,6 +278,7 @@ export const MuiAppBarDesktop: FC<any> = ({ search, setSearch }) => {
               </Box>
             )}
           </Box>
+
           {showCancelButton && (
             <Box width={'5.75rem'}>
               <MuiButton

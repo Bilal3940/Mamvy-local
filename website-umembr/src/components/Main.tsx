@@ -122,6 +122,7 @@ const Main: React.FC = () => {
   }, [user, story, isAuth]);
 
   useEffect(() => {
+
     if (story?.id && !viewStory) {
       dispatch(viewStoryG(story));
       setViewStory(true);
@@ -415,6 +416,7 @@ const Main: React.FC = () => {
             </Box>
           )}
           <StoryHeader
+            story ={story}
             isLocked={story && story?.isLocked}
             extendedPalette={extendedPalette}
             themeId={story?.themeId ? story?.themeId : '1'}

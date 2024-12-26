@@ -4,24 +4,31 @@ import { Checkout } from '../Checkout';
 import SubscriptionContainer from '../Subscription';
 import { MuiIconButton } from '@/components';
 import { palette } from '@/theme/constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeSubscriptionModal, closeSubscriptionPopup } from '@/store/actions';
 
-interface SubscriptionPopupProps {
-  open: boolean;
-  onClose: () => void;
-}
+export const SubscriptionPopup: React.FC= () => {
+  const dispatch = useDispatch()
+  // const router = useRouter()
+const { open } = useSelector((state: any) => state.intermitence.subscriptionPopup);
 
-export const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ open, onClose }) => {
   const [step, setStep] = useState(1);
+
 
   const goToNextStep = () => setStep(2);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const handleClose = () => {
     setStep(1);
-    onClose();
+    // dispatch(closeSubscriptionPopup())
+    // dispatch(refreshUserData())
+    
   };
+  const handleClosePopup =()=>{
+    dispatch(closeSubscriptionPopup())
+  }
 
   return (
-    <Modal open={true} onClose={handleClose}>
+    <Modal open={true} onClose={handleClosePopup}>
       <Container
         sx={{
           display: 'flex',
@@ -50,14 +57,7 @@ export const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ open, onCl
                 Welcome to Memvy!
               </Typography>
               <SubscriptionContainer handleNext={goToNextStep} />
-              {/* <Box mt={2} display='flex' justifyContent='space-between'>
-                <Button onClick={handleClose} color='error' variant='outlined'>
-                  <Typography variant='button'> Cancel </Typography>
-                </Button>
-                <Button onClick={goToNextStep} variant='contained'>
-                  <Typography variant='button'> Proceed to Payment </Typography>
-                </Button>
-              </Box> */}
+
             </>
           )}
           {step === 2 && (

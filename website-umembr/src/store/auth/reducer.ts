@@ -1,4 +1,5 @@
 import {
+  DELETE_USER_ASYNC,
   FORGOT_PASSWORD_ASYNC,
   LOGIN_APPLE_ASYNC,
   LOGIN_FACEBOOK_ASYNC,
@@ -24,6 +25,12 @@ const initialState = {
 
 const auth = (state = initialState, { type, payload }: any) => {
   switch (type) {
+    case DELETE_USER_ASYNC: // Handle delete user case here
+    return {
+      ...state,
+      user: {},
+      isAuth: false,
+    };
     case REGISTER_USER_ASYNC:
       return {
         ...state,

@@ -58,9 +58,9 @@ export const DeleteMemoryModal = ({extendedPalette ,open, onClose, confirmMethod
           {t('memory_going_deleted')}
         </Typography>
 
-        <Typography textAlign={isMobile ? 'center' : 'left'} variant={isMobile ? 'body2' : 'body1'}>
+        {/* <Typography textAlign={isMobile ? 'center' : 'left'} variant={isMobile ? 'body2' : 'body1'}>
           {t('are_you_sure_want')}
-        </Typography>
+        </Typography> */}
 
         <Divider sx={styles.divider} />
         <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
@@ -84,7 +84,7 @@ export const DeleteMemoryModal = ({extendedPalette ,open, onClose, confirmMethod
                backgroundColor={extendedPalette.buttonbackgroundIcon}disabled={false} method={confirmMethod}
             >
               <Typography variant='button' color={palette.white}>
-                {t('aprove')}
+                {t('delete')}
               </Typography>
             </MuiButton>
           </Box>

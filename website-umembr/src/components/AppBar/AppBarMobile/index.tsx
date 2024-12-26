@@ -1,7 +1,7 @@
 import { FilterDropdown, MuiDropdown, MuiIconButton, NotificationsPreview } from '@/components';
 import ProfilePopup from '@/components/AppBar/ProfilePopup';
 import { expandDrawer, logout } from '@/store/actions';
-import { palette } from '@/theme/constants';
+import { extendedPalette, palette } from '@/theme/constants';
 import { AppBar, Box, ClickAwayListener, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 
@@ -28,7 +28,7 @@ import { getCollaboratorsOptions, getPropmtsOptions, inputVariants } from '../co
 const MotionBox = motion(Box);
 const MotionInputContainer = motion(Box);
 
-export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
+export const MuiAppBarMobile: FC<any> = ({adminPalette, search, setSearch }) => {
   const dispatch = useDispatch();
   const hideGradient = useSelector(hideGradientSelector);
   const backgroundChange = useSelector(backgroundChangeSelector);
@@ -47,11 +47,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
   const [notificationsData, setNotificationsData] = useState<any>([]);
   const [notificationsType, setNotificationsType] = useState<any>([]);
-  const [adminPalette, setAdminPalette] = useState({
-    storyBackgroundColor: '', // Default value
-    textColor: '', // Default value
-    accentColor: '', // Default value
-  });
+
   const handleDrawerChange = () => {
     dispatch(expandDrawer());
   };
@@ -131,36 +127,8 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
       return router.push(`/app/story/${story?.url}`);
     else router.push('/app/home');
   };
-  const { template } = useSelector(templatesSelector);
 
-  useEffect(() => {
-    if (template?.template?.colors) {
-      const colors = template.template.colors.reduce((acc:any, color:any) => {
-        // Map each color to the corresponding palette key
-        switch (color.PLabel) {
-          case 'storyBackground':
-            acc.storyBackgroundColor = color.PValue;
-            break;
-          case 'TextColor':
-            acc.textColor = color.PValue;
-            break;
-          case 'AccentColor':
-            acc.accentColor = color.PValue;
-            break;
-          default:
-            break;
-        }
-        return acc;
-      }, {});
 
-      // Set the colors to the adminPalette state
-      setAdminPalette({
-        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
-        textColor: colors.textColor || '#fff', // Fallback
-        accentColor: colors.accentColor || '#BF5700', // Fallback
-      });
-    }
-  }, [template]); // Make sure to add template to the dependency array
 
   function addOpacityToHex(hexColor: string, opacity: number): string {
   // Ensure opacity is between 0 and 1
@@ -181,16 +149,6 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
     router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
       ? accentColorWithOpacity // Custom background for the specific page
       : palette?.cardBackground;
-// let buttonBackground:any;
-// useEffect(() => {
-//     // Update button background based on the current route
-//     buttonBackground = 
-//       router.pathname === '/app/home/' 
-//         ? palette?.cardBackground 
-//         : accentColorWithOpacity;
-    
-//     // setButtonBackground(background);
-//   }, [router.pathname]);
 
 
 
@@ -234,7 +192,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                 <Link href={'/app/home'}>
                   <MuiIconButton
                     icon='/icons/left-arrow'
-                    background={'transparent'}
+                    background={buttonBackground}
                     borderColor={palette?.cardBorder}
                     iconHeight={16}
                     iconWidth={16}
@@ -329,7 +287,7 @@ export const MuiAppBarMobile: FC<any> = ({ search, setSearch }) => {
                       touchEvent={false}
                       disableReactTree={true}>
                       <Box position={'relative'}>
-                        <FilterDropdown isOpen={openFilters} listItem={[prompts, collaborators]} />
+                        <FilterDropdown extendedPalette={extendedPalette} isOpen={openFilters} listItem={[prompts, collaborators]} />
                       </Box>
                     </ClickAwayListener>
                   </Box>

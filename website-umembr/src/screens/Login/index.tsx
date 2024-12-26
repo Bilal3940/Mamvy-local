@@ -254,7 +254,6 @@ export const Login = () => {
     return new Promise((resolve) => {
       let winType: any = window;
       winType?.FB?.getLoginStatus(function (response: any) {
-        console.log(response, 'facebook status');
 
         if (response?.status === 'connected') {
           if (router?.asPath?.includes('invitation')) {

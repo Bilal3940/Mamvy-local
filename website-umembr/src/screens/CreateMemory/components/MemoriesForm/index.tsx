@@ -85,6 +85,7 @@ export const MemoriesForm: FC<any> = () => {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [defaultItem, setDefaultItem] = useState<any>(null);
   const { status, switchStatus } = UseIntermitence();
+  
 
   const showContainer = () => {
     switch (mediaScreenType) {

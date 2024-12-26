@@ -7,7 +7,11 @@ import {
   CLEAR_DATA_PRODUCTS, 
   SET_SELECTED_TIER,
   CLEAR_SELECTED_TIER,
-  CREATE_CHECKOUT_SESSION, // Import the new action type
+  CREATE_CHECKOUT_SESSION,
+  CANCEL_SUBSCRIPTION, // Import the new action type
+  RESUME_SUBSCRIPTION,
+  RENEW_SUBSCRIPTION,
+  UPDATE_SUBSCRIPTION_STATUS,
 } from './action-types';
 
 export const updateProduct = (body: any): any =>
@@ -31,6 +35,16 @@ export const setSelectedTier = (payload: any): any =>
 export const clearSelectedTier = (): any => 
   actionObject(CLEAR_SELECTED_TIER);
 
+
+export const updateSubscriptionStatus =(payload:any):any =>
+  actionObject(UPDATE_SUBSCRIPTION_STATUS, payload);
+
+export const cancelSubscription = (payload: any): any =>
+  actionObject(CANCEL_SUBSCRIPTION, payload);
+export const resumeSubscription = (payload: any): any =>
+  actionObject(RESUME_SUBSCRIPTION, payload);
+export const renewSubscription = (payload: any): any =>
+  actionObject(RENEW_SUBSCRIPTION, payload);
 // New action creator for creating checkout sessions
 export const createCheckoutSession = (payload: any): any =>
   actionObject(CREATE_CHECKOUT_SESSION, payload);

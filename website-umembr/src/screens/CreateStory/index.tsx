@@ -4,7 +4,7 @@ import { useMediaQuery, Theme, Box, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'next-i18next';
 import { MuiButton, MuiStepper } from '@/components';
-import { intermitenceSelector, storySelector } from '@/store/selectors';
+import { intermitenceSelector, storySelector, subscriptionSelector } from '@/store/selectors';
 import {
   createPayload,
   createStories,
@@ -12,6 +12,13 @@ import {
   setPrompts,
   getUploadSignedUrl,
   createStoryViewG,
+  updateSubscriptionStatus,
+  refreshUserData,
+  openSubscriptionPopup,
+  openModal,
+  hidePopup,
+  showPopup,
+  // setPendingStory,
 } from '@/store/actions';
 import { TypeStory, FormStories, PromptsStories, FinishCreate } from './components';
 import { useRouter } from 'next/router';
@@ -26,7 +33,6 @@ import { palette } from '@/theme/constants';
 import ChevronLeftIconComponent from '../../../public/icons/components/chevron-left';
 import ChevronRightIconComponent from '../../../public/icons/components/chevron-right';
 import { UseFirstRender } from '@/hooks';
-import { SubscriptionPopup } from '../SubscriptionPopup.tsx';
 import { RefreshUserData } from '@/utils/fetchUserData';
 
 type selectedPromptsState = {
@@ -109,13 +115,10 @@ export const CreateStory = () => {
   const [actualFormNumber, setActualFormNumber] = useState(0);
   const [values, setValues] = useState<any>({});
   const [selectedPrompts, setSelectedPrompts] = useState<selectedPromptsState>({});
+  // const {SubscriptionStatus, actionSuccess} = useSelector(subscriptionSelector)
+  const storagePopup = useSelector((state:any) => state.storageLog.storagePopup);
   const [creating, setCreating] = useState(false);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [hasPermissions, SetHasPermissions] = useState(false);
-  const handleOpenPopup = () => setIsPopupOpen(true);
-  const handleClosePopup = () => setIsPopupOpen(false);
   const submit = useRef<any>(null);
-
   const steps = [
     { label: 'type_story', value: 0 },
     { label: 'general_info', value: 1 },
@@ -251,6 +254,7 @@ export const CreateStory = () => {
   }, [values]);
 
   UseFirstRender(() => {
+    alert('i am called in the create story')
     if (user?.id) {
       dispatch(createStoryViewG(user.id));
     }
@@ -361,10 +365,11 @@ export const CreateStory = () => {
 
 
   
-  const processFile = (prev_stories:any, prompts:{}) => {
+  const processFile = async(prev_stories:any, prompts:{}) => {
     const file = values.story_title_image?.cover_image;
     const fileSizeBytes = calculateFileSize(file);
 
+  
   
     dispatch(
       getUploadSignedUrl(
@@ -385,10 +390,32 @@ export const CreateStory = () => {
                 prompts,
                 storySection
               );
+              dispatch(updateSubscriptionStatus({userId: user?.id}))
+              // dispatch(refreshUserData())
+            
+              // Refresh user data to get the latest storage information
+              const res = await RefreshUserData(user?.token, user?.id);
+              const userData = res?.result;
+              const subsperm = checkRoleAndPermission(
+                userData?.roles,
+                'Subscriber_Individual',
+                'CLIENT_STORY_CREATE',
+                // 'Client',
+                user?.id
+              );
+            
+              // const perm = checkPermissions(userData?.roles, 'CLIENT_STORY_CREATE')
+              // Check if the user has the required permission
+              if (!subsperm) {
+                setCreating(false);
+                localStorage.setItem('pendingStory',JSON.stringify(valuesFinal))
+                dispatch(openSubscriptionPopup())
+                return;
+              }
+          
   
               // Dispatch the createStories action with updated payload
               const result = dispatch(createStories(valuesFinal));
-              console.log("Story creation result:", result);
               return result;
             }
           } catch (error) {
@@ -400,45 +427,54 @@ export const CreateStory = () => {
   };
   
   const handleCreateStories = async () => {
-    console.log("i am clicked")
     setCreating(true);
-
+    // const payload ={
+    //   userId: user?.id
+    // }
+    dispatch(updateSubscriptionStatus({userId: user?.id}))
+    // dispatch(refreshUserData())
   
     // Refresh user data to get the latest storage information
     const res = await RefreshUserData(user?.token, user?.id);
     const userData = res?.result;
-    const subsperm = checkRoleAndPermission(
-      userData?.roles,
-      'Subscriber_Individual',
-      // '',
-      'Client',
-      user?.id
-    );
+    // const subsperm = checkRoleAndPermission(
+    //   userData?.roles,
+    //   'Subscriber_Individual',
+    //   'CLIENT_STORY_CREATE',
+    //   // 'Client',
+    //   user?.id
+    // );
   
-    const perm = checkPermissions(userData?.roles, 'CLIENT_STORY_CREATE')
-    // Check if the user has the required permission
-    if (!perm  && !subsperm) {
-      setCreating(false);
-      handleOpenPopup();
-      return;
-    }
-  
-    // Get the file size for the story being created
-    // const file = values.story_title_image?.cover_image;
-    // const fileSizeBytes = calculateFileSize(file);
-  
-    // // Check storage limits before proceeding
-    // const usedStorage = userData?.usedStorage || 0;
-    // const totalStorage = userData?.totalStorage || 0;
-  
-    // if (usedStorage + fileSizeBytes > totalStorage) {
-    //   alert("There is not enough storage in your account.")
+    // const perm = checkPermissions(userData?.roles, 'CLIENT_STORY_CREATE')
+    // // Check if the user has the required permission
+    // if (!subsperm) {
     //   setCreating(false);
-
+    //   const valuesFinal = finalPayload(
+    //     { ...prev_stories },
+    //     prompts,
+    //     storySection
+    //   );
+    //   localStorage.setItem('pendingStory',JSON.stringify(valuesFinal))
+    //   dispatch(openSubscriptionPopup())
     //   return;
     // }
   
-    // Proceed with story creation if storage is sufficient
+    // // Get the file size for the story being created
+    const file = values.story_title_image?.cover_image;
+    const fileSizeBytes = calculateFileSize(file);
+  
+    // // Check storage limits before proceeding
+    const usedStorage = userData?.usedStorage || 0;
+    const totalStorage = userData?.totalStorage || 0;
+
+    if (usedStorage + fileSizeBytes > totalStorage) {
+ 
+      setCreating(false);
+      // yield call("There is not enough storage in your account.")
+      dispatch(openModal({content:"There is not enough storage in your account."}))
+
+      return;
+    }
     setCreating(true);
     processFile(prev_stories, prompts);
   };
@@ -633,7 +669,6 @@ export const CreateStory = () => {
           }}
         />
       </Box>
-      <SubscriptionPopup open={isPopupOpen} onClose={handleClosePopup} />
     </Box>
   );
 };

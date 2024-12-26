@@ -1,5 +1,7 @@
+import { closeModal, openModal } from '@/store/actions';
+import { formControlClasses } from '@mui/material';
 import { END } from 'redux-saga';
-import { delay, put } from 'redux-saga/effects';
+import { delay, put, select } from 'redux-saga/effects';
 
 export type SagaCallback<DataType = void, ReturnType = unknown> = (args: {
   ok: boolean;
@@ -99,6 +101,17 @@ export function promisifiedCallback<CallbackDataType = void>(
   };
 }
 
+
+export function* showModal(message = '', type: 'SHOW_MODAL') {
+  const { open } = yield select((state: any) => state.intermitence.modal);
+  
+  if (!open) {
+    yield put(openModal({ content: message }));
+  }
+}
+
+
+
 export function* showDialog(message = '', type = 'success', toast = 'SHOW_TOAST') {
   yield put(
     actionObject(toast, {
@@ -156,7 +169,6 @@ export const checkRoleAndPermission = (roles: any | any[], roleName: string, per
       return true;
     }
   }
-
   return false;
 };
 

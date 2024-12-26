@@ -44,7 +44,7 @@ export const FormikConfig = (t: any, handleSubmit: any, def?: any) =>
         .min(8, i18next.t('min_invalid', { number: 8 }))
         .oneOf([Yup.ref('password')], 'password_must_match'),
 
-      phonenumber: Yup.string().required(t('field_required')),
+      phonenumber: Yup.string().notRequired(),
       description: Yup.string()
         .notRequired()
         .max(255, t('max_invalid', { number: 255 })),

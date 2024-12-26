@@ -2,7 +2,7 @@ import { palette } from '@/theme/constants';
 import { Box, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { memorySelector, storySelector } from '@/store/selectors';
+import { authSelector, memorySelector, storagelogSelector, StoragePopupSelector, storySelector } from '@/store/selectors';
 import Image from 'next/image';
 import { FC, useEffect, useRef, useState } from 'react';
 import { FileUpload, MuiTextField, RichText } from '@/components';
@@ -15,18 +15,28 @@ import {
   getUploadSignedUrl,
   updateMemory,
   getSignedUrl,
+  openModal,
+  openSubscriptionPopup,
+  updateSubscriptionStatus,
+  refreshUserData,
+  UpdatelogStorageUsage,
+  getStorageLogs,
+  hidePopup,
+  showPopup,
 } from '@/store/actions';
 import {
   FetchFileService,
   cdn_url,
+  checkRoleAndPermission,
   complementaryDownload,
   complementaryUpload,
   fileConverter,
   showDialog,
+  showModal,
 } from '@/utils';
 import { UseFirstRender } from '@/hooks';
 import { LoadingModal } from '../loadingModal';
-// import { storageEventEmitter } from '@/hooks/StorageEventEmitter';
+import { RefreshUserData } from '@/utils/fetchUserData';
 
 const mediaTypes = [
   { icon: 'video', value: 0, label: 'add_video_memory' },
@@ -49,12 +59,15 @@ export const Form: FC<any> = ({
   const { t } = useTranslation();
   const [mediaSelect, setMediaSelect] = useState(localStorage.getItem('selectMedia'));
   const memoryData = useSelector(memorySelector);
+
   const [fileName, setFileName] = useState<any>('');
   const [type, setType] = useState<any>('');
-  const [openModal, setOpenModal] = useState(false);
+  const [openModalLoading, setOpenModalLoading] = useState(false);
   const { story } = useSelector(storySelector);
+  const {user} = useSelector(authSelector);
+  const storageLog= useSelector((state:any)=>state.storageLog.storageLog)
+  const storagePopup = useSelector((state:any) => state.storageLog.storagePopup);
   const dispatch = useDispatch();
-
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const saveComplementarys = async (complements: any) => {
     const { complementaryMedia, complementaryText } = complements;
@@ -98,93 +111,8 @@ export const Form: FC<any> = ({
     dispatch(sendMemory({ ...newData, ...complements }));
     return;
   };
-  const handleSubmit = (data: any) => {
-    data.story_id = story?.id;
-    if (memoryData?.mediaType === 'text') {
-      saveTextData(data);
-      changeMediaTypeScreen();
-      dispatch(setHasChanges(false));
-      return;
-    }
-
-    // Open modal when uploading video
-    if (type === 'video') {
-      setOpenModal(true);
-    }
-
-    localStorage.setItem('uploading video', 'uploading video');
-    dispatch(
-      getUploadSignedUrl(
-        {
-          file:
-            type === 'video'
-              ? `videos/${data?.media?.name?.split('/')?.pop()}`
-              : type === 'image'
-              ? `stories/${story?.title}/memory/${data?.media?.name
-                  ?.split('/')
-                  ?.pop()
-                  ?.replace(/\.[^.]+$/, '.webp')}`
-              : `stories/${story?.title}/memory/${data?.media?.name?.split('/')?.pop()}`,
-          type: type === 'image' ? 'image/webp' : data?.media?.type,
-        },
-        async (res: any) => {
-          try {
-            setIsLoading(true);
-            let response: any = null;
-            if (type === 'image') {
-              const newFile = await fileConverter(data?.media);
-              response = await FetchFileService(res?.value?.url?.uploadUrl, 'PUT', newFile, 'image/webp');
-            } else {
-              response = await FetchFileService(res?.value?.url?.uploadUrl, 'PUT', data?.media, data?.media?.type);
-            }
-
-            if (response?.ok) {
-              localStorage.setItem('uploading video', 'done');
-              const newData = { ...data };
-              newData.type = type || data?.media?.type?.split('/')[0];
-              newData.asset =
-                type === 'video'
-                  ? `videos/${data?.media?.name?.split('/')?.pop()}`
-                  : type === 'image'
-                  ? `stories/${story?.title}/memory/${data?.media?.name
-                      ?.split('/')
-                      ?.pop()
-                      ?.replace(/\.[^.]+$/, '.webp')}`
-                  : `stories/${story?.title}/memory/${data?.media?.name?.split('/')?.pop()}`;
-              newData.asset_type = data?.media?.type;
-              newData.prompt = prompt;
-
-              const complements = await saveComplementarys(data);
-
-              if (defaultItem) {
-                newData.id = defaultItem?.id;
-                dispatch(updateMemory({ ...newData, ...complements }));
-                changeMediaTypeScreen();
-                dispatch(setHasChanges(false));
-                setIsLoading(false);
-                setOpenModal(false); // Close modal when done
-                return;
-              }
-
-              dispatch(sendMemory({ ...newData, ...complements }));
-              changeMediaTypeScreen();
-              dispatch(setHasChanges(false));
-
-              setIsLoading(false);
-              setOpenModal(false);
-            }
-          } catch (error) {
-            setIsLoading(false);
-            setOpenModal(false);
-          }
-        },
-      ),
-    );
-  };
-
-  // const handleSubmit = async (data: any) => {
+  // const handleSubmit = (data: any) => {
   //   data.story_id = story?.id;
-
   //   if (memoryData?.mediaType === 'text') {
   //     saveTextData(data);
   //     changeMediaTypeScreen();
@@ -192,25 +120,12 @@ export const Form: FC<any> = ({
   //     return;
   //   }
 
-  //   // Retrieve user storage info (Assuming it's accessible in local state or Redux)
-  //   const usedStorage = user?.usedStorage || 0;
-  //   const totalStorage = user?.totalStorage || 0;
-
-  //   // Calculate file size
-  //   const fileSize = data?.media?.size || 0;
-
-  //   if (usedStorage + fileSize > totalStorage) {
-  //     showDialog("Not enough storage available", "error");
-  //     return;
-  //   }
-
   //   // Open modal when uploading video
   //   if (type === 'video') {
-  //     setOpenModal(true);
+  //     setOpenModalLoading(true);
   //   }
 
   //   localStorage.setItem('uploading video', 'uploading video');
-
   //   dispatch(
   //     getUploadSignedUrl(
   //       {
@@ -228,8 +143,7 @@ export const Form: FC<any> = ({
   //       async (res: any) => {
   //         try {
   //           setIsLoading(true);
-  //           let response = null;
-
+  //           let response: any = null;
   //           if (type === 'image') {
   //             const newFile = await fileConverter(data?.media);
   //             response = await FetchFileService(res?.value?.url?.uploadUrl, 'PUT', newFile, 'image/webp');
@@ -238,46 +152,166 @@ export const Form: FC<any> = ({
   //           }
 
   //           if (response?.ok) {
-  //             localStorage.setItem('uploading video', 'done');
-  //             const newData = {
-  //               ...data,
-  //               type: type || data?.media?.type?.split('/')[0],
-  //               asset:
-  //                 type === 'video'
-  //                   ? `videos/${data?.media?.name?.split('/')?.pop()}`
-  //                   : type === 'image'
-  //                   ? `stories/${story?.title}/memory/${data?.media?.name
-  //                       ?.split('/')
-  //                       ?.pop()
-  //                       ?.replace(/\.[^.]+$/, '.webp')}`
-  //                   : `stories/${story?.title}/memory/${data?.media?.name?.split('/')?.pop()}`,
-  //               asset_type: data?.media?.type,
-  //               prompt,
-  //             };
+  //             const newData = { ...data };
+  //             newData.type = type || data?.media?.type?.split('/')[0];
+  //             newData.asset =
+  //               type === 'video'
+  //                 ? `videos/${data?.media?.name?.split('/')?.pop()}`
+  //                 : type === 'image'
+  //                 ? `stories/${story?.title}/memory/${data?.media?.name
+  //                     ?.split('/')
+  //                     ?.pop()
+  //                     ?.replace(/\.[^.]+$/, '.webp')}`
+  //                 : `stories/${story?.title}/memory/${data?.media?.name?.split('/')?.pop()}`;
+  //             newData.asset_type = data?.media?.type;
+  //             newData.prompt = prompt;
 
   //             const complements = await saveComplementarys(data);
 
   //             if (defaultItem) {
   //               newData.id = defaultItem?.id;
   //               dispatch(updateMemory({ ...newData, ...complements }));
-  //             } else {
-  //               dispatch(sendMemory({ ...newData, ...complements }));
+  //               changeMediaTypeScreen();
+  //               dispatch(setHasChanges(false));
+  //               setIsLoading(false);
+  //               setOpenModalLoading(false); // Close modal when done
+  //               return;
   //             }
 
+  //             const response =  dispatch(sendMemory({ ...newData, ...complements }));
   //             changeMediaTypeScreen();
   //             dispatch(setHasChanges(false));
+
   //             setIsLoading(false);
-  //             setOpenModal(false); // Close modal when done
+  //             setOpenModalLoading(false);
   //           }
   //         } catch (error) {
-  //           console.error("Error uploading file:", error);
   //           setIsLoading(false);
-  //           setOpenModal(false);
+  //           setOpenModalLoading(false);
   //         }
-  //       }
-  //     )
+  //       },
+  //     ),
   //   );
   // };
+
+  const handleSubmit = async (data: any) => {
+    dispatch(refreshUserData())
+    dispatch(updateSubscriptionStatus({userId: story?.user?.id}))
+        const res = await RefreshUserData(user?.token, story?.user?.id);
+    data.story_id = story?.id;
+
+
+    // const usedStorage = res?.result?.usedStorage || 0;
+    // const totalStorage = res?.result?.totalStorage || 0;
+    // const fileSize = data?.media?.size || 0;
+    const isOwner = story.user_id === user?.id;
+    
+    if (!checkRoleAndPermission(story?.user?.roles, 'Subscriber_Individual', 'CLIENT_MEMORY_CREATE', story?.user_id)) {
+      alert("inside means not subscriber")
+      const message = isOwner
+      ? "You are not a subscriber."
+      : "The creator is not a subscriber."
+      // Role check fails
+      dispatch(openModal({ content: message }));
+      setTimeout(()=>{
+
+      
+      if(story?.user_id === user?.id){
+        dispatch(openSubscriptionPopup())
+      }
+    },2000)
+      return;
+    }
+    if (memoryData?.mediaType === 'text') {
+      saveTextData(data);
+      changeMediaTypeScreen();
+      dispatch(setHasChanges(false));
+      return;
+    }
+
+    if (type === 'video') {
+      setOpenModalLoading(true);
+    }
+
+
+    dispatch(
+      getUploadSignedUrl(
+        {
+          file:
+            type === 'video'
+              ? `videos/${data?.media?.name?.split('/')?.pop()}`
+              : type === 'image'
+              ? `stories/${story?.title}/memory/${data?.media?.name
+                  ?.split('/')
+                  ?.pop()
+                  ?.replace(/\.[^.]+$/, '.webp')}`
+              : `stories/${story?.title}/memory/${data?.media?.name?.split('/')?.pop()}`,
+          type: type === 'image' ? 'image/webp' : data?.media?.type,
+        },
+        async (res: any) => {
+          try {
+            setIsLoading(true);
+            let response = null;
+
+            if (type === 'image') {
+              const newFile = await fileConverter(data?.media);
+              response = await FetchFileService(res?.value?.url?.uploadUrl, 'PUT', newFile, 'image/webp');
+            } else {
+              response = await FetchFileService(res?.value?.url?.uploadUrl, 'PUT', data?.media, data?.media?.type);
+            }
+
+            if (response?.ok) {
+              localStorage.setItem('uploading video', 'done');
+              const newData = {
+                ...data,
+                type: type || data?.media?.type?.split('/')[0],
+                asset:
+                  type === 'video'
+                    ? `videos/${data?.media?.name?.split('/')?.pop()}`
+                    : type === 'image'
+                    ? `stories/${story?.title}/memory/${data?.media?.name
+                        ?.split('/')
+                        ?.pop()
+                        ?.replace(/\.[^.]+$/, '.webp')}`
+                    : `stories/${story?.title}/memory/${data?.media?.name?.split('/')?.pop()}`,
+                asset_type: data?.media?.type,
+                prompt,
+              };
+
+              const complements = await saveComplementarys(data);
+              console.log("i am the state of popup - dev test", storagePopup)
+              if (defaultItem) {
+                newData.id = defaultItem?.id;
+                dispatch(updateMemory({ ...newData, ...complements }));
+              } else {
+                dispatch(sendMemory({ ...newData, ...complements }));
+              }
+           
+              
+              changeMediaTypeScreen();
+              dispatch(setHasChanges(false));
+              setIsLoading(false);
+              setOpenModalLoading(false); // Close modal when done
+            }
+          } catch (error) {
+            console.error("Error uploading file:", error);
+            setIsLoading(false);
+            setOpenModalLoading(false);
+          }
+        }
+      )
+    );
+  };
+
+  // useEffect(() => {
+  //   console.log("i am the storage log", storageLog)
+  //   if (storageLog?.log.toasr_80 && !storagePopup) {
+  //     dispatch(openModal({ content: "80% reached" }));
+  //     dispatch(hidePopup());
+  //   }
+  //   dispatch(showPopup())
+  // }, [storageLog, storagePopup]);
+
 
   const handleOnTouched = (key: string) => setTouched({ ...touched, [key]: true });
 
@@ -338,7 +372,7 @@ export const Form: FC<any> = ({
             setFieldValue('media', file);
           } catch (error) {}
 
-          dispatch(setMediaType('media'));
+          dispatch(setMediaType(memoryData?.mediaType));
         }
         if (key == 'asset' && memoryData?.mediaType === 'text' && defaultItem?.type === 'text') {
           dispatch(setMediaType('text'));
@@ -642,7 +676,7 @@ export const Form: FC<any> = ({
           </>
         )}
       </form>
-      <LoadingModal open={openModal} />
+      <LoadingModal open={openModalLoading} />
     </>
   );
 };

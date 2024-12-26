@@ -9,7 +9,7 @@ interface SubscriptionInfoProps {
 const SubscriptionInfo: React.FC<SubscriptionInfoProps> = ({ title, description }) => {
   return (
     <> 
-      <Typography variant="h1" lineHeight={'5.125rem'}  fontSize={'5rem'}  align='center' gutterBottom>
+      <Typography variant="h1" lineHeight={'4.125rem'}  fontSize={'5rem'}  align='center' gutterBottom>
         Select your Subscription Plan
       </Typography>
     </>

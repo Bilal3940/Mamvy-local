@@ -1,8 +1,9 @@
-export const fallbackRestUrl: string = 'https://api.dev.memvy.com/api';
+// export const fallbackRestUrl: string = 'https://api.dev.memvy.com/api';
 export const google_client_id: string = '1028556271886-t2cmt38nf056o8skk9qfetj4dqsgo174.apps.googleusercontent.com';
-// export const fallbackRestUrl: string = 'http://localhost:3001/api';
+export const fallbackRestUrl: string = 'http://localhost:3001/api';
 export const face_client_id: string = '1446729939533376';
 export const base_url: string = 'https://memvy.com';
 export const cdn_url: string = 'https://cdn.memvy.com/';
 export const base_domain: string = 'memvy.com';
-export const stripe_public_key : string = 'pk_test_51QG0MALh0fgkeFSRrG1VFd1e39D3kkJpNEWxFEOvE5VaptvBKWcw5r97qn7XoCl46e70vir7DuS7BXrK3x3p9Pb700xvcZ9U8C'
+// export const stripe_public_key : string = 'pk_test_51QG0MALh0fgkeFSRrG1VFd1e39D3kkJpNEWxFEOvE5VaptvBKWcw5r97qn7XoCl46e70vir7DuS7BXrK3x3p9Pb700xvcZ9U8C' //memvy test
+export const stripe_public_key : string = 'pk_test_51PgM3ERrXZMuJmTGxuePJkqFCbXYgnV35djshusb2zYOQlydY7LqxBMVZJxYJ9zyCEOooyjo91mKyzf6TUERzvoz001jFYTYq6'   //local test

@@ -14,7 +14,7 @@ interface IAditionalProps {
   status: any;
   errorMessage: string | any;
   placeholder: string;
-  isDarkTheme: boolean;
+  isDarkTheme?: boolean | true;
   value: string | number;
   testId: string;
   endIcon: string;
@@ -23,6 +23,7 @@ interface IAditionalProps {
   iconHeight: string | number;
   multiline?: boolean;
   disabledColor?: string;
+  variant?: string | "outlined" ;
 }
 
 type Props = TextFieldProps | IAditionalProps;
@@ -36,7 +37,7 @@ export const MuiTextField: FC<Props> = ({
   errorMessage = '',
   status,
   placeholder,
-  isDarkTheme = true,
+  isDarkTheme,
   value,
   testId,
   endIcon,
@@ -45,6 +46,7 @@ export const MuiTextField: FC<Props> = ({
   iconHeight,
   multiline,
   disable,
+  variant,
   disabledColor,
   ...props
 }: any) => {
@@ -52,7 +54,7 @@ export const MuiTextField: FC<Props> = ({
 
   return (
     <TextField
-      variant='outlined'
+      variant={variant}
       name={name}
       fullWidth
       disabled={disable}

@@ -27,7 +27,8 @@ const initialState = {
   newMemoryCreated: false,
   memoryEdit: null,
   memoryPreview: null,
-  memoryTypes: []
+  memoryTypes: [],
+  actionSuccess: false,
 };
 export type MemoriesState = typeof initialState
 
@@ -49,7 +50,7 @@ const memories = (state = initialState, { type, payload }: MemoryActionTypes) =>
       return { ...initialState };
     case PAGINATE_BUBBLES_ASYNC:
     case GET_MEMORIES_ASYNC:
-      return { ...state, memoriesLoaded: payload };
+      return { ...state, memoriesLoaded: payload, actionSuccess: true };
     case SET_MEMORY_TYPES_ASYNC:
       return { ...state, memoryTypes: payload }
     case DELETE_MEMORY_ASYNC:

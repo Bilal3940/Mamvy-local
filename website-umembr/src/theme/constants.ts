@@ -15,6 +15,7 @@ export const palette = {
   lightCardBackground: '#D8E8F6',
   lightText: '#0072ce',
   codGray: '#1d1d1d',
+  divider:'#A9B4CC',
   
 
 

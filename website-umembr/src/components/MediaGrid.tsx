@@ -16,9 +16,9 @@ import Image from 'next/image';
 
 import { palette } from '@/theme/constants';
 import { styles } from './AppBar/CancelModal/styles';
-import { getExtraContent, getMemories, getUserPurchases, removeMemory } from '@/store/actions';
+import { getExtraContent, getMemories, getStorageLog, getStorageLogs, getUserPurchases, hidePopup, removeMemory, showPopup } from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { authSelector, extrasSelector, homeSelector, memorySelector, purchaseSelector } from '@/store/selectors';
+import { authSelector, extrasSelector, homeSelector, memorySelector, purchaseSelector, storagelogSelector } from '@/store/selectors';
 import {
   cdn_url,
   checkPermissions,
@@ -73,7 +73,7 @@ interface MediaGridProps {
 
 const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const dispatch = useDispatch();
-  const { memoriesLoaded } = useSelector(memorySelector);
+  const { actionSuccess,memoriesLoaded } = useSelector(memorySelector);
   const [openModal, setOpenModal] = useState(false);
   const [search, setSearch] = useState('');
   const router = useRouter();
@@ -100,6 +100,9 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
   const [modalOpen, setModalOpen] = useState(false);
   const [step, setStep] = useState(0);
+  const storagePopup = useSelector((state:any) => state.storageLog.storagePopup);
+  const storageLog= useSelector((state:any)=>state.storageLog.storageLog)
+
   const handleClose = (step: any): void => {
     if (step === 2) {
       setStep(step);
@@ -142,14 +145,28 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const deleteMemory = async () => {
     setSelectedMedia(null);
     switchDeleteMemory();
+    dispatch(showPopup())
+    console.log("i am the state after chnageing - dev test", storagePopup)
     router.push(`/app/story/${story?.url}`);
     const { callback, promise } = promisifiedCallback<ExtractCallbackType<typeof removeMemory>>();
     dispatch(removeMemory({ id: selectedMedia?.id, story_id: story?.id }, callback));
     const { ok } = await promise;
     if (ok) {
+     dispatch(getStorageLogs(user?.id))
     }
   };
+  // useEffect(() => {
+  //   console.log("i am the updated log", storageLog)
+  //   if (storageLog?.log?.toast_80 && !storagePopup) {
+  //       alert("80% reached")
+  //       dispatch(hidePopup());
+  //   }
+  //   else{
+  //     dispatch(showPopup())
+  //   }
+  // }, [storageLog]);
 
+console.log("i am the updated state of popup- dev test", storagePopup)
   useEffect(() => {
     if (user && user.id) {
    
@@ -189,6 +206,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
       } else {
         setModalOpen(false);
         handleOpenModal(item);
+        //console.log('jbh')
         window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
       }
     }
@@ -369,16 +387,14 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
             },
       
           },
-          
+        
       
-          '& .MuiOutlinedInput-root.Mui-focused': {
-            '& fieldset': {
-              border: 'none', // Ensure no border on focus
-            },
-          },
+          
+          
           '& input:-webkit-autofill': {
-            WebkitBoxShadow: 'white inset', // Match the background color
-            WebkitTextFillColor: 'white', // Match the text color
+         //   WebkitBoxShadow: '0 0 0 100px white inset', // Match the background color
+            WebkitTextFillColor: 'white', 
+            // Match the text color
             transition: 'background-color 5000s ease-in-out 0s', // Prevent autofill background reset
           },
          }}
@@ -468,7 +484,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
 
         {/* Media Grid */}
 
-          {memoriesLoaded.length > 0 ? (
+          {actionSuccess && memoriesLoaded.length > 0 ? (
         <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={2} sx={{ margin: 0 }}>
 
      
@@ -624,13 +640,17 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
 
 
         </Masonry>
-):(
-
+) : actionSuccess && memoriesLoaded.length === 0 ? (
   <Box width={'100%'} height={'50vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-  <CircularProgress sx={{ color: palette.faintGray }} />
-</Box>
-)
-}
+    <Typography variant="h6" color={palette.white}>
+      No memories available.
+    </Typography>
+  </Box>
+) : (
+  <Box width={'100%'} height={'50vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+    <CircularProgress sx={{ color: palette.faintGray }} />
+  </Box>
+)}
 
         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
           {!allItemsLoaded && (
@@ -653,8 +673,8 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
         </Box>
         <PopupModal open={modalOpen} onClose={(step: any) => handleClose(step)} />
         <MemoryDetail
-        extendedPalette={extendedPalette}
           open={Boolean(selectedMedia)}
+          extendedPalette={extendedPalette}
           isLocked={story && story.isLocked}
           onClose={closeMemory}
           mediaContent={selectedMedia}

@@ -1,6 +1,9 @@
 import { palette } from '../../theme/constants';
 
-export const styles = (color?:string)=>({
+export const styles = (color?:string)=>(
+  
+  {
+ 
   paper: {
     width: '100%',
     border: `1px solid ${palette.cardBorder} `,

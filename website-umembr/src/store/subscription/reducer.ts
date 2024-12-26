@@ -12,6 +12,10 @@ import {
   CLEAR_SELECTED_TIER,
   CREATE_CHECKOUT_SESSION,
   CREATE_CHECKOUT_SESSION_ASYNC,
+  CANCEL_SUBSCRIPTION_ASYNC,
+  RESUME_SUBSCRIPTION_ASYNC,
+  RENEW_SUBSCRIPTION_ASYNC,
+  UPDATE_SUBSCRIPTION_STATUS_ASYNC
 } from './action-types';
 
 const initialState: any = {
@@ -20,6 +24,7 @@ const initialState: any = {
   selectedTier: null,
   actionSuccess: null,
   checkoutSession: null, // Add a field to store the checkout session data if needed
+  SubscriptionStatus: [],
 };
 
 const subscription = (state = initialState, { type, payload }: any) => {
@@ -33,7 +38,30 @@ const subscription = (state = initialState, { type, payload }: any) => {
         ...state,
         actionSuccess: null,
       };
-
+      case CANCEL_SUBSCRIPTION_ASYNC:
+        return {
+          ...state,
+          subscriptionStatus: payload,
+          actionSuccess: true,
+        };
+        case RESUME_SUBSCRIPTION_ASYNC:
+          return {
+            ...state,
+            subscriptionStatus: payload,
+            actionSuccess: true,
+          };
+          case RENEW_SUBSCRIPTION_ASYNC:
+            return {
+              ...state,
+              subscriptionStatus: payload,
+              actionSuccess: true,
+            };
+          case UPDATE_SUBSCRIPTION_STATUS_ASYNC:
+            return {
+              ...state,
+              SubscriptionStatus:payload,
+              actionSuccess: true,
+            }
     case UPDATE_PRODUCT_ASYNC:
     case CREATE_PRODUCT_ASYNC:
       return {

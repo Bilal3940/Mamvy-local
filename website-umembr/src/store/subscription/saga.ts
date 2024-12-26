@@ -14,9 +14,18 @@ import {
   SET_SELECTED_TIER_ASYNC,
   CREATE_CHECKOUT_SESSION_ASYNC,
   CREATE_CHECKOUT_SESSION,
+  CANCEL_SUBSCRIPTION_ASYNC,
+  CANCEL_SUBSCRIPTION,
+  RESUME_SUBSCRIPTION,
+  RESUME_SUBSCRIPTION_ASYNC,
+  RENEW_SUBSCRIPTION_ASYNC,
+  RENEW_SUBSCRIPTION,
+  UPDATE_SUBSCRIPTION_STATUS_ASYNC,
+  UPDATE_SUBSCRIPTION_STATUS,
 } from './action-types';
 import { authSelector } from '../selectors';
 import FetchService from '@/utils/FetchService';
+import { REFRESH_USER_DATA } from '../auth/action-types';
 
 function* getProductsAsync({ payload }: any): any {
   try {
@@ -34,6 +43,7 @@ function* getProductsAsync({ payload }: any): any {
     yield call(showDialog, message, 'error');
   }
 }
+
 
 
 function* createCheckoutSessionAsync({ payload }: any): any {
@@ -115,6 +125,90 @@ function* setSelectedTierAsync({ payload }: any): any {
   }
 }
 
+function* cancelSubscriptionAsync({ payload }: any): any {
+  try {
+    const { user } = yield select(authSelector);
+    const url = `stripe/cancel-subscription`;
+    const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
+    
+    if (result) {
+      yield put(actionObject(CANCEL_SUBSCRIPTION_ASYNC, result));
+      yield call(showDialog, `Subscription canceled successfully`, 'success');
+      yield put(actionObject(REFRESH_USER_DATA))
+    }
+  } catch (error: any) {
+    console.log("I am the error", error);
+
+    // Safely extract the error message
+    const message =  JSON.parse(error.message);
+    // Display the message in the dialog
+    yield call(showDialog, message.message, 'error');
+  }
+}
+
+
+function* resumeSubscriptionAsync({ payload }: any): any {
+  try {
+    const { user } = yield select(authSelector);
+    const url = `stripe/resume-subscription`;
+    const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
+    
+    if (result) {
+      yield put(actionObject(RESUME_SUBSCRIPTION_ASYNC, result));
+      yield call(showDialog, `Subscription canceled successfully`, 'success');
+      yield put(actionObject(REFRESH_USER_DATA))
+    }
+  } catch (error: any) {
+
+    // Safely extract the error message
+    const message =  JSON.parse(error.message);
+    // Display the message in the dialog
+    yield call(showDialog, message.message, 'error');
+  }
+}
+
+
+function* renewSubscriptionAsync({ payload }: any): any {
+  try {
+    const { user } = yield select(authSelector);
+    const url = `stripe/renew-subscription`;
+    const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
+    
+    if (result) {
+      yield put(actionObject(RENEW_SUBSCRIPTION_ASYNC, result));
+      yield call(showDialog, `Subscription renewed successfully.`, 'success');
+      yield put(actionObject(REFRESH_USER_DATA))
+    }
+  } catch (error: any) {
+
+    // Safely extract the error message
+    const message =  JSON.parse(error.message);
+    // Display the message in the dialog
+    yield call(showDialog, message.message, 'error');
+  }
+}
+
+function* updateSubscriptionStatusAsync({ payload }: any): any {
+  try {
+    const { user } = yield select(authSelector);
+    const url = `/stripe/updateStatusSubscription`;
+    const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
+    
+    if (result) {
+      yield put(actionObject(UPDATE_SUBSCRIPTION_STATUS_ASYNC, result));
+      yield put(actionObject(REFRESH_USER_DATA))
+    }
+  } catch (error: any) {
+
+    // Safely extract the error message
+    const message =  JSON.parse(error.message);
+    // Display the message in the dialog
+    yield call(showDialog, message.message, 'error');
+  }
+}
+
+
+
 export function* watchSetSelectedTier() {
   yield takeLatest(SET_SELECTED_TIER, setSelectedTierAsync);
 }
@@ -139,3 +233,16 @@ export function* watchUpdateProduct() {
   yield takeLatest(UPDATE_PRODUCT, updateProductAsync);
 }
 
+export function* watchCancelSubscription() {
+  yield takeLatest(CANCEL_SUBSCRIPTION, cancelSubscriptionAsync);
+}
+export function* watchResumeSubscription() {
+  yield takeLatest(RESUME_SUBSCRIPTION, resumeSubscriptionAsync);
+}
+export function* watchRenewSubscription() {
+  yield takeLatest(RENEW_SUBSCRIPTION, renewSubscriptionAsync);
+}
+
+export function* watchUpdateSubscriptionStatus() {
+  yield takeLatest(UPDATE_SUBSCRIPTION_STATUS, updateSubscriptionStatusAsync);
+}

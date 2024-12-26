@@ -1,17 +1,20 @@
-import { FetchService, actionObject,showDialog } from '@/utils';
+import { FetchService, actionObject,showDialog, showModal } from '@/utils';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import {
   createMemoryActionG,
   deleteMemoryActionG,
+  hidePopup,
+  openModal,
   paginateMemoryAction,
   paginateMemoryActionAsync,
   removeMemory,
   setMemoryTypesAsync,
+  showPopup,
   updateMemoryActionG,
 } from '../actions';
 import { UPDATE_USER_DATA_ASYNC } from '../auth/action-types';
 import { SET_CRITERIAS_ASYNC } from '../home/action-types';
-import { authSelector, memorySelector } from '../selectors';
+import { authSelector, memorySelector, storagelogSelector, StoragePopupSelector } from '../selectors';
 import {
   APPROVE_MEMORY,
   APPROVE_MEMORY_ASYNC,
@@ -30,6 +33,7 @@ import {
   UPDATE_MEMORY_ASYNC,
   VIEW_MEMORY,
 } from './action-types';
+import { GET_STORAGE_LOG } from '../storageLog/action-types';
 
 function* setCreateMemoryStep({ payload }: any) {
   yield put(actionObject(SET_STEP_CREATE_MEMORY_TRIGGER, payload));
@@ -39,10 +43,10 @@ function* setMediaType({ payload }: any) {
   yield put(actionObject(SET_MEDIA_TYPE_TRIGGER, payload));
 }
 
-
 function* createMemory({ payload }: any): any {
   try {
     const { user } = yield select(authSelector);
+    const storagePopup  = yield select(StoragePopupSelector);
 
     
     let totalSize = 0;
@@ -69,69 +73,31 @@ function* createMemory({ payload }: any): any {
     
     const response = yield call(FetchService, 'memory', 'POST', payloadMemory, user?.token);
     yield put(actionObject(CREATE_MEMORY_ASYNC, response?.result));
+    console.log("dev-test i am the boolean response", response?.result?.usedStoragePercentage, response?.result?.storagePopupTriggered, "storagePopup", storagePopup)
+
+    if (response?.result?.usedStoragePercentage >= 80 && !storagePopup) {
+      yield put (openModal({ content: "You have reached 80% of the storage."}))
+      yield put (hidePopup())
+    } else {
+      if(response?.result?.usedStoragePercentage < 80 && storagePopup )
+        yield put(showPopup())
+    }
     yield put(createMemoryActionG(response?.result));
   } catch (error: any) {
     let message = error?.message;
     if (error?.message?.includes('error')) message = JSON.parse(message)?.error;
-    
-    alert(message);
+  
+    yield call(showModal, message, 'SHOW_MODAL');
     
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function* updateMemoryAsync({ payload }: any): any {
   try {
     const { user } = yield select(authSelector);
+    const storagePopup  = yield select(StoragePopupSelector);
+
+
 
     
     let totalSize = 0;
@@ -139,9 +105,9 @@ function* updateMemoryAsync({ payload }: any): any {
     
     if (payload.media && payload.media.size) {
       totalSize += payload.media.size;
-    }
+    } 
 
-    
+
     if (payload.complementaryMedia && Array.isArray(payload.complementaryMedia)) {
       payload.complementaryMedia.forEach((file: File) => {
         if (file.size) {
@@ -149,8 +115,7 @@ function* updateMemoryAsync({ payload }: any): any {
         }
       });
     }
-
-    
+  
     const payloadMemory = {
       ...payload,
       totalSize, 
@@ -166,14 +131,23 @@ function* updateMemoryAsync({ payload }: any): any {
 
     
     yield put(actionObject(UPDATE_MEMORY_ASYNC, response?.result?.updatedMemory));
+    console.log("dev-test  boolean response", response?.result?.updatedMemory?.usedStoragePercentage, response?.result?.updatedMemory?.storagePopupTriggered, "storagePopup", storagePopup)
+
+    if (response?.result?.updatedMemory?.usedStoragePercentage >= 80 && !storagePopup) {
+      yield put (openModal({ content: "You have reached 80% of the storage."}))
+      yield put (hidePopup())
+    } else {
+      if(response?.result?.updatedMemory?.usedStoragePercentage < 80 && storagePopup )
+        yield put(showPopup())
+    }
+
     yield put(updateMemoryActionG(response?.result?.updatedMemory));
   } catch (error: any) {
     let message = error?.message;
     if (error?.message?.includes('error')) {
       message = JSON.parse(message)?.error;
     }
-    
-    alert(message);
+    yield put (openModal({ content: message}))
   }
 }
 
@@ -233,6 +207,7 @@ function* deleteMemoryAsync({ payload, callback }: ReturnType<typeof removeMemor
       });
     }
     yield put(actionObject(DELETE_MEMORY_ASYNC, payload?.id));
+    yield put(actionObject(GET_STORAGE_LOG, user?.id));
     yield put(deleteMemoryActionG(result?.memory));
     
   } catch (error: any) {

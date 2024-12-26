@@ -8,10 +8,25 @@ export const SHOW_ACTUAL_SECTION = 'SHOW_ACTUAL_SECTION';
 export const CHANGE_BACKGROUND = 'CHANGE_BACKGROUND';
 export const HIDE_GRADIENT = 'HIDE_GRADIENT';
 
+//delete account modal for account deletion
+export const OPEN_DELETE_MODAL= 'OPEN_DELETE_MODAL';
+export const CLOSE_DELETE_MODAL= 'CLOSE_DELETE_MODAL';
+
+//modals for cancel subscription confirmation
+export const OPEN_SUBSCRIPTION_MODAL='OPEN_SUBSCRIPTION_MODAL'; 
+export const CLOSE_SUBSCRIPTION_MODAL= 'CLOSE_SUBSCRIPTION_MODAL';
+
 export const OPEN_PUBLISH_MODAL = 'OPEN_PUBLISH_MODAL';
 export const OPEN_PUBLISH_MODAL_TRIGGER = 'OPEN_PUBLISH_MODAL_TRIGGER';
 export const CLOSE_PUBLISH_MODAL = 'CLOSE_PUBLISH_MODAL';
 export const CLOSE_PUBLISH_MODAL_TRIGGER = 'CLOSE_PUBLISH_MODAL_TRIGGER';
 
 export const SET_SEPARATION = 'SET_SEPARATION';
+//general error modal
+export const OPEN_MODAL = 'OPEN_MODAL';
+export const CLOSE_MODAL = 'CLOSE_MODAL';
+//subscription popup for starting membership
+export const OPEN_SUBSCRIPTION_POPUP = 'OPEN_SUBSCRIPTION_POPUP';
+export const CLOSE_SUBSCRIPTION_POPUP = 'CLOSE_SUBSCRIPTION_POPUP';
+
 

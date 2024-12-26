@@ -12,13 +12,14 @@ import analyticsStories from './analyticsStories/reducer';
 import subscription from './subscription/reducer';
 import orders from './order/reducer';
 import hasChanges from './hasChanges/reducer';
-import templates from './tempConfig/reducer';
+import template from './tempConfig/reducer';
 import extraContent from './extras/reducer';
 import purchase from './purchase/reducer';
+import storageLog from './storageLog/reducer';
 
 const reducers: any = combineReducers({
   intermitence,
-  templates,
+  template,
   purchase,
   forgotPassword,
   home,
@@ -33,6 +34,7 @@ const reducers: any = combineReducers({
   analyticsStories,
   hasChanges,
   extraContent,
+  storageLog,
 });
 
 export default reducers;

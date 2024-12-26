@@ -18,7 +18,7 @@ import {
     actionSuccess: null,
   };
   
-  const templates = (state = initialState, { type, payload }: any) => {
+  const template = (state = initialState, { type, payload }: any) => {
     switch (type) {
       case CREATE_TEMPLATE:
       case UPDATE_TEMPLATE:
@@ -64,5 +64,5 @@ import {
     }
   };
   
-  export default templates;
+  export default template;
   

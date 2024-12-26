@@ -1,5 +1,4 @@
-import { palette } from '@/theme/constants';
-import { color } from 'framer-motion';
+import { palette } from "@/theme/constants";
 
 export const styles = (isDarkTheme: boolean, disabledColor: string) => ({
   input: {
@@ -38,7 +37,6 @@ export const styles = (isDarkTheme: boolean, disabledColor: string) => ({
         opacity: 1,
       },
     },
-
     '& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline': {
       borderColor: palette?.gray,
     },
@@ -62,12 +60,5 @@ export const styles = (isDarkTheme: boolean, disabledColor: string) => ({
         top: '0px',
       },
     },
-
-    inputStyle: {
-      '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
-        '-webkit-appearance': 'none',
-        display: 'none',
-      },
-    },
   },
-});
+})

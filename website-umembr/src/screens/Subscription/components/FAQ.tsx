@@ -17,17 +17,16 @@ export default function FAQ() {
         backgroundColor:'rgba(43, 54, 114, 1)',
         color:palette.dirtyWhite,
         fontSize:'1rem',
-        margin:'1rem',
+        margin:'0.2rem',
         height:'4.688rem',
         // display:'flex',
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:'0.5rem',
         alignContent:'center',
         fontWeight:'400'
       }} >
         <AccordionSummary
-          expandIcon={   <Image src={`/icons/expand2.svg`} alt={'expand'} width={20} height={20} quality={80} />}
+          expandIcon={   <Image src={`/icons/expand2.svg`} alt={'expand'} width={20} height={20} quality={30} />}
           aria-controls="panel1-content"
           id="panel1-header"
         >

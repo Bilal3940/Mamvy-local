@@ -14,3 +14,4 @@ export * from './order/action';
 export * from './tempConfig/action'
 export * from './extras/action';
 export * from './purchase/action';
+export * from './storageLog/action'

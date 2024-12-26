@@ -1,4 +1,6 @@
 import {
+  DELETE_USER,
+  DELETE_USER_ASYNC,
   FORGOT_PASSWORD,
   LOGIN_APPLE,
   LOGIN_FACEBOOK,
@@ -30,3 +32,4 @@ export const updateUserData = (data: any) => actionObject(UPDATE_USER_DATA, data
 
 export const refreshUserData = () => actionObject(REFRESH_USER_DATA)
 export const refreshuserData = ()=> actionObject(REFRESH_user_DATA)
+export const deleteUser = (payload: any) => actionObject(DELETE_USER, payload);

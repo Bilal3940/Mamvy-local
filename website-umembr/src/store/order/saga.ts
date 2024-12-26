@@ -6,9 +6,12 @@ import {
     CREATE_ORDER_ASYNC,
     GET_ORDERS,
     GET_ORDERS_ASYNC,
+    ORDER_FAILURE,
 } from './action-types';
 import { authSelector } from '../selectors';
 import FetchService from '@/utils/FetchService';
+import { CLOSE_SUBSCRIPTION_POPUP } from '../intermitence/action-types';
+import { REFRESH_USER_DATA } from '../auth/action-types';
 
 function* getOrdersAsync({ payload }: any): any {
     try {
@@ -34,13 +37,15 @@ function* createOrderAsync({ payload }: any): any {
         const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
         if (result) {
             yield put(actionObject(CREATE_ORDER_ASYNC, result));
-
             yield call(showDialog, 'Payment successful', 'success');
+            yield put(actionObject(REFRESH_USER_DATA))
+            yield put(actionObject(CLOSE_SUBSCRIPTION_POPUP))
         }
     } catch (error: any) {
         const message = error?.message?.includes('error') 
             ? JSON.parse(error.message).error 
             : error.message;
+            yield put(actionObject(ORDER_FAILURE, message));
         yield call(showDialog, message, 'error');
     }
 }

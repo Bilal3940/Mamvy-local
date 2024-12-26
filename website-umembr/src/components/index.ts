@@ -1,4 +1,5 @@
 export { MuiTextField } from './TextField';
+export { MuiTextField2 } from './TextField2';
 export { MuiIconButton } from './IconButton';
 export { MuiSelect } from './Select';
 export { MuiInputDate } from './InputDate';

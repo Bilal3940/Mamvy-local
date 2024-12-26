@@ -15,7 +15,6 @@ function* getProfileStoriesAsync(): any {
     yield put(actionObject(SET_HOME_LOADING, true));
     const { user } = yield select(authSelector);
     const { result } = yield call(FetchService, 'main/stories', 'GET', {}, user?.token);
-    console.log("i am the result of home call",result)
     const data = {
       draftStories: result?.draftStories,
       publishedStories: result?.publishedStories,

@@ -1,5 +1,7 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import {
+  DELETE_USER,
+  DELETE_USER_ASYNC,
   FORGOT_PASSWORD,
   FORGOT_PASSWORD_ASYNC,
   LOGIN_APPLE,
@@ -152,6 +154,20 @@ function* refreshUserDataAsync(): any {
   }
 }
 
+function* deleteUserAsync({payload}:any): any {
+  try {
+    const { user } = yield select(authSelector);
+    const userId = payload; 
+    const response = yield call(FetchService, `users/${userId}`, 'DELETE', {}, user?.token, false);
+      yield put(actionObject(DELETE_USER_ASYNC, { userId }));
+      yield call(showDialog, 'User deleted successfully.', 'success');
+  } catch (error: any) {
+    let message = error?.message;
+    if (error?.message?.includes('error')) message = JSON.parse(message)?.error;
+    yield call(showDialog, message, 'error');
+  }
+}
+
 
 
 function* loginAppleAsync({ payload }: any): any {
@@ -203,4 +219,7 @@ export function* watchRefreshUserData() {
 
 export function* watchLoginApple() {
   yield takeLatest(LOGIN_APPLE, loginAppleAsync);
+}
+export function* watchDeleteUser() {
+  yield takeLatest(DELETE_USER, deleteUserAsync);
 }

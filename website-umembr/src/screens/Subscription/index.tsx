@@ -29,7 +29,7 @@ const SubscriptionContainer: React.FC<SubscriptionContainerProps> = ({ handleNex
   const handlePlanSelect = (priceId: string, price: any, productId: string) => {
     setSelectedPlan(priceId);
     dispatch(setSelectedTier({ productId, priceId, Tier: price })); // Store in Redux
-    handleNext();
+    handleNext()
   };
 
 
@@ -47,7 +47,7 @@ const SubscriptionContainer: React.FC<SubscriptionContainerProps> = ({ handleNex
               sx={{
                 display:'flex',
                 flex:'1',
-                height:'22.063rem',
+                height:'20.063rem',
                 maxHeight: '800px',
                 overflow: 'auto',
                 gap:'1rem',

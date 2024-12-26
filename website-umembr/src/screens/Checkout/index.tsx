@@ -13,7 +13,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ handleClose }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "80vh",
+        height: "100vh",
+        overflow:'auto'
       }}
     >
       <CheckoutForm handleClose={handleClose} />

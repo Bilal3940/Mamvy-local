@@ -4,9 +4,11 @@ import Image from 'next/image';
 import { createTheme } from '@mui/material/styles';
 
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { authSelector} from '@/store/selectors';
-import { cdn_url } from '@/utils';
+import { cdn_url, checkRoleAndPermission } from '@/utils';
+import { useRouter } from 'next/router';
+import { openModal, openSubscriptionPopup, refreshUserData } from '@/store/actions';
 
 interface StoryHeaderProps {
   extendedPalette: any;
@@ -21,6 +23,7 @@ interface StoryHeaderProps {
   collaborators: { src: string; alt: string }[];
   onBackClick: () => void;
   userId: string;
+  story: any;
 }
 
 const StoryHeader: React.FC<StoryHeaderProps> = ({
@@ -33,8 +36,11 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
   description,
   collaborators = [],
   userId,
+  story,
 }) => {
   const { user} = useSelector(authSelector);
+  const router = useRouter()
+  const dispatch = useDispatch()
 
   const images = collaborators && collaborators?.map((collaborator: any) => ({
     src: collaborator.user.picture
@@ -42,6 +48,24 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
       : '/default-profile.png', // Fallback profile image
     alt: `${collaborator.user.name} ${collaborator.user.lastname}`, // Alt text for the image
   }))
+
+  const EditMemvy =()=>{
+    dispatch(refreshUserData())
+    if(checkRoleAndPermission(user?.roles, "Subscriber_Individual", "CLIENT_MEMORY_UPDATE", story?.user_id)){
+
+    
+    router.push(`/app/story/${title}/update`)
+  }
+  else{
+    dispatch(openModal({content:'You are not a subscriber.'}))
+    setTimeout(()=>{
+
+    
+    dispatch(openSubscriptionPopup())
+  }, 2000)
+  }
+
+  }
 
   return (
 
@@ -63,9 +87,9 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                    // Replace with your desired hover color// Optional: change text color on hover
                 }}
                 startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} />}>
-                <Link href={`/app/story/${title}/update`} style={{ textDecoration: 'none' , color:extendedPalette.edittextColor}}>
+                <Button  onClick={EditMemvy} style={{ textDecoration: 'none' , color:extendedPalette.edittextColor}}>
                   Edit this Memvy
-                </Link>
+                </Button>
               </Button>
 
             </Toolbar>

@@ -17,6 +17,7 @@ import {
   watchResetPassword,
   watchUpdateUserData,
   watchValidateResetCode,
+  watchDeleteUser,
 } from './auth/saga';
 import { watchFilterStories, watchGetProfileStories } from './home/saga';
 import {
@@ -31,6 +32,7 @@ import {
   watchDeleteStory,
   watchSetPublicationStory,
   watchSetCodeStory,
+  watchPendingStoryActions,
 } from './story/saga';
 import { watchGetSignedUrl, watchGetUploadSignedUrl } from './file/saga';
 import {watchExtraContentSaga} from  './extras/saga';
@@ -73,16 +75,26 @@ import {
 
 import { watchToggleHasChanges } from './hasChanges/saga';
 
-import {  watchGetProducts,watchSetSelectedTier} from './subscription/saga'
+import {  watchGetProducts,watchSetSelectedTier, watchCancelSubscription,watchResumeSubscription,watchRenewSubscription,watchUpdateSubscriptionStatus} from './subscription/saga'
 import {    watchGetOrders,
   watchCreateOrder} from './order/saga';
 import {watchCreateUserPurchase,watchGetUserPurchases} from './purchase/saga'
 import {watchGetTemplate} from'./tempConfig/saga';
+import { watchGetStorageLogs, watchLogStorageUsage, watchUpdateLogStorageUsage } from './storageLog/saga';
 export default function* allSagas() {
   yield all([
+    fork(watchPendingStoryActions),
+    fork(watchUpdateLogStorageUsage),
+    fork(watchGetStorageLogs),
+    fork(watchLogStorageUsage),
+    fork(watchDeleteUser),
     fork(watchStoryActions),
     fork(watchGetUserPurchases),
     fork(watchExtraContentSaga),
+    fork(watchUpdateSubscriptionStatus),
+    fork(watchRenewSubscription),
+    fork(watchResumeSubscription),
+    fork(watchCancelSubscription),
     fork(watchCreateUserPurchase),
     fork(watchGetProducts),
     fork(watchGetOrders),

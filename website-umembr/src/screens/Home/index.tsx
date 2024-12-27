@@ -2,23 +2,8 @@ import { palette } from '@/theme/constants';
 import { Box, CircularProgress, Fab, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
 
-import {
-  clearExtraContent,
-  clearTemplatesData,
-  getProfileStories,
-  logStorageUsage,
-  openModal,
-  setPendingStory,
-  showActualSection,
-} from '@/store/actions';
-import {
-  authSelector,
-  extrasSelector,
-  homeSelector,
-  intermitenceSelector,
-  pendingStorySelector,
-  storagelogSelector,
-} from '@/store/selectors';
+import { clearExtraContent, clearTemplatesData, getProfileStories, logStorageUsage, openModal, showActualSection } from '@/store/actions';
+import { authSelector, extrasSelector, homeSelector, intermitenceSelector, storagelogSelector } from '@/store/selectors';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
@@ -28,6 +13,7 @@ import { UseFirstRender, UseIntermitence, UseScrollMargin } from '@/hooks';
 
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+
 const StoryItem = dynamic(() => import('./elements/StoryItem'), {
   loading: () => <CircularProgress sx={{ color: palette.primary }} />,
   ssr: false,
@@ -43,8 +29,6 @@ export const Home = () => {
 
   const { separation } = useSelector(intermitenceSelector);
   const { criterias, stories, storiesResult, homeLoading } = useSelector(homeSelector);
-  const pendingStory = useSelector(pendingStorySelector);
-  const [PendingStory, SetPendingStory] = useState({});
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const containerRef1 = useRef(null);
@@ -57,7 +41,7 @@ export const Home = () => {
 
   const { user } = useSelector(authSelector);
 
-  const storageLog = useSelector((state: any) => state.storageLog.storageLog);
+  const storageLog= useSelector((state:any)=>state.storageLog.storageLog)
   const { status: privateStatus, switchStatus: switchPublication } = UseIntermitence();
   const router = useRouter();
   // UseFirstRender(() => {
@@ -76,41 +60,23 @@ export const Home = () => {
     if (user?.token) {
       dispatch(getProfileStories());
       dispatch(clearExtraContent());
-      let pendingStory = null;
-
-      if (typeof window !== 'undefined') {
-        const pstory = localStorage.getItem('pendingStory');
-        pendingStory = pstory ? JSON.parse(pstory) : null;
-      }
-
-      // Use `pendingStory` in your application logic.
-      console.log(pendingStory);
-      SetPendingStory(pendingStory);
     } else {
       router?.push('/app/login');
     }
   }, [user]);
 
-  useEffect(() => {
-    // alert('called>>>>>>>>>>>>>>>>>>>>>>>>>>>.');
-    dispatch(setPendingStory(PendingStory));
-  }, [pendingStory]);
-
-  console.log('i am the pending Story', pendingStory);
-
   const handleItemClick = (item: any) => {
-    console.log('i am the item', item);
-    if (!item.id) {
-      router.push(`/app/story/${item?.title}/update`);
-    } else if (item.resultContain && item.private) {
-      const validRoles = ['Story_Collaborator', 'Story_Viewer', 'Story_Owner'];
+  
 
+    if (item.resultContain && item.private) {
+      const validRoles = ['Story_Collaborator', 'Story_Viewer', 'Story_Owner'];
+      
       const hasRole = user?.roles?.find(
         (role: any) => role.story_id === item?.id && validRoles.includes(role.role.name),
       );
-
+  
       const userIsCreator = user?.id === item?.user_id;
-
+  
       if (hasRole || userIsCreator) {
         router.push(`/app/story/${item?.url}`);
       } else {
@@ -122,10 +88,10 @@ export const Home = () => {
       router.push(`/app/story/${item?.url}`);
     }
   };
-
-  useEffect(() => {
-    dispatch(clearTemplatesData());
-  }, []);
+  
+  useEffect(()=>{
+    dispatch(clearTemplatesData())
+  },[])
 
   const handlePublication = () => {
     switchPublication();
@@ -133,7 +99,7 @@ export const Home = () => {
 
   return (
     <>
-      {/* <EventBenefitsPopup open={isPopupOpen} onClose={handleClosePopup} confirmMethod={() => alert('Proceeding to payment...')} /> */}
+     {/* <EventBenefitsPopup open={isPopupOpen} onClose={handleClosePopup} confirmMethod={() => alert('Proceeding to payment...')} /> */}
       {homeLoading ? (
         <Box width={'100%'} height={'100vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
           <CircularProgress sx={{ color: palette.primary }} />
@@ -162,7 +128,6 @@ export const Home = () => {
               alignItems={'center'}>
               <Box width={'100%'} height={'36rem'} position={'relative'}>
                 <Image src={'/images/empty-stories.svg'} alt='Empty stories' fill priority sizes='100%' quality={80} />
-      
               </Box>
             </Box>
           ) : (
@@ -171,20 +136,7 @@ export const Home = () => {
               criterias?.prompts?.length == 0 &&
               criterias?.collaborators?.length == 0 ? (
                 <>
-                  {PendingStory && (
-                    <CategoriesContainer
-                      {...{
-                        title: 'Pending',
-                        data: PendingStory,
-                        t,
-                        isMobile,
-                        handleItemClick,
-                        scrollMargin: containerMargin2,
-                        containerRef: containerRef2,
-                      }}
-                    />
-                  )}
-                  {stories?.purchasedStories?.length > 0 && (
+                 {stories?.purchasedStories?.length > 0 && (
                     <CategoriesContainer
                       {...{
                         title: 'purchased',
@@ -258,6 +210,7 @@ export const Home = () => {
           alt={t('add')}
         />
       </Fab>
+     
     </>
   );
 };

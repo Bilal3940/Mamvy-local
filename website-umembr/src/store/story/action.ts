@@ -16,9 +16,6 @@ import {
   GET_STORY_STATUS,
   GET_STORY_STATUS_ASYNC,
   UPDATE_STORY_ASYNC,
-  SET_PENDING_STORY,
-  LOAD_PENDING_STORY,
-  CLEAR_PENDING_STORY,
 } from './action-types';
 
 import { actionObject, SagaCallback } from '@/utils';
@@ -55,7 +52,3 @@ export const setCode = (data: any) => actionObject(SET_CODE, data)
 export const getStoryStatus = (data: any) => actionObject(GET_STORY_STATUS, data);
 export const getStoryStatusAsync = (data: any, callback?: SagaCallback) => 
   actionObject(GET_STORY_STATUS_ASYNC, { data, callback });
-
-export const setPendingStory = (data: any) => actionObject(SET_PENDING_STORY, data);
-export const loadPendingStory = () => actionObject(LOAD_PENDING_STORY);
-export const clearPendingStory = () => actionObject(CLEAR_PENDING_STORY);

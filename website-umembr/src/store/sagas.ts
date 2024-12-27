@@ -32,7 +32,6 @@ import {
   watchDeleteStory,
   watchSetPublicationStory,
   watchSetCodeStory,
-  watchPendingStoryActions,
 } from './story/saga';
 import { watchGetSignedUrl, watchGetUploadSignedUrl } from './file/saga';
 import {watchExtraContentSaga} from  './extras/saga';
@@ -83,7 +82,6 @@ import {watchGetTemplate} from'./tempConfig/saga';
 import { watchGetStorageLogs, watchLogStorageUsage, watchUpdateLogStorageUsage } from './storageLog/saga';
 export default function* allSagas() {
   yield all([
-    fork(watchPendingStoryActions),
     fork(watchUpdateLogStorageUsage),
     fork(watchGetStorageLogs),
     fork(watchLogStorageUsage),

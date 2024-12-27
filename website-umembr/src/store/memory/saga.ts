@@ -14,7 +14,7 @@ import {
 } from '../actions';
 import { UPDATE_USER_DATA_ASYNC } from '../auth/action-types';
 import { SET_CRITERIAS_ASYNC } from '../home/action-types';
-import { authSelector, memorySelector, storagelogSelector, StoragePopupSelector } from '../selectors';
+import { authSelector, memorySelector, StoragePopupSelector } from '../selectors';
 import {
   APPROVE_MEMORY,
   APPROVE_MEMORY_ASYNC,
@@ -76,7 +76,7 @@ function* createMemory({ payload }: any): any {
     console.log("dev-test i am the boolean response", response?.result?.usedStoragePercentage, response?.result?.storagePopupTriggered, "storagePopup", storagePopup)
 
     if (response?.result?.usedStoragePercentage >= 80 && !storagePopup) {
-      yield put (openModal({ content: "You have reached 80% of the storage."}))
+      yield put (openModal({ content: "You have used 80% of available storage space."}))
       yield put (hidePopup())
     } else {
       if(response?.result?.usedStoragePercentage < 80 && storagePopup )
@@ -134,7 +134,7 @@ function* updateMemoryAsync({ payload }: any): any {
     console.log("dev-test  boolean response", response?.result?.updatedMemory?.usedStoragePercentage, response?.result?.updatedMemory?.storagePopupTriggered, "storagePopup", storagePopup)
 
     if (response?.result?.updatedMemory?.usedStoragePercentage >= 80 && !storagePopup) {
-      yield put (openModal({ content: "You have reached 80% of the storage."}))
+      yield put (openModal({ content: "You have used 80% of available storage space."}))
       yield put (hidePopup())
     } else {
       if(response?.result?.updatedMemory?.usedStoragePercentage < 80 && storagePopup )

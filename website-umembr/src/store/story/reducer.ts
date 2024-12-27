@@ -10,14 +10,6 @@ import {
   UPDATE_STORY_ASYNC,
   DELETE_STORY_ASYNC,
   GET_STORY_STATUS_ASYNC,
-  SET_PENDING_STORY,
-  LOAD_PENDING_STORY,
-  CLEAR_PENDING_STORY,
-  SET_PENDING_STORY_ASYNC,
-  LOAD_PENDING_STORY_ASYNC
-  // SET_PENDING_STORY,
-  // LOAD_PENDING_STORY,
-  // CLEAR_PENDING_STORY,
 } from './action-types';
 
 const initialState = {
@@ -28,8 +20,7 @@ const initialState = {
   prompts: {},
   storyStepName: '',
   story: {},
-  StoryStatus: {},
-  pendingStory: {},
+  StoryStatus: {}, // Added to store story status data
 };
 
 const stories = (state = initialState, { type, payload }: any) => {
@@ -41,7 +32,7 @@ const stories = (state = initialState, { type, payload }: any) => {
     case CREATE_STORIES_ASYNC:
       return { ...state, story: payload };
     case GET_STORY_STATUS_ASYNC:
-      return { ...state, StoryStatus: payload };
+      return { ...state, StoryStatus: payload }; // Update the `storyStatus` field
     case CREATE_PAYLOAD_TRIGGER:
       return { ...state, prev_stories: payload };
     case SET_PROMPTS_TRIGGER:
@@ -56,15 +47,6 @@ const stories = (state = initialState, { type, payload }: any) => {
       return { ...state, story: payload };
     case DELETE_STORY_ASYNC:
       return { ...state, story: {} };
-
-    // // Handle pending story actions
-    case SET_PENDING_STORY_ASYNC:
-      console.log("i am the payload of pending story", payload);
-      return { ...state, pendingStory: payload };
-    case LOAD_PENDING_STORY_ASYNC:
-        return { ...state };
-    case CLEAR_PENDING_STORY:
-      return { ...state, pendingStory: null };
     default:
       return state;
   }

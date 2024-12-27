@@ -1,10 +1,9 @@
 import { ArrayDynamicForm, DynamicForm, MuiButton, MuiStepper } from '@/components';
 import { UseFirstRender, UseIntermitence } from '@/hooks';
-import { actualStory, createStories, getUploadSignedUrl, loadPendingStory, setPendingStory, updateStory, updateStoryViewG } from '@/store/actions';
-import { authSelector, currentStorySelector, intermitenceSelector, pendingStorySelector, templatesSelector } from '@/store/selectors';
+import { actualStory, getUploadSignedUrl, updateStory, updateStoryViewG } from '@/store/actions';
+import { authSelector, currentStorySelector, intermitenceSelector, templatesSelector } from '@/store/selectors';
 import { palette } from '@/theme/constants';
 import {
-  calculateFileSize,
   cdn_url,
   ExtractCallbackType,
   FetchFileService,
@@ -38,42 +37,10 @@ export const EditStory: FC<any> = () => {
   const [actualRoute, setActualRoute] = useState<string>(story?.url);
   const [selectedForm, setSelectedForm] = useState<any>(null);
   const intermitenceData = useSelector(intermitenceSelector);
-  const pendingStory = useSelector(pendingStorySelector);
 
-  UseFirstRender(() => {
-    alert("i am called")
-    if (!story?.id) {
-      // dispatch(actualStory(router.query?.id as string));
-      // alert("i am callleeddd?>>>>>>>>>>>>>?????????????????........")
-      // dispatch(loadPendingStory())
-        let pendStory= null;
-        if (typeof window !== 'undefined') {
-          const pstory = localStorage.getItem('pendingStory');
-          pendStory = pstory ? JSON.parse(pstory) : null;
-        }
-        
-        // Use `pendingStory` in your application logic.
-        console.log(pendStory);
-        alert("called>>>>>>>>>>>>>>>>>>>>>>>>>>>.")
-        dispatch(setPendingStory(pendStory))
-
-      console.log("i am the router", router?.query?.id)
-
-    }
-  }, [router?.query?.id, story?.id]);
-
-console.log('i am the PENDING STORY', pendingStory)
   const currentFormConfig = useMemo(() => {
-    if(story){
-      console.log("hello i am the story")
-
-    return formsByCategory?.[pendingStory?.story_details?.type_of_story] ?? formCategories['life_story'];;
-  }
-  else{
-
-    return formsByCategory?.[pendingStory?.story_details?.type_of_story] ?? formCategories['life_story'];;
-  }
-  }, [pendingStory]);
+    return formsByCategory?.[story?.story_details?.type_of_story];
+  }, [story]);
   const [actualFormNumber, setActualFormNumber] = useState(0);
   const [values, setValues] = useState<any>({});
   const submit = useRef<any>(null);
@@ -84,424 +51,141 @@ console.log('i am the PENDING STORY', pendingStory)
     accentColor: '', // Default value
   });
 
-
-
-  // useEffect(()=>{
-  //   let pendingStory = null;
-
-  //   if (typeof window !== 'undefined') {
-  //     const pstory = localStorage.getItem('pendingStory');
-  //     pendingStory = pstory ? JSON.parse(pstory) : null;
-  //   }
-    
-  //   // Use `pendingStory` in your application logic.
-  //   console.log(pendingStory);
-  //   // setPendingStory(pendingStory)
-  // })
+  UseFirstRender(() => {
+    if (!story?.id) {
+      dispatch(actualStory(router.query?.id as string));
+    }
+  }, [router?.query?.id, story?.id]);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (user) {
-      // dispatch(updateStoryViewG(user.id));
-      // alert("i am callled?>>>>>>>>>>>>>>>>>>>>>>>>>>>.")
-      // dispatch(loadPendingStory())
+      dispatch(updateStoryViewG(user.id));
     }
   }, [user, dispatch]);
 
-
-
-  // const renderFormCategories = useCallback(() => {
-  //   const fieldsConfig = formCategories?.[pendingStory?.story_details?.type_of_story]  ?? formCategories['life_story'];
-
-  //   return fieldsConfig.map((field: any) => (
-  //     <Button
-  //       key={field.name}
-  //       sx={{ padding: 0, margin: 0, textAlign: 'left', width: '100%' }}
-  //       onClick={() => handleSelectForm(field.name)}>
-  //       <Box
-  //         width={'100%'}
-  //         display={'flex'}
-  //         justifyContent={'flex-start'}
-  //         alignItems={'center'}
-  //         height={'2.625rem'}
-  //         borderRight={selectedForm == field.name ? `0.25rem solid ${palette.primary}` : 'none'}>
-  //         <Typography
-  //           variant='subtitle2'
-  //           color={selectedForm == field.name ? accentColor : palette.codGray}
-  //           marginX={'1rem'}>
-  //           {t(field.label)}
-  //         </Typography>
-  //       </Box>
-  //     </Button>
-  //   ));
-  // }, [story, selectedForm, pendingStory]);
-
-  // const handleSelectForm = (formKey: string) => {
-  //   submitAction();
-  //   setSelectedForm(formKey);
-  //   let actual = 0;
-  //   for (let i = 0; i < Object.keys(currentFormConfig || {}).length; i++) {
-  //     if (formKey == Object.keys(currentFormConfig || {})[i]) {
-  //       actual = i;
-  //       break;
-  //     }
-  //   }
-  //   setActualFormNumber(actual);
-  // };
-
-  // const currentForm = useMemo(() => {
-  //   return currentFormConfig?.[selectedForm];
-  // }, [selectedForm, story?.id, currentFormConfig]);
-
-  // const handleSubmit = useCallback(
-  //   (values: any) => {
-  //     setValues((prev: any) => ({ ...prev, [selectedForm]: values }));
-  //     if (update) {
-  //       updateAction({ [selectedForm]: values });
-  //     }
-  //   },
-  //   [update, selectedForm],
-  // );
-
-  // const handleSubmitArray = useCallback(
-  //   (values: any, index: any) => {
-  //     setValues((prev: any) => {
-  //       const value = { ...(prev[selectedForm] || {}) };
-  //       value[index] = values;
-  //       const validate = currentForm?.reduce((acc: any, item: any) => {
-  //         return acc && !!value[item?.subtitle || item?.title];
-  //       }, true);
-  //       setArrayRun((prev: any) => {
-  //         if (validate && prev >= currentForm?.length - 1) {
-  //           if (update) {
-  //             updateAction({ ...prev, [selectedForm]: value });
-  //           }
-  //         }
-  //         return prev + 1;
-  //       });
-  //       return { ...prev, [selectedForm]: value };
-  //     });
-  //   },
-  //   [update, selectedForm],
-  // );
-
-  // const setSubmitArray = (index: any, handler: any) => {
-  //   if (!Array.isArray(submit.current) || submit?.current?.length > currentForm?.length) submit.current = [];
-  //   submit.current[index] = handler;
-  // };
-
-  // const nextForm = () => {
-  //   setSelectedForm(formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[actualFormNumber + 1]?.name);
-  //   setActualFormNumber(actualFormNumber + 1);
-  //   setArrayRun(0);
-  // };
-
-  // const backForm = () => {
-  //   setSelectedForm(formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name);
-  //   setActualFormNumber(actualFormNumber - 1);
-  //   setArrayRun(0);
-  // };
-
-  // const setDefault = async () => {
-  //   if(story?.id){
-
-    
-  //   const formValues = formCategories[story?.story_details?.type_of_story];
-  //   if (story?.cover_image) {
-  //     const imageFile = await FetchFileService(`${cdn_url}${story?.cover_image}`);
-  //     const fileBlob = await imageFile?.data?.blob();
-  //     const file = new File([fileBlob], story?.cover_image?.split('/').pop(), { type: fileBlob.type });
-  //     const defaultValues = {
-  //       [formValues[0].name]: {
-  //         title: story?.title,
-  //         description: story?.description,
-  //         cover_image: file,
-  //       },
-  //       ...story?.story_details?.general_info,
-  //     };
-  //     setValues(defaultValues);
-  //   }
-    
-  // }
-  // else if(!story?.id && pendingStory){
-  //   alert("setting up defaults")
-  //   const formValues = formCategories[pendingStory?.story_details?.type_of_story];
-  //   console.log("form values", formValues)
-  //   const imageFile = await FetchFileService(`${cdn_url}${pendingStory?.cover_image}`);
-  //   const fileBlob = await imageFile?.data?.blob();
-  //   const file = new File([fileBlob], pendingStory?.cover_image?.split('/').pop(), { type: fileBlob.type });
-  //   const defaultValues = {
-  //     [formValues[0].name]: {
-  //       title: pendingStory?.title,
-  //       description: pendingStory?.description,
-  //       cover_image: file,
-  //     },
-  //     ...pendingStory?.story_details?.general_info,
-  //   };
-  //   setValues(defaultValues);
-  // }
-  // }
-
-  // UseFirstRender(() => {
-  //   if (story?.id) 
-      
-  //     {
-        
-  //      alert("story id found")
-  //       setDefault();}
-
-  //   if(!story?.id && pendingStory){
-  //     alert("story id not found and the pending story found so setting defaults")
-  //     setDefault()
-  //   }
-    
-  //   if (!update && !actualRoute && story?.url) setActualRoute(story?.url);
-  //   if (!selectedForm && story?.id)
-  //     setSelectedForm(formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber]?.name);
-  // }, [story, pendingStory]);
-
-
   const renderFormCategories = useCallback(() => {
-    const fieldsConfig = story?.id
-    ? formCategories?.[story?.story_details?.type_of_story]
-    : pendingStory?.story_details
-    ? formCategories?.[pendingStory?.story_details?.type_of_story]
-    : formCategories['life_story'];
-  
+    const fieldsConfig = formCategories?.[story?.story_details?.type_of_story] ?? formCategories['life_story'];
+
     return fieldsConfig.map((field: any) => (
       <Button
         key={field.name}
         sx={{ padding: 0, margin: 0, textAlign: 'left', width: '100%' }}
-        onClick={() => handleSelectForm(field.name)}
-      >
+        onClick={() => handleSelectForm(field.name)}>
         <Box
           width={'100%'}
           display={'flex'}
           justifyContent={'flex-start'}
           alignItems={'center'}
           height={'2.625rem'}
-          borderRight={selectedForm === field.name ? `0.25rem solid ${palette.primary}` : 'none'}
-        >
+          borderRight={selectedForm == field.name ? `0.25rem solid ${palette.primary}` : 'none'}>
           <Typography
-            variant="subtitle2"
-            color={selectedForm === field.name ? palette.codGray : palette.codGray}
-            marginX={'1rem'}
-          >
+            variant='subtitle2'
+            color={selectedForm == field.name ? accentColor : palette.codGray}
+            marginX={'1rem'}>
             {t(field.label)}
           </Typography>
         </Box>
       </Button>
     ));
-  }, [formCategories, pendingStory, selectedForm]);
-  
-  const handleSelectForm = useCallback(
-    (formKey: string) => {
-      submitAction();
-      setSelectedForm(formKey);
-  
-      const actual = Object.keys(currentFormConfig || {}).findIndex(key => key === formKey);
-      setActualFormNumber(actual >= 0 ? actual : 0);
-    },
-    [ currentFormConfig]
-  );
-  
+  }, [story, selectedForm]);
+
+  const handleSelectForm = (formKey: string) => {
+    submitAction();
+    setSelectedForm(formKey);
+    let actual = 0;
+    for (let i = 0; i < Object.keys(currentFormConfig || {}).length; i++) {
+      if (formKey == Object.keys(currentFormConfig || {})[i]) {
+        actual = i;
+        break;
+      }
+    }
+    setActualFormNumber(actual);
+  };
+
   const currentForm = useMemo(() => {
     return currentFormConfig?.[selectedForm];
-  }, [currentFormConfig, selectedForm]);
-  
+  }, [selectedForm, story?.id, currentFormConfig]);
+
   const handleSubmit = useCallback(
     (values: any) => {
-      setValues((prev:any) => ({ ...prev, [selectedForm]: values }));
-  
+      setValues((prev: any) => ({ ...prev, [selectedForm]: values }));
       if (update) {
         updateAction({ [selectedForm]: values });
       }
     },
-    [selectedForm, update]
+    [update, selectedForm],
   );
-  
+
   const handleSubmitArray = useCallback(
-    (values: any, index: number) => {
-      setValues((prev:any) => {
-        const formValues = { ...(prev[selectedForm] || {}) };
-        formValues[index] = values;
-  
-        const validate = currentForm?.every((item:any) =>
-          formValues[item?.subtitle || item?.title]
-        );
-  
-        setArrayRun((prev:any) => {
-          if (validate && prev >= (currentForm?.length || 0) - 1) {
+    (values: any, index: any) => {
+      setValues((prev: any) => {
+        const value = { ...(prev[selectedForm] || {}) };
+        value[index] = values;
+        const validate = currentForm?.reduce((acc: any, item: any) => {
+          return acc && !!value[item?.subtitle || item?.title];
+        }, true);
+        setArrayRun((prev: any) => {
+          if (validate && prev >= currentForm?.length - 1) {
             if (update) {
-              updateAction({ ...prev, [selectedForm]: formValues });
+              updateAction({ ...prev, [selectedForm]: value });
             }
           }
           return prev + 1;
         });
-  
-        return { ...prev, [selectedForm]: formValues };
+        return { ...prev, [selectedForm]: value };
       });
     },
-    [currentForm, selectedForm, update]
+    [update, selectedForm],
   );
-  
-  const setSubmitArray = (index: number, handler: any) => {
-    if (!Array.isArray(submit.current) || submit.current.length > currentForm?.length) {
-      submit.current = [];
-    }
+
+  const setSubmitArray = (index: any, handler: any) => {
+    if (!Array.isArray(submit.current) || submit?.current?.length > currentForm?.length) submit.current = [];
     submit.current[index] = handler;
   };
-  
-  const nextForm = useCallback(() => {
-    const nextFormKey =
-      formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[
-        actualFormNumber + 1
-      ]?.name;
-  
-    setSelectedForm(nextFormKey);
+
+  const nextForm = () => {
+    setSelectedForm(formCategories[story?.story_details?.type_of_story]?.[actualFormNumber + 1]?.name);
     setActualFormNumber(actualFormNumber + 1);
     setArrayRun(0);
-  }, [actualFormNumber, formCategories, pendingStory, story]);
-  
-  const backForm = useCallback(() => {
-    const prevFormKey =
-      formCategories[pendingStory?.story_details?.type_of_story]?.[
-        actualFormNumber - 1
-      ]?.name;
-  
-    setSelectedForm(prevFormKey);
+  };
+
+  const backForm = () => {
+    setSelectedForm(formCategories[story?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name);
     setActualFormNumber(actualFormNumber - 1);
     setArrayRun(0);
-  }, [actualFormNumber, formCategories, pendingStory]);
-  
-
-
+  };
 
   const setDefault = async () => {
-    try {
-      const formValues = story?.id
-        ? formCategories[story?.story_details?.type_of_story]
-        : formCategories[pendingStory?.story_details?.type_of_story];
-  
-      const source = story?.id ? story : pendingStory;
-  
-      if (source?.cover_image) {
-        const imageFile = await FetchFileService(`${cdn_url}${source?.cover_image}`);
-        const fileBlob = await imageFile?.data?.blob();
-        const file = new File([fileBlob], source?.cover_image?.split('/').pop(), { type: fileBlob.type });
-  
-        const defaultValues = {
-          [formValues[0].name]: {
-            title: source?.title,
-            description: source?.description,
-            cover_image: file,
-          },
-          ...source?.story_details?.general_info,
-        };
-        setValues(defaultValues);
-      }
-    } catch (error) {
-      console.error("Error setting default values:", error);
+    const formValues = formCategories[story?.story_details?.type_of_story];
+    if (story?.cover_image) {
+      const imageFile = await FetchFileService(`${cdn_url}${story?.cover_image}`);
+      const fileBlob = await imageFile?.data?.blob();
+      const file = new File([fileBlob], story?.cover_image?.split('/').pop(), { type: fileBlob.type });
+      const defaultValues = {
+        [formValues[0].name]: {
+          title: story?.title,
+          description: story?.description,
+          cover_image: file,
+        },
+        ...story?.story_details?.general_info,
+      };
+      setValues(defaultValues);
     }
   };
-  
+
   UseFirstRender(() => {
-    // Case 1: If story exists, load its details
-    if (story?.id) {
-      console.log("Story ID found. Loading story details...");
-      setDefault();
+    if (story?.id) setDefault();
+    if (!update && !actualRoute && story?.url) setActualRoute(story?.url);
+    if (!selectedForm && story?.id)
       setSelectedForm(formCategories[story?.story_details?.type_of_story]?.[actualFormNumber]?.name);
-      return;
-    }
-  
-    // Case 2: If no story but pendingStory exists, load pendingStory details
-    if (!story?.id && pendingStory) {
-      console.log("No Story ID, but pendingStory found. Loading pendingStory details...");
-      setDefault();
-      setSelectedForm(formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber]?.name);
-      return;
-    }
-  
-    // Case 3: If neither exists, render the default form
-    console.log("No Story ID and no pendingStory. Rendering default form...");
-    setValues({});
-    setSelectedForm(formCategories['life_story']?.[0]?.name); // Default to 'life_story'
-  }, [story, pendingStory]);
-  
-  
-  
-  // const processFile = (prev_stories: any, prompts: {}, updatedValues: any) => {
-  //   dispatch(
-  //     getUploadSignedUrl(
-  //       { file: `stories/${prev_stories?.title}/${prev_stories?.name_image}`, type: prev_stories?.type_image },
-  //       async (res: any) => {
-  //         try {
-  //           const response = await FetchFileService(
-  //             res?.value?.url?.uploadUrl,
-  //             'PUT',
-  //             updatedValues.story_title_image?.cover_image,
-  //             prev_stories?.type_image,
-  //           );
+  }, [story]);
 
-  //           if (response?.ok) {
-  //             const valuesFinal: any = finalPayload(prev_stories, prompts, story?.story_details?.type_of_story);
-  //             // valuesFinal.id = story?.id;
-  //             dispatch(updateStory({valuesFinal, router}));
-  //           }
-  //         } catch (error) {
-  //         }
-  //       },
-  //     ),
-  //   );
-  // };
-
-  // const submitAction = () => {
-  //   if (Array.isArray(submit.current)) {
-  //     submit.current.forEach((item: any) => {
-  //       if (Array.isArray(item)) {
-  //         item.forEach((item: any) => {
-  //           item?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-  //         });
-  //       } else {
-  //         item?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-  //       }
-  //     });
-  //     return;
-  //   }
-  //   if (submit?.current) {
-  //     submit?.current?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-  //   }
-  // };
-
-  // const updateAction = useCallback(
-  //   (newValues: any) => {
-  //     const updatedValues = { ...values, ...newValues };
-  //     const imageFile = updatedValues?.story_title_image
-  //       ? updatedValues?.story_title_image?.cover_image
-  //       : updatedValues?.story_title?.cover_image;
-
-  //     const valuesCopy = transformPayload(
-  //       updatedValues,
-  //       story?.story_details?.type_of_story,
-  //       user?.id,
-  //       user?.email,
-  //       imageFile?.name,
-  //       imageFile?.type,
-  //       story?.status,
-  //     );
-  //     processFile(valuesCopy, story?.story_details?.prompts, updatedValues);
-  //   },
-  //   [values, story],
-  // );
   const processFile = (prev_stories: any, prompts: {}, updatedValues: any) => {
-    const idSource = story?.id ? story : pendingStory;
     dispatch(
       getUploadSignedUrl(
-        {
-          file: `stories/${prev_stories?.title}/${prev_stories?.name_image}`,
-          type: prev_stories?.type_image,
-        },
+        { file: `stories/${prev_stories?.title}/${prev_stories?.name_image}`, type: prev_stories?.type_image },
         async (res: any) => {
           try {
             const response = await FetchFileService(
@@ -510,43 +194,25 @@ console.log('i am the PENDING STORY', pendingStory)
               updatedValues.story_title_image?.cover_image,
               prev_stories?.type_image,
             );
-  
+
             if (response?.ok) {
-              const valuesFinal: any = finalPayload(
-                prev_stories,
-                prompts,
-                idSource?.story_details?.type_of_story,
-              );
-              valuesFinal.id = idSource?.id; // Take the ID from `story` or `pendingStory`
-              if(story?.id){
-              dispatch(updateStory({ valuesFinal, router }));
-            }
-            else{
-            const file = values.story_title_image?.cover_image;
-            const fileSizeBytes = calculateFileSize(file);
-            const valuesFinal: any = finalPayload(
-              {...prev_stories,fileSize: fileSizeBytes},
-              prompts,
-              idSource?.story_details?.type_of_story,
-            );
-            const result = dispatch(createStories(valuesFinal));
- 
-            }
+              const valuesFinal: any = finalPayload(prev_stories, prompts, story?.story_details?.type_of_story);
+              valuesFinal.id = story?.id;
+              dispatch(updateStory({valuesFinal, router}));
             }
           } catch (error) {
-            console.error('File processing failed:', error);
           }
         },
       ),
     );
   };
-  
+
   const submitAction = () => {
     if (Array.isArray(submit.current)) {
       submit.current.forEach((item: any) => {
         if (Array.isArray(item)) {
-          item.forEach((subItem: any) => {
-            subItem?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+          item.forEach((item: any) => {
+            item?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
           });
         } else {
           item?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -558,33 +224,27 @@ console.log('i am the PENDING STORY', pendingStory)
       submit?.current?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     }
   };
-  
+
   const updateAction = useCallback(
     (newValues: any) => {
-      const idSource = story?.id ? story : pendingStory;
       const updatedValues = { ...values, ...newValues };
-  
       const imageFile = updatedValues?.story_title_image
         ? updatedValues?.story_title_image?.cover_image
         : updatedValues?.story_title?.cover_image;
-  
+
       const valuesCopy = transformPayload(
         updatedValues,
-        idSource?.story_details?.type_of_story,
+        story?.story_details?.type_of_story,
         user?.id,
         user?.email,
         imageFile?.name,
         imageFile?.type,
-        idSource?.status, // Take status from the relevant source
+        story?.status,
       );
-  
-      processFile(valuesCopy, idSource?.story_details?.prompts, updatedValues);
+      processFile(valuesCopy, story?.story_details?.prompts, updatedValues);
     },
-    [values, story, pendingStory], // Added `pendingStory` to dependencies
+    [values, story],
   );
-  
-  
-  
   const { template } = useSelector(templatesSelector);
   useEffect(() => {
     if (template?.template?.colors) {
@@ -609,7 +269,7 @@ console.log('i am the PENDING STORY', pendingStory)
       // Set the colors to the adminPalette state
       setAdminPalette({
         storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
-        textColor: colors.textColor || '#ccc', // Fallback
+        textColor: colors.textColor || '#fff', // Fallback
         accentColor: colors.accentColor || '#BF5700', // Fallback
       });
     }
@@ -823,7 +483,7 @@ console.log('i am the PENDING STORY', pendingStory)
                       isEdit
                       defaultValues={values[selectedForm] ? values[selectedForm] : null}
                       title={
-                        formCategories[story?.id ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story ]?.[actualFormNumber - 1]?.name
+                        formCategories[story?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name
                       }></ArrayDynamicForm>
                   )
                 : !!currentForm && (

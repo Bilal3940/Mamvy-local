@@ -1,4 +1,3 @@
-import { PositionedItem } from '@/utils/bubblePositioning/interfaces';
 import type { MemoryActionTypes } from './action';
 import {
   APPROVE_MEMORY_ASYNC,

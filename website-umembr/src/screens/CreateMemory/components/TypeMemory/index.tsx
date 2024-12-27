@@ -10,7 +10,7 @@ import { collaboratorSelector, memorySelector } from '@/store/selectors';
 import { styles } from './styles';
 
 const memoryTypes = [
-  { text: 'Add a text memory', value: 0, url: 'hyper-text',urlBlue: 'hyper-text-blue', extraText: 'add_text' , label:'text', mediaSlct:'text'},
+  { text: 'Add a text memory', value: 0, url: 'text',urlBlue: 'text-blue', extraText: 'add_text' , label:'text', mediaSlct:'text'},
   { text: 'Add a video memory', value: 1, url: 'video', urlBlue: 'media-blue', extraText: 'add_video' , label:'video',mediaSlct:'video'},
   { text: 'Add an image memory', value: 2, url: 'image', urlBlue: 'image-blue', extraText: 'add_image' ,  label:'image',mediaSlct:'image'},
   { text: 'Add an audio memory', value: 3, url: 'audio', urlBlue: 'audio-blue', extraText: 'add_audio', label:'audio' ,mediaSlct:'audio'},

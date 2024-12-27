@@ -287,7 +287,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            padding: '24px',
+            padding: { xs: '12px', sm: '12px',md:'24px' },
           }}>
           <AvatarGroup max={6}>
             {images.map((collab, index) => (
@@ -304,7 +304,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
             justifyContent: 'center',
             alignItems: 'center',
             textAlign: 'center',
-            margin: '10px 20px',
+            margin: '0 20px',
             marginBottom: '30px',
           }}>
           <Typography variant='body1' fontFamily={'DM Sans'} style={{ ...extendedPalette.description }}>

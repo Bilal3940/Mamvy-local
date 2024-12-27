@@ -28,7 +28,7 @@ const { open } = useSelector((state: any) => state.intermitence.subscriptionPopu
   }
 
   return (
-    <Modal open={false} onClose={handleClosePopup}>
+    <Modal open={open} onClose={handleClosePopup}>
       <Container
         sx={{
           display: 'flex',

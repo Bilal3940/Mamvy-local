@@ -30,6 +30,13 @@ export const MuiStepper: FC<ITabsProps> = ({ buttonBackground,steps, actualStep 
             return (
               <Step key={item?.label} sx={styles.stepper} completed={actualStep > item?.value}>
                 <StepLabel
+               sx={{
+      color: actualStep === item?.value ? palette?.white : palette?.white, // Apply red color to active step label
+      "& .MuiStepLabel-label": {
+        color: actualStep === item?.value ? palette?.white : palette?.white,
+         // Targeting the label inside StepLabel
+      },
+    }}
                   StepIconComponent={() =>
                     actualStep > item?.value ? (
                       <Image src={'/icons/completed-step.svg'} alt={'icon'} width={18} height={18} />

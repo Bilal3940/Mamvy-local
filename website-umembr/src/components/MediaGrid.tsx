@@ -447,20 +447,23 @@ console.log("i am the updated state of popup- dev test", storagePopup)
             />
             <MuiIconButton
               icon='/icons/filter'
+              label='Filter'
               altIcon='filter'
               background={
                 isFilterActive ? `${extendedPalette.buttonbackgroundIcon} !important` : ` ${palette.black}  !important`
               }
               borderColor={palette.black}
-              width={40}
+              width={80}
+              isRounded={false}
               height={40}
               iconHeight={12}
               iconWidth={20}
               sx={{
-                transform: openFilters ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.3s ease',
+                // transform: openFilters ? 'rotate(180deg)' : 'rotate(0deg)',
+                // transition: 'transform 0.3s ease',
+                borderRadius:'24px',
                 '&:hover': {
-                  backgroundColor: extendedPalette.buttonbackgroundIcon,
+                  backgroundColor: `${extendedPalette.buttonbackgroundIcon} !important`,
                 },
               }}
               method={(event: any) => setShowFilters(event)}

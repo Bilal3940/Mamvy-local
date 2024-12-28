@@ -125,7 +125,7 @@ const noneCategories = [
   },
 ];
 
-const ugaCategories = [
+const customEvent = [
   {
     name: 'story_title_image',
     label: 'story_title_image',
@@ -153,7 +153,7 @@ const formCategories: any = {
   classmates_story: classmatesCategories,
   teammates_story: teammatesCategories,
   none_of_this_story: noneCategories,
-  uga_story: ugaCategories,
+  custom_event: customEvent,
 };
 
 export { formCategories };

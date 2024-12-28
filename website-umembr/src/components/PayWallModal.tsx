@@ -119,17 +119,17 @@ const PopupModal: React.FC<PopupModalProps> = ({ open, onClose }) => {
                       </Typography>
                       <Typography marginTop={'10px'}>
                         <Typography variant='body2' fontSize={'0.95rem'} display={'flex'} alignItems={'flex-start'}>
-                          <img src='/icons/RedTick.svg' style={{ marginRight: '8px' }} />
+                          <img src='/icons/RedTick.svg' alt='icon' style={{ marginRight: '8px' }} />
                           {extraContent.teaserContent[3]}
                         </Typography>
 
                         <Typography variant='body2' fontSize={'0.95rem'} display={'flex'} alignItems={'flex-start'}>
-                          <img src='/icons/RedTick.svg' style={{ marginRight: '8px' }} />
+                          <img src='/icons/RedTick.svg'  alt='icon' style={{ marginRight: '8px' }} />
                           {extraContent.teaserContent[4]}
                         </Typography>
 
                         <Typography variant='body2' fontSize={'0.95rem'} display={'flex'} alignItems={'flex-start'}>
-                          <img src='/icons/RedTick.svg' style={{ marginRight: '8px' }} />
+                          <img src='/icons/RedTick.svg' alt='icon' style={{ marginRight: '8px' }} />
                           {extraContent.teaserContent[5]}
                         </Typography>
                       </Typography>

@@ -5,27 +5,23 @@ import SubscriptionContainer from '../Subscription';
 import { MuiIconButton } from '@/components';
 import { palette } from '@/theme/constants';
 import { useDispatch, useSelector } from 'react-redux';
-import { closeSubscriptionModal, closeSubscriptionPopup } from '@/store/actions';
+import { closeSubscriptionPopup } from '@/store/actions';
 
-export const SubscriptionPopup: React.FC= () => {
-  const dispatch = useDispatch()
-  // const router = useRouter()
-const { open } = useSelector((state: any) => state.intermitence.subscriptionPopup);
+export const SubscriptionPopup: React.FC = () => {
+  const dispatch = useDispatch();
+
+  const { open } = useSelector((state: any) => state.intermitence.subscriptionPopup);
 
   const [step, setStep] = useState(1);
-
 
   const goToNextStep = () => setStep(2);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const handleClose = () => {
     setStep(1);
-    // dispatch(closeSubscriptionPopup())
-    // dispatch(refreshUserData())
-    
   };
-  const handleClosePopup =()=>{
-    dispatch(closeSubscriptionPopup())
-  }
+  const handleClosePopup = () => {
+    dispatch(closeSubscriptionPopup());
+  };
 
   return (
     <Modal open={open} onClose={handleClosePopup}>
@@ -34,30 +30,46 @@ const { open } = useSelector((state: any) => state.intermitence.subscriptionPopu
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          border:'none',
+          border: 'none',
           height: '100%',
-          width:'995px',
+          width: '100%',
           overflow: 'hidden',
         }}>
         <Box
-                padding={isMobile ? '1rem' : '1.5rem'}
-                borderRadius={'1.25rem'}
-                    // bgcolor={}
-                    border={`0.063rem solid ${palette.cardBorder}`}
+          padding={isMobile ? '1rem' : '1.5rem'}
+          borderRadius={'1.25rem'}
+          border={`0.063rem solid ${palette.cardBorder}`}
           sx={{
-            backgroundColor:'rgba(34, 42, 103, 0.5)',
+            backgroundColor: 'rgba(34, 42, 103, 0.5)',
             backdropFilter: 'blur(1.5625rem)',
-            width: '100%',
-            padding:'20px',
-            overflow: 'hidden',
+            width: isMobile ? '100%' : '82%',
+            minWidth: '60%',
+            height: isMobile ? '100%' : 'auto',
+            overflow: 'auto',
+            position: 'relative',
           }}>
+          {/* Close Button */}
+          <Button
+            onClick={handleClosePopup}
+            sx={{
+              position: 'absolute',
+              top: '1rem',
+              right: '1rem',
+              zIndex: 10,
+              backgroundColor: palette?.cardBackground,
+              border: `0.063rem solid ${palette?.cardBorder}`,
+              color: palette?.dirtyWhite,
+            }}>
+            ✕
+          </Button>
+
+          {/* Modal Content */}
           {step === 1 && (
             <>
-              <Typography variant='h6' fontSize={'1rem'} align='center'  mt={4} component='h2' gutterBottom>
+              <Typography variant='h6' fontSize={'1rem'} align='center' mt={4} component='h2' gutterBottom>
                 Welcome to Memvy!
               </Typography>
               <SubscriptionContainer handleNext={goToNextStep} />
-
             </>
           )}
           {step === 2 && (

@@ -1,5 +1,4 @@
-import { closeModal, openModal } from '@/store/actions';
-import { formControlClasses } from '@mui/material';
+import { openModal } from '@/store/actions';
 import { END } from 'redux-saga';
 import { delay, put, select } from 'redux-saga/effects';
 
@@ -406,6 +405,11 @@ const worldcountries = [
   { name: 'Zimbabwe', id: 'Zimbabwe' },
 ];
 
+const popularDomains = [
+  'gmail.com', 'yahoo.com', 'hotmail.com', 'aol.com', 'outlook.com',
+  'live.com', 'icloud.com', 'yandex.ru', 'mail.ru', 'gmx.de',
+];
+
 const translate = (key: any, value: any) => {
   if (!key) return;
   if (value === 'only_letters') return 'This field must only contain letters';
@@ -479,7 +483,6 @@ export function areUrlsEqual(arr1: File[], arr2: File[]): boolean {
 export const calculateFileSize = (file: any) => {
   if (!file) return 0;
   const fileSizeBytes = file.size;
-  const fileSizeMB = fileSizeBytes / (1024 * 1024); // Convert to MB
   return fileSizeBytes;
 };
 
@@ -500,4 +503,4 @@ export const faqs = [
 ];
 
 
-export { convertToTitleCase, statusManagement, translate, worldcountries };
+export { convertToTitleCase, statusManagement, translate, worldcountries ,popularDomains};

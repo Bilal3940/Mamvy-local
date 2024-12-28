@@ -1,6 +1,6 @@
 // components/SubscriptionContainer.tsx
 import React, { useEffect, useState } from 'react';
-import { Container, Box } from '@mui/material';
+import { Container, Box, Grid, useMediaQuery, Theme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { subscriptionSelector } from '@/store/selectors';
 import { getProducts, setSelectedTier } from '@/store/actions';
@@ -16,6 +16,7 @@ const SubscriptionContainer: React.FC<SubscriptionContainerProps> = ({ handleNex
   const dispatch = useDispatch();
   const { products, actionSuccess, selectedTier } = useSelector(subscriptionSelector); // selectedTier from Redux
   const [selectedPlan, setSelectedPlan] = useState<string | null>(selectedTier?.priceId || null); // Initial value from Redux
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   useEffect(() => {
     dispatch(getProducts({}));
   }, [dispatch, actionSuccess]);
@@ -29,26 +30,27 @@ const SubscriptionContainer: React.FC<SubscriptionContainerProps> = ({ handleNex
   const handlePlanSelect = (priceId: string, price: any, productId: string) => {
     setSelectedPlan(priceId);
     dispatch(setSelectedTier({ productId, priceId, Tier: price })); // Store in Redux
-    handleNext()
+    setTimeout(()=>{},2000)
+    handleNext();
   };
 
 
 
   return (
-    <Container maxWidth="xl" sx={{ padding: '1rem 0' }}>
+    <Container  sx={{ padding: '1rem 0', overflow:'auto' }}>
       {products &&
         products.map((product: any) => (
           <Box key={product.productId}>
-            <Box >
-              <SubscriptionInfo title={product?.name} description={product?.description} />
+            <Box width={isMobile? '100%': '80%'} margin={'0 auto'} >
+              <SubscriptionInfo  />
             </Box>
             <Box
               justifyContent={'center'}
+              display={ isMobile ? 'grid' : 'flex'}
               sx={{
-                display:'flex',
+                
                 flex:'1',
-                height:'20.063rem',
-                maxHeight: '800px',
+                height:'100%',
                 overflow: 'auto',
                 gap:'1rem',
                 
@@ -64,7 +66,7 @@ const SubscriptionContainer: React.FC<SubscriptionContainerProps> = ({ handleNex
                 />
               ))}
             </Box>
-            <Box>
+            <Box width={isMobile? '100%': '90%'} margin={'0 auto'}>
 
                 <FAQ/>
 

@@ -11,7 +11,7 @@ interface ModalDetailProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  confirmationText: string; 
+  confirmationText: string;
 }
 
 export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDetailProps) => {
@@ -27,23 +27,23 @@ export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDe
       setLoading(true);
       setUserInput('');
       try {
-        onConfirm(); 
-        dispatch(closeSubscriptionModal())
-        dispatch(refreshUserData())
+        onConfirm();
+        dispatch(closeSubscriptionModal());
+        dispatch(refreshUserData());
       } catch (error) {
         console.error('Error:', error);
       } finally {
         setLoading(false);
       }
     } else {
-      dispatch(openModal({content:'text_not_match'}))
+      dispatch(openModal({ content: 'text_not_match' }));
     }
   };
 
-        const handleClose = () => {
-        setUserInput('');
-        dispatch(closeSubscriptionModal());
-        };
+  const handleClose = () => {
+    setUserInput('');
+    dispatch(closeSubscriptionModal());
+  };
 
   return (
     <Modal open={open} onClose={handleClose} sx={styles.modal}>
@@ -95,8 +95,7 @@ export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDe
               method={handleClose}
               sx={{
                 '&:hover': {
-                  borderColor: palette?.primary, 
-                  
+                  borderColor: palette?.primary,
                 },
               }}>
               <Typography variant='button' color={palette.white}>
@@ -120,4 +119,4 @@ export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDe
       </Box>
     </Modal>
   );
-}
+};

@@ -11,6 +11,8 @@ import Image from 'next/image';
 import { RemoveCollaborator } from '../RemoveCollaborator';
 import { UseFirstRender } from '@/hooks';
 import { styles } from '../styles';
+import stringSimilarity from 'string-similarity';
+import { emailRegex, popularDomains } from '@/utils';
 
 export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   const { t } = useTranslation();
@@ -50,35 +52,61 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
     return 'inherit';
   };
 
-  const isEmailValid = (email: any) => {
+  const isEmailValid = (email: string): boolean => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
-
+  
+  const isDomainValid = (email: string): boolean => {
+    const domain = email.split('@')[1];
+    if (domain) {
+      const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
+      if (bestMatch.bestMatch.rating > 0.5 && bestMatch.bestMatch.target !== domain) {
+        setErrors({
+          email: t('did_you_mean', {
+            suggestion: `${email.split('@')[0]}@${bestMatch.bestMatch.target}`,
+          }),
+        });
+        return false;
+      }
+    }
+    return true;
+  };
+  
   const addCollaborators = () => {
-    const emails = values.email.split(',').map((email: any) => email.trim());
-    const validEmails = emails.filter(isEmailValid);
+    const emails = values.email.split(',').map((email: string) => email.trim());
+  
+    // Validate email formats
+    const validEmails = emails.filter((email: string) => isEmailValid(email));
     if (validEmails.length !== emails.length) {
       setErrors({ email: t('please_enter_valid') });
       return;
     }
-    if (values.collaborators.filter((c: any) => emails.includes(c.email)).length > 0) {
-      setErrors({ email: t('collaborator_already_added') });
-      return;
+  
+    // Validate email domains
+    const validDomains = validEmails.filter((email: string) => isDomainValid(email));
+    if (validDomains.length !== validEmails.length) {
+      return; // Error already set in isDomainValid
     }
-
-    if (collaborators?.collaborators?.filter((c: any) => emails.includes(c.email)).length > 0) {
-      setErrors({ email: t('collaborator_already_added') });
-      return;
-    }
-
+  
+    // Check for duplicates in the entered emails
     const duplicates = new Set(emails).size !== emails.length;
-
     if (duplicates) {
       setErrors({ email: t('duplicates_collaborators') });
       return;
     }
-    const newCollaborators = emails.map((email: string) => ({
+  
+    // Check for existing collaborators
+    if (
+      values.collaborators.some((collaborator: any) => emails.includes(collaborator.email)) ||
+      collaborators?.collaborators?.some((collaborator: any) => emails.includes(collaborator.email))
+    ) {
+      setErrors({ email: t('collaborator_already_added') });
+      return;
+    }
+  
+    // Add new collaborators
+    const newCollaborators = validDomains.map((email: string) => ({
       email: email.toLowerCase(),
       type: 'other',
       role: 'collaborator',
@@ -87,6 +115,65 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
     setFieldValue('email', '');
     setErrors({ email: '' });
   };
+  
+
+
+  // const isEmailValid = (email: any) => {
+  //   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return regex.test(email);
+  // };
+
+  // const isDomainValid = (email:any)=>{
+  
+  //               const domain = email.split('@')[1];
+  //               if (domain) {
+  //                 const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
+  //                 if (bestMatch.bestMatch.rating > 0.5 && bestMatch.bestMatch.target !== domain) {
+  //                   setErrors({ email:t('did_you_mean', {
+  //                     suggestion: `${email.split('@')[0]}@${bestMatch.bestMatch.target}`,
+  //                   }),});
+  //                   return
+  //                 }
+  //               }
+  // }
+
+          
+
+  
+
+  // const addCollaborators = () => {
+  //   const emails = values.email.split(',').map((email: any) => email.trim());
+  //   const validEmails = emails.filter(isEmailValid);
+  //   const correctDomains = emails.filter(isDomainValid)
+  //   if (correctDomains !==emails.length  && validEmails.length !== emails.length) {
+  //     setErrors({ email: t('please_enter_valid') });
+  //     return;
+  //   }
+  //   if (values.collaborators.filter((c: any) => emails.includes(c.email)).length > 0) {
+  //     setErrors({ email: t('collaborator_already_added') });
+  //     return;
+  //   }
+
+  //   if (collaborators?.collaborators?.filter((c: any) => emails.includes(c.email)).length > 0) {
+  //     setErrors({ email: t('collaborator_already_added') });
+  //     return;
+  //   }
+
+  //   const duplicates = new Set(emails).size !== emails.length;
+
+  //   if (duplicates) {
+  //     setErrors({ email: t('duplicates_collaborators') });
+  //     return;
+  //   }
+  //   const newCollaborators = emails.map((email: string) => ({
+  //     email: email.toLowerCase(),
+  //     type: 'other',
+  //     role: 'collaborator',
+  //   }));
+  //   setFieldValue('collaborators', [...values.collaborators, ...newCollaborators]);
+  //   setFieldValue('email', '');
+  //   setErrors({ email: '' });
+  // };
 
   const getEmailInitial = (email: string) => email.charAt(0).toUpperCase();
 

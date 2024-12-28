@@ -10,6 +10,8 @@ import { MuiIconButton } from '../IconButton';
 import { styles } from './styles';
 import { cdn_url, checkRoleAndPermission } from '@/utils';
 import StorageProgressBar from '../ProgressBar';
+import { MuiButton } from '../Button';
+import { useRouter } from 'next/router';
 
 export const Drawer = ({ setOpenModal, setOpenSubscriptionModal }: any) => {
   const intermitenceData = useSelector(intermitenceSelector);
@@ -20,6 +22,7 @@ export const Drawer = ({ setOpenModal, setOpenSubscriptionModal }: any) => {
   const { user } = useSelector(authSelector);
   const [showImage, setShowImage] = useState(true);
   const [muiDrawerOpen, setMuiDrawerOpen] = useState(drawerOpen);
+  const router = useRouter()
 
   const handleDrawerChange = (event: any) => {
     if (event?.target?.id === 'drawer' || event?.target?.alt === 'close') return dispatch(collapseDrawer());
@@ -131,6 +134,12 @@ export const Drawer = ({ setOpenModal, setOpenSubscriptionModal }: any) => {
                 <Typography variant={isMobile ? 'body1' : 'h4'} margin={'1rem 0 0.25rem 0'}>
                   {(user?.name || '') + ' ' + (user?.lastname || '')}
                 </Typography>
+
+                <MuiButton variant='text' method={()=>{router.push('/app/profile');dispatch(collapseDrawer())}}  >
+                  <Typography variant='body1' >
+                  View My Full Profile
+                  </Typography>
+                </MuiButton>
 
                 <Typography variant='subtitle2'>
                   {user?.address_city ? `${user?.address_city}, ${user?.address_state}` : ''}

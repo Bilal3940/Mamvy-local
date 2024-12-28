@@ -2,7 +2,7 @@ import { palette } from '@/theme/constants';
 import { Box, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { authSelector, memorySelector, storagelogSelector, StoragePopupSelector, storySelector } from '@/store/selectors';
+import { authSelector, memorySelector, storySelector } from '@/store/selectors';
 import Image from 'next/image';
 import { FC, useEffect, useRef, useState } from 'react';
 import { FileUpload, MuiTextField, RichText } from '@/components';
@@ -14,15 +14,10 @@ import {
   setMediaType,
   getUploadSignedUrl,
   updateMemory,
-  getSignedUrl,
   openModal,
   openSubscriptionPopup,
   updateSubscriptionStatus,
   refreshUserData,
-  UpdatelogStorageUsage,
-  getStorageLogs,
-  hidePopup,
-  showPopup,
 } from '@/store/actions';
 import {
   FetchFileService,
@@ -31,8 +26,6 @@ import {
   complementaryDownload,
   complementaryUpload,
   fileConverter,
-  showDialog,
-  showModal,
 } from '@/utils';
 import { UseFirstRender } from '@/hooks';
 import { LoadingModal } from '../loadingModal';
@@ -57,7 +50,6 @@ export const Form: FC<any> = ({
   setExistData,
 }) => {
   const { t } = useTranslation();
-  const [mediaSelect, setMediaSelect] = useState(localStorage.getItem('selectMedia'));
   const memoryData = useSelector(memorySelector);
 
   const [fileName, setFileName] = useState<any>('');
@@ -65,8 +57,8 @@ export const Form: FC<any> = ({
   const [openModalLoading, setOpenModalLoading] = useState(false);
   const { story } = useSelector(storySelector);
   const {user} = useSelector(authSelector);
-  const storageLog= useSelector((state:any)=>state.storageLog.storageLog)
   const storagePopup = useSelector((state:any) => state.storageLog.storagePopup);
+  const [ isEditing, SetisEditing] = useState(false)
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const saveComplementarys = async (complements: any) => {
@@ -207,7 +199,7 @@ export const Form: FC<any> = ({
     const isOwner = story.user_id === user?.id;
     
     if (!checkRoleAndPermission(story?.user?.roles, 'Subscriber_Individual', 'CLIENT_MEMORY_CREATE', story?.user_id)) {
-      alert("inside means not subscriber")
+      // alert("inside means not subscriber")
       const message = isOwner
       ? "You are not a subscriber."
       : "The creator is not a subscriber."
@@ -303,14 +295,7 @@ export const Form: FC<any> = ({
     );
   };
 
-  // useEffect(() => {
-  //   console.log("i am the storage log", storageLog)
-  //   if (storageLog?.log.toasr_80 && !storagePopup) {
-  //     dispatch(openModal({ content: "80% reached" }));
-  //     dispatch(hidePopup());
-  //   }
-  //   dispatch(showPopup())
-  // }, [storageLog, storagePopup]);
+
 
 
   const handleOnTouched = (key: string) => setTouched({ ...touched, [key]: true });
@@ -362,6 +347,7 @@ export const Form: FC<any> = ({
             if (valuesKeys.includes(detailKey)) setFieldValue(detailKey, value);
           });
           await Promise.all(mapping);
+          SetisEditing(Boolean(defaultItem?.id));
           setFieldValue('complementaryMedia', complementaryMedia);
         }
         if (key == 'asset' && memoryData?.mediaType !== 'text') {
@@ -495,7 +481,6 @@ export const Form: FC<any> = ({
   const setMainAcceptableMedia = (type: string) => {
     return 'image/*,audio/*,video/mp4,audio/mpeg,audio/x-m4a,audio/mp4,audio/wav';
   };
-
   useEffect(() => {
     if (values?.richText?.length) dispatch(setShowMediaButton());
   }, [values?.richText]);
@@ -529,42 +514,53 @@ export const Form: FC<any> = ({
     }, 20);
   }, [memoryData?.mediaType]);
 
+
+
+  // const filteredMediaTypes = isEditing 
+  // ? mediaTypes.filter((item) => item.icon == memoryData?.mediaType) 
+  // : mediaTypes;
+  // console.log("memory media type", memoryData?.mediaType)
+  // console.log(filteredMediaTypes)
   return (
     <>
       <form ref={formRef} onSubmit={formikSubmit} style={{ width: '100%', marginRight: '1rem' }}>
         <Grid container display={'flex'} justifyContent={'space-between'} spacing={isMobile ? 1 : 2} ref={ref}>
-          {mediaTypes.map((item: any, index: number) => (
-            <Grid key={`${item.label} + ${index}`} item xs={isMobile ? 12 : 6}>
-              <Box
-                width={'100%'}
-                height={'100%'}
-                borderRadius={'0.5rem'}
-                padding={'0.25rem 0.5rem'}
-                bgcolor={memoryData?.mediaType == item?.icon ? palette?.white : palette.cardBackground}
-                border={`0.063rem solid ${palette.cardBorder}`}
-                display={'flex'}
-                onClick={() => (isLoading ? null : setMedia(item.icon))}
-                sx={{ backdropFilter: 'blur(1.5625rem)', cursor: 'pointer' }}
-                justifyContent={'flex-start'}
-                alignItems={'center'}>
-                <Box
-                  borderRadius={'0.375rem'}
-                  bgcolor={memoryData?.mediaType == item?.icon ? palette.gray : palette.background}
-                  display={'flex'}
-                  padding={'0.25rem'}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  marginRight={'1rem'}>
-                  <Image src={`/icons/${item.icon}.svg`} alt={item.icon} width={24} height={24} quality={80} />
-                </Box>
-                <Typography
-                  variant='subtitle2'
-                  color={memoryData?.mediaType == item?.icon ? palette.gray : palette.white}>
-                  {t(item.label)}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
+        {mediaTypes.map((item: any, index: number) => (
+  <Grid key={`${item.label} + ${index}`} item xs={isMobile ? 12 : 6}>
+    <Box
+      width={'100%'}
+      height={'100%'}
+      borderRadius={'0.5rem'}
+      padding={'0.25rem 0.5rem'}
+      bgcolor={memoryData?.mediaType == item?.icon ? palette?.white : palette.cardBackground}
+      border={`0.063rem solid ${palette.cardBorder}`}
+      display={'flex'}
+      onClick={()=>(isLoading || isEditing ? null : setMedia(item.icon))}
+      sx={{ 
+        backdropFilter: 'blur(1.5625rem)', 
+        cursor: isEditing ? 'not-allowed' : 'pointer',
+        opacity: isEditing && memoryData?.mediaType !== item.icon ? 0.4 : 1 
+      }}
+      justifyContent={'flex-start'}
+      alignItems={'center'}>
+      <Box
+        borderRadius={'0.375rem'}
+        bgcolor={memoryData?.mediaType == item?.icon ? palette.gray : palette.background}
+        display={'flex'}
+        padding={'0.25rem'}
+        justifyContent={'center'}
+        alignItems={'center'}
+        marginRight={'1rem'}>
+        <Image src={`/icons/${item.icon}.svg`} alt={item.icon} width={24} height={24} quality={80} />
+      </Box>
+      <Typography
+        variant='subtitle2'
+        color={memoryData?.mediaType == item?.icon ? palette.gray : palette.white}>
+        {t(item.label)}
+      </Typography>
+    </Box>
+  </Grid>
+))}
           {memoryData?.mediaType !== '' && (
             <>
               <Grid item xs={12} marginTop={isMobile ? '1rem' : 0}>

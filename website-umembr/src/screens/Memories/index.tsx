@@ -43,7 +43,7 @@ const FloatingMemories = dynamic(
 export const Memories = () => {
   const [selectedMemorie, setSelectedMemorie] = useState<any>(null);
   const { status, switchStatus } = UseIntermitence();
-  const { status: storyStatus, switchStatus: switchStory } = UseIntermitence();
+  const {switchStatus: switchStory } = UseIntermitence();
   const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();
   const { status: deleteStatusStory, switchStatus: switchDeleteStory } = UseIntermitence();
   const { status: privateStatus, switchStatus: switchPublication } = UseIntermitence();

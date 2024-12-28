@@ -2,12 +2,12 @@
 import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { PaymentForm } from './PaymentForm';
 import { Box,  Typography } from '@mui/material';
 import { useDispatch} from 'react-redux';
 import { useRouter } from 'next/router';
 import { stripe_public_key } from '../../../utils/path';
 import { refreshUserData } from '@/store/actions';
-import PaymentForm from './PaymentForm';
 interface CheckoutFormProps {
   handleClose: () => void;
 }
@@ -38,7 +38,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({ handleClose }) => {
             '0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12)'
           }>
           <Typography variant={'h4'}>Complete your payment</Typography>
-          <PaymentForm  />
+          <PaymentForm onPaymentSuccess={handlePaymentSuccess} onPaymentError={handlePaymentError} />
         </Box>
       </Elements>
     </Box>

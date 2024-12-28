@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Typography, Box, Divider, TextField, useMediaQuery, Theme } from '@mui/material';
-import { MuiButton } from '@/components';
+import { MuiButton, MuiTextField } from '@/components';
 import { styles } from './styles';
 import { palette } from '@/theme/constants';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ const { open } = useSelector((state: any) => state.intermitence.deletionModal);
 
 
   const handleConfirm = async () => {
-    if (userInput === confirmationText) {
+    if (userInput === user?.email) {
       setLoading(true);
       setUserInput('');
       try {
@@ -40,7 +40,7 @@ const { open } = useSelector((state: any) => state.intermitence.deletionModal);
       }
     } else {
 
-      dispatch(openModal({content:'text_not_match'}))
+      dispatch(openModal({content:'email_not_match'}))
     }
   };
       const handleClose = () => {
@@ -62,7 +62,7 @@ const { open } = useSelector((state: any) => state.intermitence.deletionModal);
         borderRadius={'1.25rem'}
         justifyContent={'space-between'}
         position={'relative'}
-        bgcolor={palette.cardBackground}
+        bgcolor= {'rgba(0, 0, 0, 0.50)'}
         border={`0.063rem solid ${palette.cardBorder}`}
         sx={{ backdropFilter: 'blur(1.5625rem)' }}>
         <Typography
@@ -74,12 +74,21 @@ const { open } = useSelector((state: any) => state.intermitence.deletionModal);
           Are you sure you want to delete your account?
         </Typography>
         <Typography textAlign={isMobile ? 'center' : 'left'} variant={isMobile ? 'body2' : 'body1'}>
-          Please enter the following text to confirm:
+          This action is permanent and cannot be undone!
         </Typography>
-        <Typography variant='body1' mb={2} sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-          {confirmationText}
+        <Typography variant='body1' mb={2} sx={{ fontWeight: '400', textAlign: 'center' }}>
+          If you understand and still want to delete your account, enter your email address below
         </Typography>
-        <TextField
+                      <MuiTextField
+                        id='email'
+                        name='email'
+                        variant='outlined'
+                        fullWidth
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        placeholder='Enter your email here'
+                      />
+        {/* <TextField
           variant='outlined'
           fullWidth
           sx={{
@@ -88,7 +97,7 @@ const { open } = useSelector((state: any) => state.intermitence.deletionModal);
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
           placeholder='Enter the text here'
-        />
+        /> */}
         <Divider sx={{ my: 2, width: '100%' }} />
         <Box display='flex' justifyContent='flex-end' width='100%'>
           <Box marginRight={'1rem'}>
@@ -111,9 +120,9 @@ const { open } = useSelector((state: any) => state.intermitence.deletionModal);
           <Box marginRight={'1rem'}>
             <MuiButton
               type='button'
-              variant='contained'
+              variant=''
               method={handleConfirm}
-              backgroundColor={palette?.primary}
+              backgroundColor={palette?.error}
               disabled={loading}>
               <Typography variant='button' color={palette.white}>
                 {loading ? 'Deleting...' : 'Confirm'}

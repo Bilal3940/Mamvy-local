@@ -6,36 +6,27 @@ import { Box, Typography } from '@mui/material';
 import { palette } from '@/theme/constants';
 import Image from 'next/image';
 import { faqs } from '@/utils';
+
 export default function FAQ() {
+    const ExpandIcon = () => (
+      <Image src={`/icons/expand2.svg`} alt={'chevron-down'}  width={24} height={24}  quality={100} />
+    );
   return (
-    <Box>
+    <Box sx={{borderRadius:'0.6rem'}} >
       <Typography fontSize={'1.5rem'} mb={'1rem'} >Frequently Asked Questions</Typography>
       {faqs && faqs.map((item:any, index:any)=>(
 
     
-      <Accordion key={index} sx={{
-        backgroundColor:'rgba(43, 54, 114, 1)',
-        color:palette.dirtyWhite,
-        fontSize:'1rem',
-        margin:'0.2rem',
-        height:'4.688rem',
-        // display:'flex',
-        justifyContent:'center',
-        alignItems:'center',
-        alignContent:'center',
-        fontWeight:'400'
-      }} >
-        <AccordionSummary
-          expandIcon={   <Image src={`/icons/expand2.svg`} alt={'expand'} width={20} height={20} quality={30} />}
-          aria-controls="panel1-content"
-          id="panel1-header"
-        >
-          {item?.question}
-        </AccordionSummary>
-        <AccordionDetails>
-          {item?.answer}
-        </AccordionDetails>
-      </Accordion>
+<Accordion sx={{ backgroundColor: '#2B3672', color: 'white', padding:'0.5rem', margin:'0.4rem 0', borderRadius:'0.4rem'}} key={item.question}>
+<AccordionSummary expandIcon={<ExpandIcon />} aria-controls='panel1-content' id='panel1-header'>
+  <Typography color='#A9B4CC'>{item.question}</Typography>
+</AccordionSummary>
+<AccordionDetails>
+  <Typography color='#A9B4CC' sx={{ fontSize: '0.875rem' }}>
+    {item.answer}
+  </Typography>
+</AccordionDetails>
+</Accordion>
 ))}
       {/* <Accordion>
         <AccordionSummary

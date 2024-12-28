@@ -400,8 +400,8 @@ const Main: React.FC = () => {
             <Box
               sx={{
                 position: 'absolute',
-                right: '-9%',
-                top: '20%',
+                right:isMobile ? '-4%'  :'-20%',
+                top:isMobile ? '8%': '12%',
 
                 zIndex: 0,
                 width: '60%',

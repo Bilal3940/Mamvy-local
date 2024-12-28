@@ -4,7 +4,7 @@ import { palette } from '@/theme/constants';
 export const styles:any =(buttonBackground?: string)=> ({
   stepper: {
     '& .MuiStepLabel-label': {
-      color: palette.white,
+      color: `${palette?.dirtyWhite} !important`,
       fontSize: theme.typography.h4,
       fontWeight: 400,
       '&.Mui-active': {

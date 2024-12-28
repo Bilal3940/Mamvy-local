@@ -139,7 +139,7 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
     //   return setShowBreadCrumbs(true);
     // }
 
-    if (router.pathname == '/app/settings') {
+    if (router.pathname == '/app/profile') {
       setShowHomeElements(false);
       setShowBreadCrumbs(true);
       return setShowCancelButton(false);
@@ -158,8 +158,8 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
 
   const settingsOptions = [
     {
-      label: 'settings',
-      action: () => router.push('/app/settings'),
+      label: 'My Profile',
+      action: () => router.push('/app/profile'),
     },
     {
       label: 'logout',
@@ -242,8 +242,10 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
         elevation={0}
         sx={{
           background: 'transparent',
+          width:'99.45%',
+          left:'0',
           backdropFilter: intermitenceData?.backgroundChange ? 'blur(1.5625rem)' : 'none',
-          ...showSlide ? { left: 0, width: '99.5%' } : {}
+
         }}>
         <Box display={'flex'} padding={'1rem'} justifyContent={'space-between'} alignItems={'center'}>
           <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>

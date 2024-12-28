@@ -8,7 +8,7 @@ const SettingsPage: NextPage = () => {
   return (
     <Layout>
       <Head>
-        <title>{'Settings - Memvy'}</title>
+        <title>{'Profile - Memvy'}</title>
         <meta
           name='description'
           content={
@@ -16,9 +16,9 @@ const SettingsPage: NextPage = () => {
           }
         />
 
-        <meta property='og:url' content={`${base_url}/settings'`} />
+        <meta property='og:url' content={`${base_url}/profile'`} />
         <meta property='og:type' content='website' />
-        <meta property='og:title' content='Settings - Memvy' />
+        <meta property='og:title' content='Profile - Memvy' />
         <meta
           property='og:description'
           content='The future of enjoying the past. Create richer and deeper stories of your shared experiences by sharing audio, image, and video memories to collaborate with friends and family to share your cherished memories.'
@@ -27,8 +27,8 @@ const SettingsPage: NextPage = () => {
 
         <meta name='twitter:card' content='summary_large_image' />
         <meta property='twitter:domain' content={base_domain} />
-        <meta property='twitter:url' content={`${base_url}/settings'`} />
-        <meta name='twitter:title' content='Settings - Memvy' />
+        <meta property='twitter:url' content={`${base_url}/profile'`} />
+        <meta name='twitter:title' content='Profile - Memvy' />
         <meta
           name='twitter:description'
           content='The future of enjoying the past. Create richer and deeper stories of your shared experiences by sharing audio, image, and video memories to collaborate with friends and family to share your cherished memories.'

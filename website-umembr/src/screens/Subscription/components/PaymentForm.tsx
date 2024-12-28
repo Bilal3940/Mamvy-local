@@ -112,7 +112,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPa
       };
 
       try {
-        const res = dispatch(createOrder(payload));
+        dispatch(createOrder(payload));
         onPaymentSuccess();
       } catch (error) {
         console.error('Subscription failed:', error);

@@ -41,12 +41,12 @@ export const Settings = () => {
     }
   }, [dispatch]);
 
-  const tabs = [
-    {
-      label: 'general_information',
-      action: () => setActualSection(1, 'my_profile'),
-    },
-  ];
+  // const tabs = [
+  //   {
+  //     label: 'general_information',
+  //     action: () => setActualSection(1, 'my_profile'),
+  //   },
+  // ];
 
   return (
     <Box

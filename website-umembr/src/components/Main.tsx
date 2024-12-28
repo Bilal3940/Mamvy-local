@@ -437,7 +437,7 @@ const Main: React.FC = () => {
             story={story}
             isMobile={isMobile}
             user={user}
-            extendedPalette={extendedPalette}
+            extendedPalette={"white"}
           />
           {!foundRole && !story?.confirmPassword && story?.private && story.url === router.query?.id && (
             <PrivateStoryModal open={privateStatus} onClose={handlePublication} />

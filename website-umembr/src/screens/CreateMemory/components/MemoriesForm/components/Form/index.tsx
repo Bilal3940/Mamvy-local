@@ -493,7 +493,7 @@ export const Form: FC<any> = ({
     setType(media?.type?.split('/')[0] || '');
   }, [values?.media?.type]);
   const setMainAcceptableMedia = (type: string) => {
-    return 'image/*,audio/*,video/mp4';
+    return 'image/*,audio/*,video/mp4,audio/mpeg,audio/x-m4a,audio/mp4,audio/wav';
   };
 
   useEffect(() => {

@@ -103,7 +103,9 @@ sx={{
     color: extendedPalette.edittextColor,
     textDecoration:'none', // Prevents the button from having a default height
 }}
-startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} />}
+startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} style={{
+    marginRight:'-5px',
+}} />}
 onClick={EditMemvy} // Move the onClick here, as the inner Button is redundant
 >
 Edit this Memvy

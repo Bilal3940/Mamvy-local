@@ -200,7 +200,7 @@ export const Home = () => {
         size={isMobile ? 'medium' : 'large'}
         component={Link}
         href={'/app/story/create'}
-        color={'secondary'}
+        // color={'secondary'}
         sx={{ position: 'fixed', right: { xs: '0.75rem', lg: '1.5rem' }, bottom: { xs: '0.5rem', lg: '1.0rem' } }}>
         <Image
           src={`/icons/add.svg`}

@@ -365,7 +365,7 @@ const Main: React.FC = () => {
     ellipseRightGradientColor: '#F1E0FF',
     ellipseRightGradientOpacity: 0.20,
 
-    cardIconColor: adminPalette.accentColor,
+    cardIconColor: 'white',
     filterIconsColor: 'rgba(102, 102, 102, 1)',
     filterIconsSelectedColor: 'rgba(191, 87, 0)',
     filterIconsHoverColor: adminPalette.accentColor,

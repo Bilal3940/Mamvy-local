@@ -10,6 +10,7 @@ import {
   ClickAwayListener,
   useMediaQuery,
   CircularProgress,
+  Chip,
 } from '@mui/material';
 
 import Image from 'next/image';
@@ -44,6 +45,8 @@ import { Masonry } from '@mui/lab';
 import PopupModal from './PayWallModal';
 import VideoThumbnail from './VideoThumbnail';
 import Search from './AppBar/Search';
+import FormatDateMemory from './FormatDateMemory';
+import { MuiIconLabelButton } from './IconLabelButton';
 
 type MediaType = 'image' | 'audio' | 'video' | 'text';
 
@@ -102,6 +105,12 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const [step, setStep] = useState(0);
   const storagePopup = useSelector((state:any) => state.storageLog.storagePopup);
   const storageLog= useSelector((state:any)=>state.storageLog.storageLog)
+   const [fadeIn, setFadeIn] = useState(false);
+
+  useEffect(() => {
+    // Trigger fade-in effect when the component mounts
+    setFadeIn(true);
+  }, []);
 
   const handleClose = (step: any): void => {
     if (step === 2) {
@@ -409,7 +418,7 @@ console.log("i am the updated state of popup- dev test", storagePopup)
               margin:'0',
             }}>
             {/* Sort Dropdown */}
-            <MuiIconButton
+            {/* <MuiIconButton
               icon='/icons/sortIcon'
               altIcon='filter'
               background={
@@ -427,7 +436,7 @@ console.log("i am the updated state of popup- dev test", storagePopup)
                 },
               }}
               method={(event: any) => toggleSortingOrder()}
-            />
+            /> */}
             <MuiIconButton
               icon='/icons/regenerate'
               altIcon='filter'
@@ -445,7 +454,7 @@ console.log("i am the updated state of popup- dev test", storagePopup)
               }}
               method={(event: any) => handleRefresh()}
             />
-            <MuiIconButton
+            <MuiIconLabelButton
               icon='/icons/filter'
               label='Filter'
               altIcon='filter'
@@ -489,158 +498,176 @@ console.log("i am the updated state of popup- dev test", storagePopup)
 
           {actionSuccess && memoriesLoaded.length > 0 ? (
         <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={2} sx={{ margin: 0 }}>
+          {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
+  <Paper
+    onClick={() => AllowOpenModel(item)}
+    key={index}
+    sx={{
+      borderRadius: 2,
+      overflow: 'hidden',
+      backgroundColor: extendedPalette.cardMediaBackground,
+      color: extendedPalette.cardMediaColor,
+      display: 'flex',
+      flexDirection: 'column',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      cursor: 'pointer',
+      animation: `fadeIn 0.6s ease-in-out`,
+      '@keyframes fadeIn': {
+        '0%': {
+          transform: 'scale(0.95)',
+        },
+        '100%': {
+          transform: 'scale(1)',
+        },
+      },
+    }}>
+    {/* Card Header */}
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '8px 16px',
+        color: extendedPalette.cardHeaderText,
+        position: 'relative',
+      }}>
+      {/* Media Icon and Text */}
+      <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: '10px' }}>
+        <Box sx={{ mr: 1 }}>
+          {getIcon(item.type, extendedPalette.cardIconColor)}
+        </Box>
+        <Box>
+          <Typography
+            variant='body2'
+            sx={{
+              fontFamily: 'DM Sans',
+              fontSize: { xs: '14px', sm: '16px' },
+              fontWeight: 400,
+              lineHeight: { xs: '16.8px', sm: '19.2px' },
+              textAlign: 'left',
+            }}>
+            {item.title}
+          </Typography>
 
-     
-          {  filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
-              <Paper
-                onClick={() => AllowOpenModel(item)}
-                key={index}
-                sx={{
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  backgroundColor: extendedPalette.cardMediaBackground,
-                  color: extendedPalette.cardMediaColor,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  cursor: 'pointer',
-                }}>
-                {/* Card Header */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '8px 16px',
+          <Typography
+            variant='caption'
+            sx={{
+              fontFamily: 'DM Sans',
+              fontSize: { xs: '10px', sm: '12px' },
+              fontWeight: 400,
+              lineHeight: { xs: '12px', sm: '14.4px' },
+              textAlign: 'left',
+            }}>
+            <FormatDateMemory createdDate={item.created_at} />
+          </Typography>
+        </Box>
+      </Box>
 
-                    color: extendedPalette.cardHeaderText,
-                  }}>
-                  {/* Media Icon and Text */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: '10px' }}>
-                    <Box sx={{ mr: 1 }}>
-                      {getIcon(item.type, extendedPalette.cardIconColor)} {/* Example color passed */}
-                    </Box>
-                    <Box>
-                      <Typography
-                        variant='body2'
-                        sx={{
-                          fontFamily: 'DM Sans',
-                          fontSize: { xs: '14px', sm: '16px' },
-                          fontWeight: 400,
-                          lineHeight: { xs: '16.8px', sm: '19.2px' },
-                          textAlign: 'left',
-                        }}>
-                        {item.title}
-                      </Typography>
+      {/* User Avatar */}
+      <Avatar
+        src={item?.user?.picture ? `${cdn_url}${item?.user?.picture}` : '/icons/image1.svg'}
+        alt={item.username}
+        sx={{ width: 32, height: 32 }}
+        title={`${item?.user?.name} ${item?.user?.lastname}`}
+      />
 
-                      <Typography
-                        variant='caption'
-                        sx={{
-                          fontFamily: 'DM Sans',
-                          fontSize: { xs: '10px', sm: '12px' },
-                          fontWeight: 400,
-                          lineHeight: { xs: '12px', sm: '14.4px' },
-                          textAlign: 'left',
-                        }}>
-                        {formatDate(item.created_at)}
-                      </Typography>
-                    </Box>
-                  </Box>
+      {/* Approval Status */}
+      {!item.approved && (
+        <Chip
+          label="Pending Approval"
+          color="warning"
+          size="small"
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 50,
+            fontFamily: 'DM Sans',
+            fontSize: '12px',
+            fontWeight: 500,
+          }}
+        />
+      )}
+    </Box>
 
-                  {/* User Avatar */}
+    {/* Content */}
+    <Box
+      sx={{ padding: '16px' }}
+      onClick={() => {
+        AllowOpenModel(item);
+      }}>
+      {item.type === 'image' && (
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', borderRadius: '12px' }}>
+          <Image
+            src={`${cdn_url}${item.asset}`}
+            alt={item.title}
+            layout='responsive'
+            width={100}
+            height={100}
+            style={{ borderRadius: '12px' }}
+          />
+        </Box>
+      )}
+      {item.type === 'video' && <VideoThumbnail videoSrc={`${cdn_url}${item.asset}`} />}
+      {item.type === 'audio' && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            gap: '5px',
+          }}>
+          <div
+            style={{
+              position: 'relative',
+              cursor: 'pointer',
+              width: '50px',
+              maxWidth: '15%',
+            }}>
+            <Image src={'/icons/playbut.svg'} alt={'icon'} layout='responsive' width={50} height={50} />
+          </div>
 
-                  <Avatar
-                    src={item?.user?.picture ? `${cdn_url}${item?.user?.picture}` : '/icons/image1.svg'}
-                    alt={item.username}
-                    sx={{ width: 32, height: 32 }}
-                    title={`${item?.user?.name} ${item?.user?.lastname}`}
-                  />
-                </Box>
-
-                <Box
-                  sx={{ padding: '16px' }}
-                  onClick={() => {
-                    AllowOpenModel(item);
-                  }}>
-                  {item.type === 'image' && (
-                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', borderRadius: '12px' }}>
-                      <Image
-                        src={`${cdn_url}${item.asset}`}
-                        alt={item.title}
-                        layout='responsive'
-                        width={100}
-                        height={100}
-                        style={{ borderRadius: '12px' }}
-                      />
-                    </Box>
-                  )}
-                  {item.type === 'video' && <VideoThumbnail videoSrc={`${cdn_url}${item.asset}`} />}
-                  {item.type === 'audio' && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '100%',
-                        gap: '5px',
-                      }}>
-                      {/* Left image with responsive size */}
-                      <div
-                        style={{
-                          position: 'relative',
-                          cursor: 'pointer',
-                          width: '50px',
-                          maxWidth: '15%',
-                        }}>
-                        <Image src={'/icons/playbut.svg'} alt={'icon'} layout='responsive' width={50} height={50} />
-                      </div>
-
-                      {/* Right image with responsive size */}
-                      <div
-                        style={{
-                          position: 'relative',
-                          cursor: 'pointer',
-                          flex: '1',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          maxWidth: '70%',
-                        }}>
-                        <Audio2Icon
-                          color={extendedPalette.audioGradientColor2}
-                          color2={extendedPalette.audioGradientColor2}
-                        />
-                      </div>
-                    </div>
-                  )}
-                  {item.type === 'text' && (
-                    <Box
-                      sx={{
-                        maxHeight: { xs: '80px', sm: '80px', md: '135px' },
-                        width: { xs: '100%', sm: '100%', md: '100%' },
-                        overflow: 'hidden',
-                        position: 'relative',
-                        WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
-                        maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
-
-                        '&:after': {
-                          content: '""',
-                          position: 'absolute',
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          height: '15px',
-                          background: 'linear-gradient(to bottom, rgba(43, 54, 114, 0))',
-                        },
-                      }}>
-                      <RtfComponent rtf={item?.type === 'text' ? JSON.parse(item?.asset) : ''} label={'p'} />
-                    </Box>
-                  )}
-                </Box>
-              </Paper>
-            ))
-          }
-          
-
+          <div
+            style={{
+              position: 'relative',
+              cursor: 'pointer',
+              flex: '1',
+              display: 'flex',
+              justifyContent: 'center',
+              maxWidth: '70%',
+            }}>
+            <Audio2Icon
+              color={extendedPalette.audioGradientColor2}
+              color2={extendedPalette.audioGradientColor2}
+            />
+          </div>
+        </div>
+      )}
+      {item.type === 'text' && (
+        <Box
+          sx={{
+            maxHeight: { xs: '80px', sm: '80px', md: '135px' },
+            width: { xs: '100%', sm: '100%', md: '100%' },
+            overflow: 'hidden',
+            position: 'relative',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+            maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+            '&:after': {
+              content: '""',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '15px',
+              background: 'linear-gradient(to bottom, rgba(43, 54, 114, 0))',
+            },
+          }}>
+          <RtfComponent rtf={item?.type === 'text' ? JSON.parse(item?.asset) : ''} label={'p'} />
+        </Box>
+      )}
+    </Box>
+  </Paper>
+))}
 
         </Masonry>
 ) : actionSuccess && memoriesLoaded.length === 0 ? (

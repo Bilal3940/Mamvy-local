@@ -35,7 +35,7 @@ interface CustomPopperProps {
 export const MuiDropdown = ({ color,isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
   const { t } = useTranslation();
   const { pathname } = useRouter();
-  let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :'transparent';
+  let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :palette?.cardBackground;
 
   return (
     <AnimatePresence>

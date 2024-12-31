@@ -10,6 +10,9 @@ import {
   IconButton,
   Button,
 } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {  MuiButton, MuiTextField2 } from '@/components';
 import { palette } from '@/theme/constants';
@@ -17,9 +20,10 @@ import Image from 'next/image';
 import { FormikConfig } from './formik';
 import { useTranslation } from 'next-i18next';
 import { UseFirstRender, UseIntermitence } from '@/hooks';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, subscriptionSelector } from '@/store/selectors';
-import { FetchFileService, States, cdn_url, checkRoleAndPermission, fileConverter, logoutWithFacebook } from '@/utils';
+import { FetchFileService, States, cdn_url, checkRoleAndPermission, fallbackRestUrl, fileConverter, logoutWithFacebook } from '@/utils';
 import {
 
   editProfileView,
@@ -35,6 +39,93 @@ import { getUploadSignedUrl } from '@/store/file/action';
 import StorageProgressBar from '@/components/ProgressBar';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import ChevronLeftIconComponent from '../../../../../public/icons/components/chevron-left';
+import { ManageSubscription } from '@/components/Profile/ManageSubscription';
+
+interface PaymentMethodResponse {
+  result: {
+    success: boolean;
+    subscriptionDetails: SubscriptionDetails;
+    paymentMethod: PaymentMethod;
+    message: string;
+  };
+}
+interface SubscriptionDetails {
+  status: string;
+  startDate: string;
+  endDate: string;
+  nextInvoiceAmount: string;
+}
+interface PaymentMethod {
+  id: string;
+  object: string;
+  allow_redisplay: string;
+  billing_details: BillingDetails;
+  card: Card;
+  created: number;
+  customer: string;
+  livemode: boolean;
+  metadata: Record<string, unknown>;
+  type: string;
+}
+
+interface BillingDetails {
+  address: Address;
+  email: string;
+  name: string;
+  phone: string | null;
+}
+
+interface Address {
+  city: string | null;
+  country: string;
+  line1: string | null;
+  line2: string | null;
+  postal_code: string;
+  state: string | null;
+}
+
+interface Card {
+  brand: string;
+  checks: CardChecks;
+  country: string;
+  display_brand: string;
+  exp_month: number;
+  exp_year: number;
+  fingerprint: string;
+  funding: string;
+  generated_from: string | null;
+  last4: string;
+  networks: CardNetworks;
+  regulated_status: string;
+  three_d_secure_usage: ThreeDSecureUsage;
+  wallet: string | null;
+}
+
+interface CardChecks {
+  address_line1_check: string | null;
+  address_postal_code_check: string;
+  cvc_check: string;
+}
+
+interface CardNetworks {
+  available: string[];
+  preferred: string | null;
+}
+
+interface ThreeDSecureUsage {
+  supported: boolean;
+}
+
+
+
+
+
+
+
+
+
+
 
 export const Profile = () => {
   const { t } = useTranslation();
@@ -45,8 +136,11 @@ export const Profile = () => {
   const { status: showConfirmPassword, switchStatus: switchShowConfirmPassword } = UseIntermitence();
   const [isEditable, setIsEditable] = useState(false);
   const [showPasswords, setShowPasswords] = useState(false);
+  const [showManageSubscription,  setShowManageSubscription]=useState(false);
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [imageUrl, setImageUrl] = useState('');
+  
+  const [data, setData]= useState<PaymentMethodResponse>();
   const [editableField, setEditableField] = useState(null);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -155,7 +249,13 @@ export const Profile = () => {
     alert('are you sure????');
     dispatch(renewSubscription({ userId: user?.id }));
   };
-
+const manageSub = () =>{
+  if(!showManageSubscription)
+  getPaymentMethod();
+else{
+  setShowManageSubscription(false);
+}
+}
   // const options = useMemo(() => {
   //   const keys: any = Object.keys(States || {});
   //   return keys.reduce((acc: any, cur: any) => [...acc, { id: cur, name: States[cur] }], []);
@@ -164,7 +264,33 @@ export const Profile = () => {
   const handleEditClick = (field: any) => {
     setEditableField(editableField === field ? null : field);
   };
+  const getPaymentMethod = async () => {
+    try {
+      const response = await fetch(`${fallbackRestUrl}/stripe/get-payment-method`, {
+        method: 'POST', // Use POST method
+        headers: {
+          'Content-Type': 'application/json', // Set content type to JSON
+        },
+        body: JSON.stringify({ userId: user.id  }), // Add the body with userId
+      });
 
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data ) {
+        setData(data);
+        setShowManageSubscription(true);
+      } else {
+        throw new Error('Unexpected response structure');
+      }
+    } catch (error) {
+      console.error('Error fetching payment method:', error);
+    
+    }
+  };
 
   useEffect(()=>{
     if(!!errors?.name && !!errors?.lastname && !!errors?.password && !!errors?.confirm_password){
@@ -175,7 +301,8 @@ export const Profile = () => {
 
   return (
     <Box maxWidth={'600px'} margin={'0 auto'}>
-      <Box
+     { !showManageSubscription? 
+     <Box
         display={'flex'}
         flexDirection={'column'}
         marginTop={'0rem'}
@@ -719,8 +846,11 @@ export const Profile = () => {
                           variant='button'
                           sx={{ cursor: 'pointer', textDecoration: 'underline' }}
                           color={palette?.primary}
+                          
                           fontSize={'1rem'}>
+                            <a onClick={manageSub}>
                           Manage subscription
+                          </a>
                         </Typography>
                         <Typography
                           sx={{ gap: '1rem' }}
@@ -778,7 +908,53 @@ export const Profile = () => {
                 </Box>
               </Grid>
         </Box>
+      </Box>: 
+      
+      <Box
+      display={'flex'}
+      flexDirection={'column'}
+      marginTop={'0rem'}
+      bgcolor={'rgba(255, 255, 255, 0.9)'}
+      sx={{ backdropFilter: 'blur(4.5625rem)' }}
+      minHeight={!isMobile ? 'calc(100vh - 16.735rem)' : 'calc(100vh - 15.735rem)'}
+      height={!isMobile ? 'calc(100vh - 13.735rem)' : 'calc(100vh - 13.735rem)'}
+      // width={!isMobile ? 'calc(100vh - 13.735rem)' : 'calc(100vh - 13.735rem)'}
+      width={isMobile ? '100%' : '600px'}
+      minWidth={'50%'}
+      padding={'0'}
+      borderRadius={'0.625rem'}
+      overflow={'hidden'}
+    >
+      <Box
+        width={'100%'}
+        display={'flex'}
+        flexDirection={'column'}
+        border={`0.063rem solid ${palette.cardBorder}`}
+        height={'100%'}
+        padding={'0.4rem 2rem'}
+        borderRadius={'1.25rem'}
+        overflow={'auto'}
+      >
+    
+        {/* Back Button (Left-aligned) */}
+        <Box margin={'1rem 0'} >
+        <Button
+          
+          onClick={manageSub}
+          startIcon={<ChevronLeftIconComponent color={'#131544'} />}
+          variant='outlined'
+          style={{ borderRadius: '19px', border: `1px solid ${palette.cardBorder}` }}>
+          <Typography variant={'button'} color={`#131544`}>
+            Back
+          </Typography>
+        </Button>
       </Box>
+    
+ <ManageSubscription paymentMethodResponse={data} />    
+      </Box>
+    </Box>
+    
+}
       <Box>
 
 

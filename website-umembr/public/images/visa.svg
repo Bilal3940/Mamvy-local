@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 50" width="60" height="40">
+  <!-- Background -->
+  <rect width="120" height="50" rx="10" fill="#1a1f71"/>
+
+  <!-- Visa Text -->
+  <text x="15" y="38" font-family="Arial, sans-serif" font-size="36" fill="#ffffff" font-weight="bold">
+    VISA
+  </text>
+</svg>

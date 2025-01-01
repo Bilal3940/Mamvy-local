@@ -21,6 +21,7 @@ const itemVariants: Variants = {
 
 
 interface CustomPopperProps {
+  hovercolor?:any;
   color?:any;
   isOpen: boolean;
   handleClose: any;
@@ -32,10 +33,10 @@ interface CustomPopperProps {
   }[];
 }
 
-export const MuiDropdown = ({ color,isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
+export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
   const { t } = useTranslation();
   const { pathname } = useRouter();
-  let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :palette?.cardBackground;
+  let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :color;
 
   return (
     <AnimatePresence>
@@ -83,7 +84,7 @@ export const MuiDropdown = ({ color,isOpen, handleClose, listItem, width = '10re
               return (
                 <MotionItem
                   key={item.label}
-                  sx={styles(color).item}
+                  sx={styles(hovercolor).item}
                   variants={itemVariants}
                   onClick={() => {
                     item?.action();

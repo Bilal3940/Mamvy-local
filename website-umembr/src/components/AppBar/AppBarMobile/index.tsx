@@ -305,7 +305,7 @@ export const MuiAppBarMobile: FC<any> = ({adminPalette, search, setSearch }) => 
                     />
                     <ClickAwayListener onClickAway={(event: any) => handleClose(event)} disableReactTree={true}>
                       <Box position={'relative'}>
-                        <MuiDropdown isOpen={isOpen} handleClose={handleClose} listItem={getSettingsMobileOptions} />
+                        <MuiDropdown isOpen={isOpen} handleClose={()=>{ handleClose}} listItem={getSettingsMobileOptions} />
                       </Box>
                     </ClickAwayListener>
 

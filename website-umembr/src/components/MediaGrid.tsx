@@ -3,9 +3,7 @@ import {
   Box,
   Paper,
   Typography,
-  TextField,
   Divider,
-  InputAdornment,
   Avatar,
   ClickAwayListener,
   useMediaQuery,
@@ -20,10 +18,8 @@ import { styles } from './AppBar/CancelModal/styles';
 import {
   getExtraContent,
   getMemories,
-  getStorageLog,
   getStorageLogs,
   getUserPurchases,
-  hidePopup,
   removeMemory,
   showPopup,
 } from '@/store/actions';
@@ -40,7 +36,6 @@ import {
   cdn_url,
   checkPermissions,
   ExtractCallbackType,
-  formatDate,
   formatPastDate,
   hasUserPurchasedTheStory,
   promisifiedCallback,
@@ -90,7 +85,7 @@ interface MediaGridProps {
   actionSuccessColab?: any;
 }
 
-const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSuccessColab }) => {
+const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuccessColab }) => {
   const dispatch = useDispatch();
   const { actionSuccess, memoriesLoaded } = useSelector(memorySelector);
   const [openModal, setOpenModal] = useState(false);
@@ -114,13 +109,11 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
   const homeData = useSelector(homeSelector);
   const [loading, setLoading] = useState(false);
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
-  const [Types, setTypes] = useState([]);
   const ITEMS_PER_PAGE = 10;
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
   const [modalOpen, setModalOpen] = useState(false);
   const [step, setStep] = useState(0);
   const storagePopup = useSelector((state: any) => state.storageLog.storagePopup);
-  const storageLog = useSelector((state: any) => state.storageLog.storageLog);
 
   const handleClose = (step: any): void => {
     if (step === 2) {
@@ -174,16 +167,6 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
       dispatch(getStorageLogs(user?.id));
     }
   };
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
 
   console.log('i am the updated state of popup- dev test', storagePopup);
   useEffect(() => {
@@ -195,13 +178,10 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
     if (user && user.id) {
       dispatch(getUserPurchases(user && user?.id));
     }
-    
+
     if (extraContent) {
-      
       if (extraContent.isPaid) {
-        
         if (isAuth) {
-          
           if (
             hasUserPurchasedTheStory(user.id, story.id, userPurchases) ||
             checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
@@ -210,10 +190,9 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
           ) {
             setModalOpen(false);
             handleOpenModal(item);
-            
+
             window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
           } else {
-            
             setModalOpen(true);
           }
         } else {
@@ -222,7 +201,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
       } else {
         setModalOpen(false);
         handleOpenModal(item);
-        
+
         window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
       }
     } else {
@@ -312,72 +291,32 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
 
   const [isChronological, setIsChronological] = useState(story?.isChronological || false);
 
-  const toggleSortingOrder = () => {
-    setIsChronological((prev?: any) => !prev);
-  };
-  console.log("i am story",story)
-  console.log("i am user",user)
-  console.log("i am memories loaded",memoriesLoaded)
-
-  // const filteredMediaItems = memoriesLoaded
-  //   ?.filter(
-  //     (item: any) =>
-  //       (filter === 'All' || item.type === filter.toLowerCase()) &&
-  //       (!search ||
-  //         (search.length >= 3 &&
-  //           (item.title?.toLowerCase().includes(search.toLowerCase()) ||
-  //             item.username?.toLowerCase().includes(search.toLowerCase())))),
-  //   )
-  //   ?.sort((a: any, b: any) => {
-  //     if (!isChronological) {
-  //       return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-  //     } else {
-  //       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-  //     }
-  //   });
-  // const filteredMediaItems = memoriesLoaded
-  // ?.filter((item: any) => {
-  //   const isCreator = item.user_id === user.id; // Collaborator who created the memory
-
-  //   return (
-  //     (item.approved || (!item.approved && isCreator)) && // Approved or pending created by the user
-  //     (filter === 'All' || item.type === filter.toLowerCase()) &&
-  //     (!search ||
-  //       (search.length >= 3 &&
-  //         (item.title?.toLowerCase().includes(search.toLowerCase()) ||
-  //           item.username?.toLowerCase().includes(search.toLowerCase()))))
-  //   );
-  // })
-  // ?.sort((a: any, b: any) => {
-  //   if (!isChronological) {
-  //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-  //   } else {
-  //     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-  //   }
-  // });
+  // const toggleSortingOrder = () => {
+  //   setIsChronological((prev?: any) => !prev);
+  // };
+  // const ownerIds = story.roleUsers?.map((roleUser: any) => roleUser.user_id) || [];
   const filteredMediaItems = memoriesLoaded
-  ?.filter((item: any) => {
-    const isCreator = item.user_id === user.id; // Collaborator who created the memory
-    const isStoryOwner = story.user_id === user.id // Owner of the story
+    ?.filter((item: any) => {
+      const isCreatorOrOwner = item.user_id === user.id || story.user_id === user?.id;
 
-    return (
-      (item.approved || (!item.approved && (isCreator || isStoryOwner))) && // Approved or pending visible to creator or story owner
-      (filter === 'All' || item.type === filter.toLowerCase()) &&
-      (!search ||
+      const hasAccess = item.approved || (!item.approved && isCreatorOrOwner);
+
+      const matchesFilter = filter === 'All' || item.type?.toLowerCase() === filter.toLowerCase();
+
+      const matchesSearch =
+        !search ||
         (search.length >= 3 &&
           (item.title?.toLowerCase().includes(search.toLowerCase()) ||
-            item.username?.toLowerCase().includes(search.toLowerCase()))))
-    );
-  })
-  ?.sort((a: any, b: any) => {
-    if (!isChronological) {
-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-    } else {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    }
-  });
+            item.username?.toLowerCase().includes(search.toLowerCase())));
 
+      return hasAccess && matchesFilter && matchesSearch;
+    })
+    ?.sort((a: any, b: any) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
 
+      return isChronological ? dateB - dateA : dateA - dateB;
+    });
 
   const allItemsLoaded = visibleItems >= filteredMediaItems.length;
 
@@ -411,151 +350,115 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
         return null;
     }
   };
-  console.log("i am the success of colab", actionSuccessColab)
+  console.log('i am the success of colab', actionSuccessColab);
   return (
     <>
       <div>
-  
-{
- actionSuccessColab  && (
-    <Box
-    sx={{
-      padding: '10px 1px 10px 8px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      mb: 2,
-      backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
-      flexDirection: 'row',
-      position:'relative',
-      borderRadius: '16px',
-      zIndex:'998',
-      margin: '8px',
-      top: 0, // Ensures stickiness
-        '@media (max-width: 600px)': {
-          position: 'sticky', // Sticky for mobile screens
-          top: 55, // Stick to the top of the viewport
-          zIndex: 1000, // Ensure it stays above other content
-        },
-    }}>
-    <Search
-      color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      onClear={() => setSearch('')}
-      sx={{
-        width: {
-          xs: '12rem', 
-          sm: '16rem', 
-        },
-        '& .MuiOutlinedInput-root': {
-          '& fieldset': {
-            border: 'none', 
-            color: 'white',
-          },
-          '& input': {
-            color: 'white', 
-          },
-        },
+        {actionSuccessColab && (
+          <Box
+            sx={{
+              padding: '10px 1px 10px 8px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
+              backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
+              flexDirection: 'row',
+              position: 'relative',
+              borderRadius: '16px',
+              zIndex: '998',
+              margin: '8px',
+              top: 0,
+              '@media (max-width: 600px)': {
+                position: 'sticky',
+                top: 55,
+                zIndex: 1000,
+              },
+            }}>
+            <Search
+              color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onClear={() => setSearch('')}
+              sx={{
+                width: {
+                  xs: '12rem',
+                  sm: '16rem',
+                },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    border: 'none',
+                    color: 'white',
+                  },
+                  '& input': {
+                    color: 'white',
+                  },
+                },
 
-        '& input:-webkit-autofill': {
-          
-          WebkitTextFillColor: 'white',
-          
-          transition: 'background-color 5000s ease-in-out 0s', 
-        },
-      }}
-    />
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: { xs: 'flex-end', sm: 'flex-end' },
-        flexGrow: 1,
-        flexWrap: { xs: 'nowrap', sm: 'nowrap' },
-        gap: '2px',
-        margin: '0',
-      }}>
-      {/* Sort Dropdown */}
-      {/* <MuiIconButton
-        icon='/icons/sortIcon'
-        altIcon='filter'
-        background={
-          isChronological ? ` ${palette.black}  !important` : `${extendedPalette.buttonbackgroundIcon} !important`
-        }
-        width={40}
-        height={40}
-        iconHeight={18}
-        iconWidth={20}
-        sx={{
-          transform: !isChronological ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 0.9s ease',
-          '&:hover': {
-            backgroundColor: extendedPalette.buttonbackgroundIcon,
-          },
-        }}
-        method={(event: any) => toggleSortingOrder()}
-      /> */}
-      {/* <MuiIconButton
-        icon='/icons/regenerate'
-        altIcon='filter'
-        background={palette?.black}
-        width={40}
-        height={40}
-        iconHeight={25}
-        iconWidth={20}
-        sx={{
-          transition: 'transform 3s ease',
-          transform: rotate ? 'rotate(2000deg)' : 'rotate(0deg)',
-          '&:hover': {
-            backgroundColor: extendedPalette.buttonbackgroundIcon,
-          },
-        }}
-        method={(event: any) => handleRefresh()}
-      /> */}
-      <MuiIconButton
-        icon='/icons/filter'
-        label='Filter'
-        altIcon='filter'
-        direction='row'
-        background={
-          isFilterActive ? `${extendedPalette.buttonbackgroundIcon} !important` : ` ${palette.black}  !important`
-        }
-        width={80}
-        isRounded={false}
-        height={40}
-        iconHeight={12}
-        iconWidth={20}
-        sx={{
-          borderRadius: '24px',
-          '&:hover': {
-            backgroundColor: `${extendedPalette.buttonbackgroundIcon} !important`,
-            borderColor: `${extendedPalette.buttonbackgroundIcon}`,
-          },
-        }}
-        method={(event: any) => setShowFilters(event)}
-      />
+                '& input:-webkit-autofill': {
+                  WebkitTextFillColor: 'white',
 
-      <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
-        <Box position={'relative'}>
-          <FilterDropdown
-            extendedPalette={extendedPalette}
-            callbackfunction={(flag: boolean) => callbackfunction(flag)}
-            top={'4rem'}
-            isOpen={openFilters}
-            listItem={[prompts, collaborators, types]}
-          />
-        </Box>
-      </ClickAwayListener>
-    </Box>
-  </Box>
-  )
-}
+                  transition: 'background-color 5000s ease-in-out 0s',
+                },
+              }}
+            />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: { xs: 'flex-end', sm: 'flex-end' },
+                flexGrow: 1,
+                flexWrap: { xs: 'nowrap', sm: 'nowrap' },
+                gap: '2px',
+                margin: '0',
+              }}>
+              <MuiIconButton
+                icon='/icons/filter'
+                label='Filter'
+                altIcon='filter'
+                direction='row'
+                background={
+                  isFilterActive
+                    ? `${extendedPalette.buttonbackgroundIcon} !important`
+                    : ` ${palette.black}  !important`
+                }
+                width={80}
+                isRounded={false}
+                height={40}
+                iconHeight={12}
+                iconWidth={20}
+                sx={{
+                  borderRadius: '24px',
+                  '&:hover': {
+                    backgroundColor: `${extendedPalette.buttonbackgroundIcon} !important`,
+                    borderColor: `${extendedPalette.buttonbackgroundIcon}`,
+                  },
+                }}
+                method={(event: any) => setShowFilters(event)}
+              />
+
+              <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
+                <Box position={'relative'}>
+                  <FilterDropdown
+                    extendedPalette={extendedPalette}
+                    callbackfunction={(flag: boolean) => callbackfunction(flag)}
+                    top={'4rem'}
+                    isOpen={openFilters}
+                    listItem={[prompts, collaborators, types]}
+                  />
+                </Box>
+              </ClickAwayListener>
+            </Box>
+          </Box>
+        )}
         {isDivider && <Divider sx={styles.divider} />}
 
         {/* Media Grid */}
 
         {actionSuccessColab && actionSuccess && memoriesLoaded.length > 0 ? (
-          <Masonry  columns={{ xs: 1, sm: 2, md: 4 }} spacing={2} sx={{position:'relative',  margin: 0, zIndex:'900' }}>
+          <Masonry
+            columns={{ xs: 1, sm: 2, md: 4 }}
+            spacing={2}
+            sx={{ position: 'relative', margin: 0, zIndex: '900' }}>
             {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
               <Paper
                 onClick={() => AllowOpenModel(item)}
@@ -569,13 +472,18 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
                   flexDirection: 'column',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
-                  animation: `fadeIn 1s ease-in-out`,
-                  '@keyframes fadeIn': {
+                  animation: `fadeInUp 0.8s ease-out`,
+                  animationFillMode: 'forwards',
+                  opacity: 0,
+                  transform: 'translateY(4rem)',
+                  '@keyframes fadeInUp': {
                     '0%': {
-                      transform: 'scale(0.65)',
+                      opacity: 0,
+                      transform: 'translateY(4rem)',
                     },
                     '100%': {
-                      transform: 'scale(1)',
+                      opacity: 1,
+                      transform: 'translateY(0)',
                     },
                   },
                 }}>
@@ -608,7 +516,6 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
                       <Typography
                         variant='caption'
                         sx={{
-                          color:"#B3BED4",
                           fontFamily: 'DM Sans',
                           fontSize: { xs: '10px', sm: '12px' },
                           fontWeight: 400,
@@ -628,41 +535,24 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
                     title={`${item?.user?.name} ${item?.user?.lastname}`}
                   />
 
-                  {/* Approval Status */}
-                  {/* {!item.approved && (
+                  {!item.approved && (
                     <Chip
                       label='Pending Approval'
                       size='small'
                       sx={{
-                        color='#B3BED4',
+                        color: '#00008B',
+                        backgroundColor: '#ADD8E6',
                         position: 'absolute',
                         top: 8,
                         right: 50,
                         fontFamily: 'DM Sans',
                         fontSize: '12px',
                         fontWeight: 500,
+                        borderRadius: '4px',
+                        padding: '2px 8px',
                       }}
                     />
-                  )} */}
-                  {!item.approved && (
-  <Chip
-    label="Pending Approval"
-    size="small"
-    sx={{
-      color: '#00008B', // Text color
-      backgroundColor: '#ADD8E6', // Optional background color for better contrast
-      position: 'absolute',
-      top: 8,
-      right: 50,
-      fontFamily: 'DM Sans',
-      fontSize: '12px',
-      fontWeight: 500,
-      borderRadius: '4px', // Optional: Customize corner rounding
-      padding: '2px 8px', // Optional: Adjust padding for a more compact look
-    }}
-  />
-)}
-
+                  )}
                 </Box>
 
                 {/* Content */}

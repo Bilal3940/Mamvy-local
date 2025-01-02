@@ -65,7 +65,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
   }, [videoSrc]);
 
   return (
-    <Box minHeight={'15.4rem'} >
+    <Box minHeight={'18.4rem'} >
       {thumbnail ? (
         <Box style={{ position: "relative" }}>
   <Image 

@@ -178,22 +178,25 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
               fontWeight={'600'}>
               {mediaContent?.title}
             </Typography>
-   {!mediaContent?.approved && (
+
+
+            <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={isMobile ? '100%' : '50%'}>
+            {!mediaContent?.approved && (
         <Chip
           label="Pending Approval"
           size="small"
           sx={{
-             color: '#00008B', // Text color
-      backgroundColor: '#ADD8E6', // Optional background color for better contrast
-            position: 'absolute',
-          left:'11rem',
+             color: '#00008B', 
+      backgroundColor: '#ADD8E6', 
+            position: 'relative',
+          right:isMobile ? '2rem' : '0rem',
             fontFamily: 'DM Sans',
             fontSize: '12px',
             fontWeight: 500,
           }}
         />
       )}
-            <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={isMobile ? '100%' : '50%'}>
+
               { !isLocked && ( (checkPermissions(user?.roles || [], 'CLIENT_MEMORY_DELETE', story?.id) &&
                 user?.id === mediaContent?.user_id) ||
                 user?.id === story?.user_id ||

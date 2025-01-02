@@ -205,8 +205,8 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
 
 
 
-  const accentColor = adminPalette.accentColor;
-  const storyColor=adminPalette.storyBackgroundColor;
+  const accentColor = adminPalette.accentColor ;
+  const storyColor=adminPalette.storyBackgroundColor || 'transparent';
 
   const buttonStoryBackground =
     router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
@@ -250,9 +250,11 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
           background: 'transparent',
           width:'99.45%',
           left:'0',
-          backdropFilter: intermitenceData?.backgroundChange ? 'blur(1rem)' : 'none',
+          backdropFilter: intermitenceData?.backgroundChange ? 'blur(1.5625rem)' : 'none',
 
-        }}>
+        }}
+        
+        >
         <Box display={'flex'} padding={'1rem'} justifyContent={'space-between'} alignItems={'center'}>
           <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
          {  <ProfilePopup
@@ -343,12 +345,6 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
                   method={(event: any) => setShowDropdown(event)}
                 />
 
-                <ClickAwayListener onClickAway={handleClose} disableReactTree={true}>
-                  <Box position={'relative'}>
-                    <MuiDropdown hovercolor={buttonBackground} color={buttonStoryBackground} isOpen={isOpen} handleClose={handleClose} listItem={settingsOptions} />
-
-                  </Box>
-                </ClickAwayListener>
               </Box>
             </Box>
           )}
@@ -399,6 +395,14 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
                       type='notification'
                       blur={true}
                     />
+                  </Box>
+                </ClickAwayListener>
+
+      
+                <ClickAwayListener onClickAway={handleClose} disableReactTree={true}>
+                  <Box position={'relative'}>
+                    <MuiDropdown hovercolor={buttonBackground} color={buttonStoryBackground} isOpen={isOpen}   handleClose={() => handleClose()} listItem={settingsOptions} />
+
                   </Box>
                 </ClickAwayListener>
 

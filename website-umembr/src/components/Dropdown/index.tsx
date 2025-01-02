@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 
 const MotionContainer = motion(Box);
 const MotionList = motion(MenuList);
-
 const MotionItem = motion(MenuItem);
 
 const itemVariants: Variants = {
@@ -19,53 +18,43 @@ const itemVariants: Variants = {
   closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
 };
 
-
 interface CustomPopperProps {
-  hovercolor?:any;
-  color?:any;
+  hovercolor?: string;
+  color?: string;
   isOpen: boolean;
-  handleClose: any;
+  handleClose: () => void;
   width?: string;
   listItem: {
     label: string;
-    action: any;
-    
+    action: () => void;
   }[];
 }
 
-export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
+export const MuiDropdown = ({ hovercolor, color, isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
   const { t } = useTranslation();
   const { pathname } = useRouter();
-  let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :'transparent';
-  let bghoverColor =  pathname ===   '/app/home' ? palette.primary :hovercolor;
-
+  const bgColor = pathname === '/app/home' ? palette.cardBackground : color;
+  const bghoverColor = pathname === '/app/home' ? palette.primary : hovercolor;
 
   return (
     <AnimatePresence>
       {isOpen && (
         <MotionContainer
-          initial={!isOpen ? 'open' : 'closed'}
-          exit={!isOpen ? 'open' : 'closed'}
-          position={'absolute'}
-          top={'1rem'}
-          right={0}
+          initial="closed"
+          exit="closed"
+          animate="open"
+          position="fixed"
+          top="4.374rem"
+          right={'1rem'}
           width={width}
-          zIndex={10}
-          // sx={styles(color).dropDown}
-          sx={styles(color).dropDown}
-          
-          id='dropdown'
-          animate={isOpen ? 'open' : 'closed'}>
+          zIndex={10000}
+          sx={styles(bgColor).dropDown}
+          id="dropdown"
+        >
           <MotionList
-            sx={{
-              borderRadius: '0.25rem',
-              background: bgColor,
-              border: `0.063rem solid ${palette.cardBorder}`,
-              backdropFilter: 'blur(1.5625rem) !important',
-            }}
             variants={{
               open: {
-                clipPath: 'inset(0% 0% 0% 0%  )',
+                clipPath: 'inset(0% 0% 0% 0%)',
                 transition: {
                   type: 'spring',
                   bounce: 0,
@@ -83,27 +72,35 @@ export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, wi
                 },
               },
             }}
-            style={{ pointerEvents: isOpen ? 'auto' : 'none' }}>
-            {listItem?.map((item: any) => {
-              return (
-                <MotionItem
-                  key={item.label}
-                  sx={styles(bghoverColor).item}
-                  variants={itemVariants}
-                  onClick={() => {
-                    item?.action();
-                    handleClose();
-                  }}
-                  disableRipple>
-                  <Box>
-                    <Typography variant='body1'>{t(item.label)}</Typography>
-                  </Box>
-                </MotionItem>
-              );
-            })}
+            sx={{
+              pointerEvents: isOpen ? 'auto' : 'none',
+              borderRadius: '0.25rem',
+              backgroundColor: 'transparent',
+              border: `0.063rem solid ${palette.cardBorder}`,
+              backdropFilter: 'blur(1.5625rem) !important',
+              WebkitBackdropFilter: 'blur(1.5625rem) !important' , // Safari compatibility
+            }}
+          >
+            {listItem?.map((item) => (
+              <MotionItem
+                key={item.label}
+                sx={styles(bghoverColor).item}
+                variants={itemVariants}
+                onClick={() => {
+                  item.action();
+                  handleClose();
+                }}
+                disableRipple
+              >
+                <Box>
+                  <Typography variant="body1">{t(item.label)}</Typography>
+                </Box>
+              </MotionItem>
+            ))}
           </MotionList>
         </MotionContainer>
       )}
     </AnimatePresence>
   );
 };
+

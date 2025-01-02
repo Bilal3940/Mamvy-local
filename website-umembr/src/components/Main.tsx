@@ -279,10 +279,7 @@ const Main: React.FC = () => {
       backgroundColor: adminPalette.accentColor,
       fontSize: '14px',
       textTransform: 'none',
-      borderRadius: '20px',
-      backdropFilter: 'blur(10px)',
-      padding: '11px 16px',
-      marginRight: { xs: '0', md: '50px' },
+      borderRadius: '9999px',
       boxShadow: '0px 4px 14px 0px #00000029',
       '&:hover': {
         backgroundColor: adminPalette.accentColor,

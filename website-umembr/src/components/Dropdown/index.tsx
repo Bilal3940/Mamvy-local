@@ -37,6 +37,8 @@ export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, wi
   const { t } = useTranslation();
   const { pathname } = useRouter();
   let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :color;
+  let bghoverColor =  pathname ===   '/app/home' ? palette.primary :hovercolor;
+
 
   return (
     <AnimatePresence>
@@ -49,7 +51,7 @@ export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, wi
           right={0}
           width={width}
           zIndex={10}
-          sx={styles().dropDown}
+          sx={styles(color).dropDown}
           id='dropdown'
           animate={isOpen ? 'open' : 'closed'}>
           <MotionList
@@ -57,7 +59,7 @@ export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, wi
               borderRadius: '0.25rem',
               background: bgColor,
               border: `0.063rem solid ${palette.cardBorder}`,
-              backdropFilter: 'blur(1.5625rem)',
+              backdropFilter: 'blur(1.5625rem) !important',
             }}
             variants={{
               open: {
@@ -84,7 +86,7 @@ export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, wi
               return (
                 <MotionItem
                   key={item.label}
-                  sx={styles(hovercolor).item}
+                  sx={styles(bghoverColor).item}
                   variants={itemVariants}
                   onClick={() => {
                     item?.action();

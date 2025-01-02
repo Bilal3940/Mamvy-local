@@ -15,6 +15,8 @@ import {
 import { authSelector, StoragePopupSelector } from '../selectors';
 import {
   CLEAN_PREV_PROMPTS,
+  CLEAR_PENDING_STORY,
+  // CLEAR_PENDING_STORY,
   CREATE_PAYLOAD,
   CREATE_PAYLOAD_TRIGGER,
   CREATE_STORIES,
@@ -22,10 +24,16 @@ import {
   DELETE_STORY,
   DELETE_STORY_ASYNC,
   GET_STORY_STATUS_ASYNC,
+  LOAD_PENDING_STORY,
+  LOAD_PENDING_STORY_ASYNC,
+  // LOAD_PENDING_STORY,
   SET_ACTUAL_STORY,
   SET_CODE,
   SET_CREATE_SECTION,
   SET_CREATE_SECTION_TRIGGER,
+  SET_PENDING_STORY,
+  SET_PENDING_STORY_ASYNC,
+  // SET_PENDING_STORY,
   SET_PROMPTS,
   SET_PROMPTS_TRIGGER,
   SET_PUBLICATION,
@@ -173,6 +181,26 @@ function* setCodeStory({ payload }: any) {
     if (error?.message?.includes('error')) message = JSON.parse(message)?.error;
     yield call(showDialog, message, 'error');
   }
+}
+
+function* savePendingStorySaga({ payload }: any) {
+  yield put({ type: SET_PENDING_STORY_ASYNC, payload });
+}
+
+function* clearPendingStorySaga() {
+  yield put({ type: CLEAR_PENDING_STORY });
+}
+
+function* loadPendingStorySaga() {
+  yield put({ type: LOAD_PENDING_STORY_ASYNC });
+}
+
+
+
+export function* watchPendingStoryActions() {
+  yield takeLatest(SET_PENDING_STORY, savePendingStorySaga);
+  yield takeLatest(CLEAR_PENDING_STORY, clearPendingStorySaga);
+  yield takeLatest(LOAD_PENDING_STORY, loadPendingStorySaga);
 }
 
 export function* watchCreateSectionStory() {

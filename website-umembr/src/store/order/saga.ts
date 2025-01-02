@@ -37,7 +37,6 @@ function* createOrderAsync({ payload }: any): any {
         const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
         if (result) {
             yield put(actionObject(CREATE_ORDER_ASYNC, result));
-            yield call(showDialog, 'Payment successful', 'success');
             yield put(actionObject(REFRESH_USER_DATA))
             yield put(actionObject(CLOSE_SUBSCRIPTION_POPUP))
         }

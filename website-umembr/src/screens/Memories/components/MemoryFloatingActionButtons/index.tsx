@@ -23,7 +23,7 @@ const MemoryFloatingActionButtons: FC<MemoryFloatingActionButtonsProps> = (props
   };
 
   return (
-    <Box position={'fixed'} right={'0'} bottom={'-0.9rem'} zIndex={2} flexDirection={'column'}>
+    <Box position={'fixed'} right={'0'} bottom={'-0.9rem'} zIndex={10001} flexDirection={'column'}>
       { !story?.isLocked  &&  (checkPermissions(user?.roles || [], 'CLIENT_COLLABORATOR_ADD', story?.id) || user?.id === story?.user_id) && (
         <Box margin={'0.75rem 0'}>
           <Fab

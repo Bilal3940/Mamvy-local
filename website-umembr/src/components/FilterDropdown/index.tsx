@@ -193,7 +193,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
           top={isMobile ? '1rem' : top}
           right={'1rem'}
           width={'20rem'}
-          zIndex={10}
+          // zIndex={10}
           sx={styles(isMobile).dropDown}
           id='dropdown'
           animate={isOpen ? 'open' : 'closed'}>
@@ -201,6 +201,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
             sx={{
               background: `${backgroundColor}d9`,
               border: `0.063rem solid ${palette.cardBorder}`,
+              zIndex:'99999',
               borderRadius: '0.25rem',
               padding: '1rem',
               backdropFilter: 'blur(1.5625rem) !important',
@@ -226,7 +227,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
               },
             }}
             style={{ pointerEvents: isOpen ? 'auto' : 'none' }}>
-            <Box display={'flex'} justifyContent={'center'} marginBottom={'0.5rem'}>
+            <Box zIndex={'10002'} display={'flex'} justifyContent={'center'} marginBottom={'0.5rem'}>
               <MuiTabs
                 color={accentColor}
                 tabs={filterTabs}

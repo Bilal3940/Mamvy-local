@@ -104,7 +104,7 @@ export const RichText: FC<IRichTextProps> = ({
 
       
       setAdminPalette({
-        storyBackgroundColor: colors.storyBackgroundColor || '#333333', 
+        storyBackgroundColor: colors.storyBackgroundColor || 'transparent', 
         textColor: colors.textColor || '#fff', 
         accentColor: colors.accentColor || '#BF5700', 
       });
@@ -114,17 +114,16 @@ export const RichText: FC<IRichTextProps> = ({
   const backgroundColorEdit = adminPalette.storyBackgroundColor;
   const accentColor = adminPalette.accentColor;
   const buttonBackground =
-    router.pathname === '/app/story/[id]/update' 
-      ? accentColor 
+    router.pathname === '/app/story/[id]/update'
+      ? accentColor
       : palette?.cardBackground;
   const notificationBackground =
-    router.pathname === '/app/story/[id]/update' 
-      ? accentColor 
+    router.pathname === '/app/story/[id]/update'
+      ? accentColor
       : palette?.primary;
   const EditStoryBackground =
-    router.pathname === '/app/story/[id]/update' 
-      ? backgroundColorEdit 
-      : palette.cardBackground;
+    router.pathname === '/app/story/[id]/update'
+      ? palette.cardBackground :palette.cardBackground;
 
   const initialValue: any = [
     {
@@ -189,7 +188,7 @@ export const RichText: FC<IRichTextProps> = ({
         {t(label)}
       </Typography>
 
-      <Paper elevation={0} data-cy={testId} sx={styles(EditStoryBackground).paper}>
+      <Paper elevation={0} data-cy={testId} sx={styles( EditStoryBackground).paper}>
         <Slate editor={editor} initialValue={editorValue} onChange={handleChange}>
           <Box
             display={isMobile ? 'grid' : 'flex'}

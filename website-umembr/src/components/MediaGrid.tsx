@@ -17,14 +17,31 @@ import Image from 'next/image';
 
 import { palette } from '@/theme/constants';
 import { styles } from './AppBar/CancelModal/styles';
-import { getExtraContent, getMemories, getStorageLog, getStorageLogs, getUserPurchases, hidePopup, removeMemory, showPopup } from '@/store/actions';
+import {
+  getExtraContent,
+  getMemories,
+  getStorageLog,
+  getStorageLogs,
+  getUserPurchases,
+  hidePopup,
+  removeMemory,
+  showPopup,
+} from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { authSelector, extrasSelector, homeSelector, memorySelector, purchaseSelector, storagelogSelector } from '@/store/selectors';
+import {
+  authSelector,
+  extrasSelector,
+  homeSelector,
+  memorySelector,
+  purchaseSelector,
+  storagelogSelector,
+} from '@/store/selectors';
 import {
   cdn_url,
   checkPermissions,
   ExtractCallbackType,
   formatDate,
+  formatPastDate,
   hasUserPurchasedTheStory,
   promisifiedCallback,
 } from '@/utils';
@@ -45,8 +62,6 @@ import { Masonry } from '@mui/lab';
 import PopupModal from './PayWallModal';
 import VideoThumbnail from './VideoThumbnail';
 import Search from './AppBar/Search';
-import FormatDateMemory from './FormatDateMemory';
-import { MuiIconLabelButton } from './IconLabelButton';
 
 type MediaType = 'image' | 'audio' | 'video' | 'text';
 
@@ -72,11 +87,12 @@ interface MediaItem {
 interface MediaGridProps {
   story?: any;
   extendedPalette?: any;
+  actionSuccessColab?: any;
 }
 
-const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
+const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSuccessColab }) => {
   const dispatch = useDispatch();
-  const { actionSuccess,memoriesLoaded } = useSelector(memorySelector);
+  const { actionSuccess, memoriesLoaded } = useSelector(memorySelector);
   const [openModal, setOpenModal] = useState(false);
   const [search, setSearch] = useState('');
   const router = useRouter();
@@ -103,19 +119,13 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
   const [modalOpen, setModalOpen] = useState(false);
   const [step, setStep] = useState(0);
-  const storagePopup = useSelector((state:any) => state.storageLog.storagePopup);
-  const storageLog= useSelector((state:any)=>state.storageLog.storageLog)
-   const [fadeIn, setFadeIn] = useState(false);
-
-  useEffect(() => {
-    // Trigger fade-in effect when the component mounts
-    setFadeIn(true);
-  }, []);
+  const storagePopup = useSelector((state: any) => state.storageLog.storagePopup);
+  const storageLog = useSelector((state: any) => state.storageLog.storageLog);
 
   const handleClose = (step: any): void => {
     if (step === 2) {
       setStep(step);
-     
+
       dispatch(getUserPurchases(user && user?.id));
       setModalOpen(false);
     } else {
@@ -154,47 +164,44 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette }) => {
   const deleteMemory = async () => {
     setSelectedMedia(null);
     switchDeleteMemory();
-    dispatch(showPopup())
-    console.log("i am the state after chnageing - dev test", storagePopup)
+    dispatch(showPopup());
+    console.log('i am the state after chnageing - dev test', storagePopup);
     router.push(`/app/story/${story?.url}`);
     const { callback, promise } = promisifiedCallback<ExtractCallbackType<typeof removeMemory>>();
     dispatch(removeMemory({ id: selectedMedia?.id, story_id: story?.id }, callback));
     const { ok } = await promise;
     if (ok) {
-     dispatch(getStorageLogs(user?.id))
+      dispatch(getStorageLogs(user?.id));
     }
   };
-  // useEffect(() => {
-  //   console.log("i am the updated log", storageLog)
-  //   if (storageLog?.log?.toast_80 && !storagePopup) {
-  //       alert("80% reached")
-  //       dispatch(hidePopup());
-  //   }
-  //   else{
-  //     dispatch(showPopup())
-  //   }
-  // }, [storageLog]);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
-console.log("i am the updated state of popup- dev test", storagePopup)
+  console.log('i am the updated state of popup- dev test', storagePopup);
   useEffect(() => {
     if (user && user.id) {
-   
       dispatch(getUserPurchases(user && user?.id));
     }
-  }, [step , setStep]);
+  }, [step, setStep]);
   const AllowOpenModel = (item: any) => {
-    
     if (user && user.id) {
-      
       dispatch(getUserPurchases(user && user?.id));
     }
-    //console.log('called');
+    
     if (extraContent) {
-      //console.log('if extra content');
+      
       if (extraContent.isPaid) {
-        //console.log('if is paid');
+        
         if (isAuth) {
-          //console.log('if is auth');
+          
           if (
             hasUserPurchasedTheStory(user.id, story.id, userPurchases) ||
             checkPermissions(user?.roles || [], 'CLIENT_STORY_GET', story?.id) ||
@@ -203,10 +210,10 @@ console.log("i am the updated state of popup- dev test", storagePopup)
           ) {
             setModalOpen(false);
             handleOpenModal(item);
-            //console.log('called1')
+            
             window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
           } else {
-            //console.log('else no access');
+            
             setModalOpen(true);
           }
         } else {
@@ -215,14 +222,12 @@ console.log("i am the updated state of popup- dev test", storagePopup)
       } else {
         setModalOpen(false);
         handleOpenModal(item);
-        //console.log('jbh')
+        
         window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
       }
-    }
-    else{
-    
+    } else {
       handleOpenModal(item);
-    
+
       window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
     }
   };
@@ -360,327 +365,325 @@ console.log("i am the updated state of popup- dev test", storagePopup)
         return null;
     }
   };
-
+  console.log("i am the success of colab", actionSuccessColab)
   return (
     <>
       <div>
-        <Box
-          sx={{
-            padding:'10px 1px 10px 8px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 2,
-            backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
-            flexDirection:'row',
-            borderRadius: '16px',
-            margin:'8px',
-          }}>
-          
-          <Search
-            color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onClear={() => setSearch('')}
-              sx={{ width: {
-            xs: '12rem', // Small screens
-            sm: '16rem', // Large screens
+  
+{
+ actionSuccessColab  && (
+    <Box
+    sx={{
+      padding: '10px 1px 10px 8px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      mb: 2,
+      backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
+      flexDirection: 'row',
+      position:'relative',
+      borderRadius: '16px',
+      zIndex:'998',
+      margin: '8px',
+    }}>
+    <Search
+      color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      onClear={() => setSearch('')}
+      sx={{
+        width: {
+          xs: '12rem', 
+          sm: '16rem', 
+        },
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            border: 'none', 
+            color: 'white',
           },
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              border: 'none', // Remove border
-              color:"white"
-            },
-            '& input': {
-              color: 'white', // Change the text and password dots color to white
-            },
-      
+          '& input': {
+            color: 'white', 
           },
-        
-      
-          
-          
-          '& input:-webkit-autofill': {
-         //   WebkitBoxShadow: '0 0 0 100px white inset', // Match the background color
-            WebkitTextFillColor: 'white', 
-            // Match the text color
-            transition: 'background-color 5000s ease-in-out 0s', // Prevent autofill background reset
-          },
-         }}
-            />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: { xs: 'flex-end', sm: 'flex-end' },
-              flexGrow: 1,
-              flexWrap: { xs: 'nowrap', sm: 'nowrap' },
-              gap: '2px',
-              margin:'0',
-            }}>
-            {/* Sort Dropdown */}
-            {/* <MuiIconButton
-              icon='/icons/sortIcon'
-              altIcon='filter'
-              background={
-                isChronological ? ` ${palette.black}  !important` : `${extendedPalette.buttonbackgroundIcon} !important`
-              }
-              width={40}
-              height={40}
-              iconHeight={18}
-              iconWidth={20}
-              sx={{
-                transform: !isChronological ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.9s ease',
-                '&:hover': {
-                  backgroundColor: extendedPalette.buttonbackgroundIcon,
-                },
-              }}
-              method={(event: any) => toggleSortingOrder()}
-            /> */}
-            <MuiIconButton
-              icon='/icons/regenerate'
-              altIcon='filter'
-              background={palette?.black}
-              width={40}
-              height={40}
-              iconHeight={25}
-              iconWidth={20}
-              sx={{
-                transition: 'transform 3s ease',
-                transform: rotate ? 'rotate(2000deg)' : 'rotate(0deg)',
-                '&:hover': {
-                  backgroundColor: extendedPalette.buttonbackgroundIcon,
-                },
-              }}
-              method={(event: any) => handleRefresh()}
-            />
-            <MuiIconLabelButton
-              icon='/icons/filter'
-              label='Filter'
-              altIcon='filter'
-              background={
-                isFilterActive ? `${extendedPalette.buttonbackgroundIcon} !important` : ` ${palette.black}  !important`
-              }
-              borderColor={palette.black}
-              width={80}
-              isRounded={false}
-              height={40}
-              iconHeight={12}
-              iconWidth={20}
-              sx={{
-                // transform: openFilters ? 'rotate(180deg)' : 'rotate(0deg)',
-                // transition: 'transform 0.3s ease',
-                borderRadius:'24px',
-                '&:hover': {
-                  backgroundColor: `${extendedPalette.buttonbackgroundIcon} !important`,
-                },
-              }}
-              method={(event: any) => setShowFilters(event)}
-            />
+        },
 
-            <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
-              <Box position={'relative'}>
-                <FilterDropdown
-                  extendedPalette={extendedPalette}
-                  callbackfunction={(flag: boolean) => callbackfunction(flag)}
-                  top={'4rem'}
-                  isOpen={openFilters}
-                  listItem={[prompts, collaborators, types]}
-                />
-              </Box>
-            </ClickAwayListener>
-          </Box>
+        '& input:-webkit-autofill': {
+          
+          WebkitTextFillColor: 'white',
+          
+          transition: 'background-color 5000s ease-in-out 0s', 
+        },
+      }}
+    />
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: { xs: 'flex-end', sm: 'flex-end' },
+        flexGrow: 1,
+        flexWrap: { xs: 'nowrap', sm: 'nowrap' },
+        gap: '2px',
+        margin: '0',
+      }}>
+      {/* Sort Dropdown */}
+      {/* <MuiIconButton
+        icon='/icons/sortIcon'
+        altIcon='filter'
+        background={
+          isChronological ? ` ${palette.black}  !important` : `${extendedPalette.buttonbackgroundIcon} !important`
+        }
+        width={40}
+        height={40}
+        iconHeight={18}
+        iconWidth={20}
+        sx={{
+          transform: !isChronological ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 0.9s ease',
+          '&:hover': {
+            backgroundColor: extendedPalette.buttonbackgroundIcon,
+          },
+        }}
+        method={(event: any) => toggleSortingOrder()}
+      /> */}
+      {/* <MuiIconButton
+        icon='/icons/regenerate'
+        altIcon='filter'
+        background={palette?.black}
+        width={40}
+        height={40}
+        iconHeight={25}
+        iconWidth={20}
+        sx={{
+          transition: 'transform 3s ease',
+          transform: rotate ? 'rotate(2000deg)' : 'rotate(0deg)',
+          '&:hover': {
+            backgroundColor: extendedPalette.buttonbackgroundIcon,
+          },
+        }}
+        method={(event: any) => handleRefresh()}
+      /> */}
+      <MuiIconButton
+        icon='/icons/filter'
+        label='Filter'
+        altIcon='filter'
+        direction='row'
+        background={
+          isFilterActive ? `${extendedPalette.buttonbackgroundIcon} !important` : ` ${palette.black}  !important`
+        }
+        width={80}
+        isRounded={false}
+        height={40}
+        iconHeight={12}
+        iconWidth={20}
+        sx={{
+          borderRadius: '24px',
+          '&:hover': {
+            backgroundColor: `${extendedPalette.buttonbackgroundIcon} !important`,
+            borderColor: `${extendedPalette.buttonbackgroundIcon}`,
+          },
+        }}
+        method={(event: any) => setShowFilters(event)}
+      />
+
+      <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
+        <Box position={'relative'}>
+          <FilterDropdown
+            extendedPalette={extendedPalette}
+            callbackfunction={(flag: boolean) => callbackfunction(flag)}
+            top={'4rem'}
+            isOpen={openFilters}
+            listItem={[prompts, collaborators, types]}
+          />
         </Box>
-
+      </ClickAwayListener>
+    </Box>
+  </Box>
+  )
+}
         {isDivider && <Divider sx={styles.divider} />}
 
         {/* Media Grid */}
 
-          {actionSuccess && memoriesLoaded.length > 0 ? (
-        <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={2} sx={{ margin: 0 }}>
-          {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
-  <Paper
-    onClick={() => AllowOpenModel(item)}
-    key={index}
-    sx={{
-      borderRadius: 2,
-      overflow: 'hidden',
-      backgroundColor: extendedPalette.cardMediaBackground,
-      color: extendedPalette.cardMediaColor,
-      display: 'flex',
-      flexDirection: 'column',
-      border: '1px solid rgba(255, 255, 255, 0.2)',
-      cursor: 'pointer',
-      animation: `fadeIn 0.6s ease-in-out`,
-      '@keyframes fadeIn': {
-        '0%': {
-          transform: 'scale(0.95)',
-        },
-        '100%': {
-          transform: 'scale(1)',
-        },
-      },
-    }}>
-    {/* Card Header */}
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '8px 16px',
-        color: extendedPalette.cardHeaderText,
-        position: 'relative',
-      }}>
-      {/* Media Icon and Text */}
-      <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: '10px' }}>
-        <Box sx={{ mr: 1 }}>
-          {getIcon(item.type, extendedPalette.cardIconColor)}
-        </Box>
-        <Box>
-          <Typography
-            variant='body2'
-            sx={{
-              fontFamily: 'DM Sans',
-              fontSize: { xs: '14px', sm: '16px' },
-              fontWeight: 400,
-              lineHeight: { xs: '16.8px', sm: '19.2px' },
-              textAlign: 'left',
-            }}>
-            {item.title}
-          </Typography>
+        {actionSuccessColab && actionSuccess && memoriesLoaded.length > 0 ? (
+          <Masonry  columns={{ xs: 1, sm: 2, md: 4 }} spacing={2} sx={{position:'relative',  margin: 0, zIndex:'900' }}>
+            {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
+              <Paper
+                onClick={() => AllowOpenModel(item)}
+                key={index}
+                sx={{
+                  borderRadius: 2,
+                  overflow: 'hidden',
+                  backgroundColor: extendedPalette.cardMediaBackground,
+                  color: extendedPalette.cardMediaColor,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  animation: `fadeIn 1s ease-in-out`,
+                  '@keyframes fadeIn': {
+                    '0%': {
+                      transform: 'scale(0.65)',
+                    },
+                    '100%': {
+                      transform: 'scale(1)',
+                    },
+                  },
+                }}>
+                {/* Card Header */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '8px 16px',
+                    color: extendedPalette.cardHeaderText,
+                    position: 'relative',
+                  }}>
+                  {/* Media Icon and Text */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: '10px' }}>
+                    <Box sx={{ mr: 1 }}>{getIcon(item.type, extendedPalette.cardIconColor)}</Box>
+                    <Box>
+                      <Typography
+                        variant='body2'
+                        sx={{
+                          fontFamily: 'DM Sans',
+                          fontSize: { xs: '14px', sm: '16px' },
+                          fontWeight: 400,
+                          lineHeight: { xs: '16.8px', sm: '19.2px' },
+                          textAlign: 'left',
+                        }}>
+                        {item.title}
+                      </Typography>
 
-          <Typography
-            variant='caption'
-            sx={{
-              fontFamily: 'DM Sans',
-              fontSize: { xs: '10px', sm: '12px' },
-              fontWeight: 400,
-              lineHeight: { xs: '12px', sm: '14.4px' },
-              textAlign: 'left',
-            }}>
-            <FormatDateMemory createdDate={item.created_at} />
-          </Typography>
-        </Box>
-      </Box>
+                      <Typography
+                        variant='caption'
+                        sx={{
+                          fontFamily: 'DM Sans',
+                          fontSize: { xs: '10px', sm: '12px' },
+                          fontWeight: 400,
+                          lineHeight: { xs: '12px', sm: '14.4px' },
+                          textAlign: 'left',
+                        }}>
+                        {formatPastDate(item?.created_at)}
+                      </Typography>
+                    </Box>
+                  </Box>
 
-      {/* User Avatar */}
-      <Avatar
-        src={item?.user?.picture ? `${cdn_url}${item?.user?.picture}` : '/icons/image1.svg'}
-        alt={item.username}
-        sx={{ width: 32, height: 32 }}
-        title={`${item?.user?.name} ${item?.user?.lastname}`}
-      />
+                  {/* User Avatar */}
+                  <Avatar
+                    src={item?.user?.picture ? `${cdn_url}${item?.user?.picture}` : '/icons/image1.svg'}
+                    alt={item.username}
+                    sx={{ width: 32, height: 32 }}
+                    title={`${item?.user?.name} ${item?.user?.lastname}`}
+                  />
 
-      {/* Approval Status */}
-      {!item.approved && (
-        <Chip
-          label="Pending Approval"
-          color="warning"
-          size="small"
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 50,
-            fontFamily: 'DM Sans',
-            fontSize: '12px',
-            fontWeight: 500,
-          }}
-        />
-      )}
-    </Box>
+                  {/* Approval Status */}
+                  {!item.approved && (
+                    <Chip
+                      label='Pending Approval'
+                      color='warning'
+                      size='small'
+                      sx={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 50,
+                        fontFamily: 'DM Sans',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                      }}
+                    />
+                  )}
+                </Box>
 
-    {/* Content */}
-    <Box
-      sx={{ padding: '16px' }}
-      onClick={() => {
-        AllowOpenModel(item);
-      }}>
-      {item.type === 'image' && (
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', borderRadius: '12px' }}>
-          <Image
-            src={`${cdn_url}${item.asset}`}
-            alt={item.title}
-            layout='responsive'
-            width={100}
-            height={100}
-            style={{ borderRadius: '12px' }}
-          />
-        </Box>
-      )}
-      {item.type === 'video' && <VideoThumbnail videoSrc={`${cdn_url}${item.asset}`} />}
-      {item.type === 'audio' && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            gap: '5px',
-          }}>
-          <div
-            style={{
-              position: 'relative',
-              cursor: 'pointer',
-              width: '50px',
-              maxWidth: '15%',
-            }}>
-            <Image src={'/icons/playbut.svg'} alt={'icon'} layout='responsive' width={50} height={50} />
-          </div>
+                {/* Content */}
+                <Box
+                  sx={{ padding: '16px' }}
+                  onClick={() => {
+                    AllowOpenModel(item);
+                  }}>
+                  {item.type === 'image' && (
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', borderRadius: '12px' }}>
+                      <Image
+                        src={`${cdn_url}${item.asset}`}
+                        alt={item.title}
+                        layout='responsive'
+                        width={100}
+                        height={100}
+                        style={{ borderRadius: '12px' }}
+                      />
+                    </Box>
+                  )}
+                  {item.type === 'video' && <VideoThumbnail videoSrc={`${cdn_url}${item.asset}`} />}
+                  {item.type === 'audio' && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        gap: '5px',
+                      }}>
+                      <div
+                        style={{
+                          position: 'relative',
+                          cursor: 'pointer',
+                          width: '50px',
+                          maxWidth: '15%',
+                        }}>
+                        <Image src={'/icons/playbut.svg'} alt={'icon'} layout='responsive' width={50} height={50} />
+                      </div>
 
-          <div
-            style={{
-              position: 'relative',
-              cursor: 'pointer',
-              flex: '1',
-              display: 'flex',
-              justifyContent: 'center',
-              maxWidth: '70%',
-            }}>
-            <Audio2Icon
-              color={extendedPalette.audioGradientColor2}
-              color2={extendedPalette.audioGradientColor2}
-            />
-          </div>
-        </div>
-      )}
-      {item.type === 'text' && (
-        <Box
-          sx={{
-            maxHeight: { xs: '80px', sm: '80px', md: '135px' },
-            width: { xs: '100%', sm: '100%', md: '100%' },
-            overflow: 'hidden',
-            position: 'relative',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
-            maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
-            '&:after': {
-              content: '""',
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '15px',
-              background: 'linear-gradient(to bottom, rgba(43, 54, 114, 0))',
-            },
-          }}>
-          <RtfComponent rtf={item?.type === 'text' ? JSON.parse(item?.asset) : ''} label={'p'} />
-        </Box>
-      )}
-    </Box>
-  </Paper>
-))}
-
-        </Masonry>
-) : actionSuccess && memoriesLoaded.length === 0 ? (
-  <Box width={'100%'} height={'50vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-    <Typography variant="h6" color={palette.white}>
-      No memories available.
-    </Typography>
-  </Box>
-) : (
-  <Box width={'100%'} height={'50vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-    <CircularProgress sx={{ color: palette.faintGray }} />
-  </Box>
-)}
+                      <div
+                        style={{
+                          position: 'relative',
+                          cursor: 'pointer',
+                          flex: '1',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          maxWidth: '70%',
+                        }}>
+                        <Audio2Icon
+                          color={extendedPalette.audioGradientColor2}
+                          color2={extendedPalette.audioGradientColor2}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {item.type === 'text' && (
+                    <Box
+                      sx={{
+                        maxHeight: { xs: '80px', sm: '80px', md: '135px' },
+                        width: { xs: '100%', sm: '100%', md: '100%' },
+                        overflow: 'hidden',
+                        position: 'relative',
+                        WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+                        maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+                        '&:after': {
+                          content: '""',
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: '15px',
+                          background: 'linear-gradient(to bottom, rgba(43, 54, 114, 0))',
+                        },
+                      }}>
+                      <RtfComponent rtf={item?.type === 'text' ? JSON.parse(item?.asset) : ''} label={'p'} />
+                    </Box>
+                  )}
+                </Box>
+              </Paper>
+            ))}
+          </Masonry>
+        ) : actionSuccess && memoriesLoaded.length === 0 ? (
+          <Box width={'100%'} height={'50vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            <Typography variant='h6' color={palette.white}>
+              No memories available.
+            </Typography>
+          </Box>
+        ) : (
+          <Box width={'100%'} height={'50vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            <CircularProgress sx={{ color: palette.faintGray }} />
+          </Box>
+        )}
 
         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
           {!allItemsLoaded && (

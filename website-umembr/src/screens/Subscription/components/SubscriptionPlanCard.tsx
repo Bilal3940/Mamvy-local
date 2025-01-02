@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Button, Box } from '@mui/material';
+import { Card, CardContent, Typography, Button, Box, useMediaQuery, Theme } from '@mui/material';
 import { palette } from '@/theme/constants';
 
 interface Price {
@@ -18,6 +18,7 @@ interface SubscriptionPlanCardProps {
 }
 
 const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, selectedPlan, onSelect }) => {
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   return (
     <Card
       onClick={() => onSelect(price.priceId)}

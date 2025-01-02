@@ -79,9 +79,9 @@ export const DeleteMemoryModal = ({extendedPalette ,open, onClose, confirmMethod
             <MuiButton type='submit' loading={false} variant={'contained'} 
              sx={{
               '&:hover':{
-                backgroundColor: extendedPalette.buttonbackgroundIcon,
+                backgroundColor: palette?.error,
               }}}
-               backgroundColor={extendedPalette.buttonbackgroundIcon}disabled={false} method={confirmMethod}
+               backgroundColor={palette?.error}disabled={false} method={confirmMethod}
             >
               <Typography variant='button' color={palette.white}>
                 {t('delete')}

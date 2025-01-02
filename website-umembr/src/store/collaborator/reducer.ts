@@ -1,10 +1,11 @@
-import { COLLABORATOR_GET_ASYNC, GUEST_INVITED, INVITE_ACCEPTED_ASYNC } from './action-types';
+import { COLLABORATOR_GET_ASYNC,CLEAR_COLLABORATORS, GUEST_INVITED, INVITE_ACCEPTED_ASYNC } from './action-types';
 
 const initialState = {
   guest: false,
   type : '',
   collaborators: [],
-  roleUser: ''
+  roleUser: '',
+  actionSuccessColab: false
 };
 
 const collaborator = (state = initialState, { type, payload }: any) => {
@@ -14,7 +15,9 @@ const collaborator = (state = initialState, { type, payload }: any) => {
     case INVITE_ACCEPTED_ASYNC:
       return { ...state, roleUser: payload };
     case COLLABORATOR_GET_ASYNC:
-      return { ...state, collaborators: payload };
+      return { ...state, actionSuccessColab: true, collaborators: payload };
+    case CLEAR_COLLABORATORS:
+      return {initialState}
     default:
       return state;
   }

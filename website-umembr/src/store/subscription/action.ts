@@ -12,6 +12,9 @@ import {
   RESUME_SUBSCRIPTION,
   RENEW_SUBSCRIPTION,
   UPDATE_SUBSCRIPTION_STATUS,
+  GET_PAYMENT_METHOD,
+  UPDATE_PAYMENT_METHOD,
+  FETCH_LATEST_INVOICE,
 } from './action-types';
 
 export const updateProduct = (body: any): any =>
@@ -48,3 +51,13 @@ export const renewSubscription = (payload: any): any =>
 // New action creator for creating checkout sessions
 export const createCheckoutSession = (payload: any): any =>
   actionObject(CREATE_CHECKOUT_SESSION, payload);
+
+export const getPaymentMethod = (payload: any): any =>
+  actionObject(GET_PAYMENT_METHOD, payload);
+
+export const updatePaymentMethod = (payload: any): any =>
+  actionObject(UPDATE_PAYMENT_METHOD, payload);
+
+export const fetchLatestInvoice = (payload: any): any =>
+  actionObject(FETCH_LATEST_INVOICE, payload);
+  

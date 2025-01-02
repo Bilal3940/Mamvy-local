@@ -207,13 +207,14 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
 
   const accentColor = adminPalette.accentColor;
   const storyColor=adminPalette.storyBackgroundColor;
+
+  const buttonStoryBackground =
+    router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
+      ? storyColor // Custom background for the specific page
+      : palette?.cardBackground;
  const buttonBackground =
     router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
       ? accentColor // Custom background for the specific page
-      : palette?.cardBackground;
-       const buttonStoryBackground =
-    router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
-      ? storyColor // Custom background for the specific page
       : palette?.cardBackground;
       const notificationBackground =
     router.pathname === '/app/story/[id]' // Replace '/specific-page' with your desired route
@@ -345,6 +346,7 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
                 <ClickAwayListener onClickAway={handleClose} disableReactTree={true}>
                   <Box position={'relative'}>
                     <MuiDropdown hovercolor={buttonBackground} color={buttonStoryBackground} isOpen={isOpen} handleClose={handleClose} listItem={settingsOptions} />
+
                   </Box>
                 </ClickAwayListener>
               </Box>

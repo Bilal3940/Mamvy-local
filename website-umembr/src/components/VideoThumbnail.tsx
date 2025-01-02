@@ -1,3 +1,4 @@
+import { Box, CircularProgress } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
 
@@ -64,9 +65,9 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
   }, [videoSrc]);
 
   return (
-    <div>
+    <Box minHeight={'15.4rem'} >
       {thumbnail ? (
-        <div style={{ position: "relative" }}>
+        <Box style={{ position: "relative" }}>
   <Image 
     src={thumbnail} 
     alt="Video Thumbnail" 
@@ -75,7 +76,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
 
     style={{width:'100%', height:'auto'}} 
   />
-          <div
+          <Box
             style={{
               position: "absolute",
               top: "50%",
@@ -92,9 +93,9 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
             }}
             onClick={() => console.log("Play video")} // Replace with your play video function
           />
-        </div>
+        </Box>
       ) : (
-        <div>Loading Thumbnail...</div>
+        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} minHeight={'10rem'} > <CircularProgress/> </Box>
       )}
 
       <video ref={videoRef} style={{ display: "none" }} preload="metadata" crossOrigin="anonymous">
@@ -102,7 +103,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
         Your browser does not support the video tag.
       </video>
       <canvas ref={canvasRef} style={{ display: "none" }} />
-    </div>
+    </Box>
   );
 };
 

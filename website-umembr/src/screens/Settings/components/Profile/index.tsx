@@ -10,9 +10,6 @@ import {
   IconButton,
   Button,
 } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {  MuiButton, MuiTextField2 } from '@/components';
 import { palette } from '@/theme/constants';
@@ -20,13 +17,13 @@ import Image from 'next/image';
 import { FormikConfig } from './formik';
 import { useTranslation } from 'next-i18next';
 import { UseFirstRender, UseIntermitence } from '@/hooks';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, subscriptionSelector } from '@/store/selectors';
 import { FetchFileService, States, cdn_url, checkRoleAndPermission, fallbackRestUrl, fileConverter, logoutWithFacebook } from '@/utils';
 import {
 
   editProfileView,
+  getPaymentMethod,
   logout,
   openDeleteModal,
   openSubscriptionModal,
@@ -39,93 +36,9 @@ import { getUploadSignedUrl } from '@/store/file/action';
 import StorageProgressBar from '@/components/ProgressBar';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { PaymentMethodResponse } from '../../ManageSubscription.tsx/types';
+import { ManageSubscription } from '../../ManageSubscription.tsx';
 import ChevronLeftIconComponent from '../../../../../public/icons/components/chevron-left';
-import { ManageSubscription } from '@/components/Profile/ManageSubscription';
-
-interface PaymentMethodResponse {
-  result: {
-    success: boolean;
-    subscriptionDetails: SubscriptionDetails;
-    paymentMethod: PaymentMethod;
-    message: string;
-  };
-}
-interface SubscriptionDetails {
-  status: string;
-  startDate: string;
-  endDate: string;
-  nextInvoiceAmount: string;
-}
-interface PaymentMethod {
-  id: string;
-  object: string;
-  allow_redisplay: string;
-  billing_details: BillingDetails;
-  card: Card;
-  created: number;
-  customer: string;
-  livemode: boolean;
-  metadata: Record<string, unknown>;
-  type: string;
-}
-
-interface BillingDetails {
-  address: Address;
-  email: string;
-  name: string;
-  phone: string | null;
-}
-
-interface Address {
-  city: string | null;
-  country: string;
-  line1: string | null;
-  line2: string | null;
-  postal_code: string;
-  state: string | null;
-}
-
-interface Card {
-  brand: string;
-  checks: CardChecks;
-  country: string;
-  display_brand: string;
-  exp_month: number;
-  exp_year: number;
-  fingerprint: string;
-  funding: string;
-  generated_from: string | null;
-  last4: string;
-  networks: CardNetworks;
-  regulated_status: string;
-  three_d_secure_usage: ThreeDSecureUsage;
-  wallet: string | null;
-}
-
-interface CardChecks {
-  address_line1_check: string | null;
-  address_postal_code_check: string;
-  cvc_check: string;
-}
-
-interface CardNetworks {
-  available: string[];
-  preferred: string | null;
-}
-
-interface ThreeDSecureUsage {
-  supported: boolean;
-}
-
-
-
-
-
-
-
-
-
-
 
 export const Profile = () => {
   const { t } = useTranslation();
@@ -136,11 +49,11 @@ export const Profile = () => {
   const { status: showConfirmPassword, switchStatus: switchShowConfirmPassword } = UseIntermitence();
   const [isEditable, setIsEditable] = useState(false);
   const [showPasswords, setShowPasswords] = useState(false);
-  const [showManageSubscription,  setShowManageSubscription]=useState(false);
   const [selectedImage, setSelectedImage] = useState<any>(null);
-  const [imageUrl, setImageUrl] = useState('');
-  
+  const [showManageSubscription,  setShowManageSubscription]=useState(false);
+  const {paymentMethod} = useSelector(subscriptionSelector);
   const [data, setData]= useState<PaymentMethodResponse>();
+  const [imageUrl, setImageUrl] = useState('');
   const [editableField, setEditableField] = useState(null);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -249,13 +162,7 @@ export const Profile = () => {
     alert('are you sure????');
     dispatch(renewSubscription({ userId: user?.id }));
   };
-const manageSub = () =>{
-  if(!showManageSubscription)
-  getPaymentMethod();
-else{
-  setShowManageSubscription(false);
-}
-}
+
   // const options = useMemo(() => {
   //   const keys: any = Object.keys(States || {});
   //   return keys.reduce((acc: any, cur: any) => [...acc, { id: cur, name: States[cur] }], []);
@@ -264,33 +171,49 @@ else{
   const handleEditClick = (field: any) => {
     setEditableField(editableField === field ? null : field);
   };
-  const getPaymentMethod = async () => {
-    try {
-      const response = await fetch(`${fallbackRestUrl}/stripe/get-payment-method`, {
-        method: 'POST', // Use POST method
-        headers: {
-          'Content-Type': 'application/json', // Set content type to JSON
-        },
-        body: JSON.stringify({ userId: user.id  }), // Add the body with userId
-      });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
+  // const getPaymentMethod = async () => {
+  //   try {
+  //     const response = await fetch(`${fallbackRestUrl}/stripe/get-payment-method`, {
+  //       method: 'POST', // Use POST method
+  //       headers: {
+  //         'Content-Type': 'application/json', // Set content type to JSON
+  //       },
+  //       body: JSON.stringify({ userId: user.id  }), // Add the body with userId
+  //     });
 
-      const data = await response.json();
+  //     if (!response.ok) {
+  //       throw new Error(`Error: ${response.statusText}`);
+  //     }
 
-      if (data ) {
-        setData(data);
-        setShowManageSubscription(true);
-      } else {
-        throw new Error('Unexpected response structure');
-      }
-    } catch (error) {
-      console.error('Error fetching payment method:', error);
+  //     const data = await response.json();
+
+  //     if (data ) {
+  //       setData(data);
+  //       setShowManageSubscription(true);
+  //     } else {
+  //       throw new Error('Unexpected response structure');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching payment method:', error);
     
-    }
-  };
+  //   }
+  // };
+
+  const manageSub = () =>{
+    if(!showManageSubscription) 
+    {
+    // getPaymentMethod();
+  dispatch(getPaymentMethod({userId: user?.id}))
+  if(paymentMethod) {
+    setShowManageSubscription(true);
+  }
+}
+  else{
+
+    setShowManageSubscription(false);
+  }
+  }
 
   useEffect(()=>{
     if(!!errors?.name && !!errors?.lastname && !!errors?.password && !!errors?.confirm_password){
@@ -301,8 +224,8 @@ else{
 
   return (
     <Box maxWidth={'600px'} margin={'0 auto'}>
-     { !showManageSubscription? 
-     <Box
+         { !showManageSubscription? 
+      <Box
         display={'flex'}
         flexDirection={'column'}
         marginTop={'0rem'}
@@ -325,57 +248,6 @@ else{
        
 
           <Box display={'flex'} mt={4} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
-
-            {/* <Box
-              borderRadius={'6.25rem'}
-              display={'flex'}
-              justifyContent={'center'}
-              marginBottom={'1rem'}
-              width={isMobile ? 90 : 110}
-              height={isMobile ? 90 : 110}
-              minHeight={isMobile ? 90 : 110}
-              minWidth={isMobile ? 90 : 110}
-              position={'relative'}
-              onClick={() => {
-                handleImageEdit();
-              }}
-              sx={{ cursor: isEditable ? 'pointer' : 'inherit' }}>
-              {!selectedImage && !imageUrl ? (
-                <Avatar
-                  sx={{
-                    width: '100%',
-                    height: '100%',
-                    '& img': {
-                      objectFit: 'contain',
-                    },
-                  }}
-                  src={`/icons/person-outlined.svg`}
-                />
-              ) : (
-                <Image
-                  src={selectedImage ? URL.createObjectURL(selectedImage) : imageUrl}
-                  alt='profile image'
-                  fill
-                  sizes='100%'
-                  style={{ borderRadius: '6.25rem', objectFit: 'cover' }}
-                  quality={80}
-                  priority
-                />
-              )}
-
-              <input
-                id='profile-input'
-                className='profile-input'
-                type='file'
-                style={{ display: 'none' }}
-                ref={inputRef}
-                accept='.jpg, .jpeg, .png'
-                onChange={async (e: any) => {
-                  setSelectedImage(e?.target?.files?.[0]);
-                }}
-              />
-            </Box> */}
-
 <Box
   borderRadius="50%"
   display="flex"
@@ -846,21 +718,20 @@ else{
                           variant='button'
                           sx={{ cursor: 'pointer', textDecoration: 'underline' }}
                           color={palette?.primary}
-                          
                           fontSize={'1rem'}>
                             <a onClick={manageSub}>
                           Manage subscription
                           </a>
                         </Typography>
                         <Typography
-                          sx={{ gap: '1rem' }}
+                          sx={{display:'flex',  gap: '0.4rem' }}
                           variant='body2'
                           color={palette?.inputLabelLight}
                           fontSize={'0.8rem'}>
                           <Button sx={{ fontSize: '0.8rem', padding: '0', color: `${palette?.inputLabelLight}` }}>
                             Payment history
                           </Button>
-                          ,
+                          
                           {user.subscriptionStatus === 'cancellation_scheduled' ? (
                             <Button
                               sx={{
@@ -908,8 +779,8 @@ else{
                 </Box>
               </Grid>
         </Box>
-      </Box>: 
-      
+      </Box> 
+      :
       <Box
       display={'flex'}
       flexDirection={'column'}
@@ -950,22 +821,17 @@ else{
         </Button>
       </Box>
     
- <ManageSubscription paymentMethodResponse={data} />    
+ <ManageSubscription paymentMethodResponse={paymentMethod} />    
       </Box>
     </Box>
-    
-}
+
+                  }
       <Box>
 
 
         <Box display={'grid '} mt={1} justifyContent={'center'}>
         <Box  zIndex={100} display={'flex'} mt={1} gap={isMobile ? '0.7rem ' : '1.5rem'} justifyContent={'center'}>
-          {/* <Link href={'#'}>
-            <Typography color={'#B3BED4'} fontSize={'0.8rem'} sx={{ textDecoration: 'underline' }}>
-              {' '}
-              My data
-            </Typography>
-          </Link> */}
+
           <Link href='/privacy'>
             <Typography color={'#B3BED4'} fontSize={'0.8rem'} sx={{cursor:'pointer', textDecoration: 'underline' }}>
               {t('privacy_policy')}

@@ -1,9 +1,24 @@
 import { ArrayDynamicForm, DynamicForm, MuiButton, MuiStepper } from '@/components';
 import { UseFirstRender, UseIntermitence } from '@/hooks';
-import { actualStory, getUploadSignedUrl, updateStory, updateStoryViewG } from '@/store/actions';
-import { authSelector, currentStorySelector, intermitenceSelector, templatesSelector } from '@/store/selectors';
+import {
+  actualStory,
+  createStories,
+  getUploadSignedUrl,
+  loadPendingStory,
+  setPendingStory,
+  updateStory,
+  updateStoryViewG,
+} from '@/store/actions';
+import {
+  authSelector,
+  currentStorySelector,
+  intermitenceSelector,
+  pendingStorySelector,
+  templatesSelector,
+} from '@/store/selectors';
 import { palette } from '@/theme/constants';
 import {
+  calculateFileSize,
   cdn_url,
   ExtractCallbackType,
   FetchFileService,
@@ -37,36 +52,51 @@ export const EditStory: FC<any> = () => {
   const [actualRoute, setActualRoute] = useState<string>(story?.url);
   const [selectedForm, setSelectedForm] = useState<any>(null);
   const intermitenceData = useSelector(intermitenceSelector);
-
-  const currentFormConfig = useMemo(() => {
-    return formsByCategory?.[story?.story_details?.type_of_story];
-  }, [story]);
-  const [actualFormNumber, setActualFormNumber] = useState(0);
-  const [values, setValues] = useState<any>({});
-  const submit = useRef<any>(null);
-  const { status, switchStatus } = UseIntermitence();
-   const [adminPalette, setAdminPalette] = useState({
-    storyBackgroundColor: '', // Default value
-    textColor: '', // Default value
-    accentColor: '', // Default value
-  });
+  const pendingStory = useSelector(pendingStorySelector);
 
   UseFirstRender(() => {
     if (!story?.id) {
+      let pendStory = null;
+      if (typeof window !== 'undefined') {
+        const pstory = localStorage.getItem('pendingStory');
+        pendStory = pstory ? JSON.parse(pstory) : null;
+      }
+      dispatch(setPendingStory(pendStory));
+    } else {
       dispatch(actualStory(router.query?.id as string));
     }
   }, [router?.query?.id, story?.id]);
 
+  const currentFormConfig = useMemo(() => {
+    if (story?.id) {
+      return formsByCategory?.[story?.story_details?.type_of_story] ?? formCategories['life_story'];
+    } else {
+      return formsByCategory?.[pendingStory?.story_details?.type_of_story] ?? formCategories['life_story'];
+    }
+  }, [pendingStory]);
+  const [actualFormNumber, setActualFormNumber] = useState(0);
+  const [values, setValues] = useState<any>({});
+  const submit = useRef<any>(null);
+  const { status, switchStatus } = UseIntermitence();
+  const [adminPalette, setAdminPalette] = useState({
+    storyBackgroundColor: '',
+    textColor: '',
+    accentColor: '',
+  });
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user) {
+    if (user && story?.id) {
       dispatch(updateStoryViewG(user.id));
     }
   }, [user, dispatch]);
 
   const renderFormCategories = useCallback(() => {
-    const fieldsConfig = formCategories?.[story?.story_details?.type_of_story] ?? formCategories['life_story'];
+    const fieldsConfig = story?.id
+      ? formCategories?.[story?.story_details?.type_of_story]
+      : pendingStory?.story_details
+      ? formCategories?.[pendingStory?.story_details?.type_of_story]
+      : formCategories['life_story'];
 
     return fieldsConfig.map((field: any) => (
       <Button
@@ -79,113 +109,149 @@ export const EditStory: FC<any> = () => {
           justifyContent={'flex-start'}
           alignItems={'center'}
           height={'2.625rem'}
-          borderRight={selectedForm == field.name ? `0.25rem solid ${palette.primary}` : 'none'}>
+          borderRight={selectedForm === field.name ? `0.25rem solid ${palette.primary}` : 'none'}>
           <Typography
             variant='subtitle2'
-            color={selectedForm == field.name ? accentColor : palette.codGray}
+            color={selectedForm === field.name ? palette.codGray : palette.codGray}
             marginX={'1rem'}>
             {t(field.label)}
           </Typography>
         </Box>
       </Button>
     ));
-  }, [story, selectedForm]);
+  }, [formCategories, pendingStory, selectedForm]);
 
-  const handleSelectForm = (formKey: string) => {
-    submitAction();
-    setSelectedForm(formKey);
-    let actual = 0;
-    for (let i = 0; i < Object.keys(currentFormConfig || {}).length; i++) {
-      if (formKey == Object.keys(currentFormConfig || {})[i]) {
-        actual = i;
-        break;
-      }
-    }
-    setActualFormNumber(actual);
-  };
+  const handleSelectForm = useCallback(
+    (formKey: string) => {
+      submitAction();
+      setSelectedForm(formKey);
+
+      const actual = Object.keys(currentFormConfig || {}).findIndex((key) => key === formKey);
+      setActualFormNumber(actual >= 0 ? actual : 0);
+    },
+    [currentFormConfig],
+  );
 
   const currentForm = useMemo(() => {
     return currentFormConfig?.[selectedForm];
-  }, [selectedForm, story?.id, currentFormConfig]);
+  }, [currentFormConfig, selectedForm]);
 
   const handleSubmit = useCallback(
     (values: any) => {
       setValues((prev: any) => ({ ...prev, [selectedForm]: values }));
+
       if (update) {
         updateAction({ [selectedForm]: values });
       }
     },
-    [update, selectedForm],
+    [selectedForm, update],
   );
 
   const handleSubmitArray = useCallback(
-    (values: any, index: any) => {
+    (values: any, index: number) => {
       setValues((prev: any) => {
-        const value = { ...(prev[selectedForm] || {}) };
-        value[index] = values;
-        const validate = currentForm?.reduce((acc: any, item: any) => {
-          return acc && !!value[item?.subtitle || item?.title];
-        }, true);
+        const formValues = { ...(prev[selectedForm] || {}) };
+        formValues[index] = values;
+
+        const validate = currentForm?.every((item: any) => formValues[item?.subtitle || item?.title]);
+
         setArrayRun((prev: any) => {
-          if (validate && prev >= currentForm?.length - 1) {
+          if (validate && prev >= (currentForm?.length || 0) - 1) {
             if (update) {
-              updateAction({ ...prev, [selectedForm]: value });
+              updateAction({ ...prev, [selectedForm]: formValues });
             }
           }
           return prev + 1;
         });
-        return { ...prev, [selectedForm]: value };
+
+        return { ...prev, [selectedForm]: formValues };
       });
     },
-    [update, selectedForm],
+    [currentForm, selectedForm, update],
   );
 
-  const setSubmitArray = (index: any, handler: any) => {
-    if (!Array.isArray(submit.current) || submit?.current?.length > currentForm?.length) submit.current = [];
+  const setSubmitArray = (index: number, handler: any) => {
+    if (!Array.isArray(submit.current) || submit.current.length > currentForm?.length) {
+      submit.current = [];
+    }
     submit.current[index] = handler;
   };
 
-  const nextForm = () => {
-    setSelectedForm(formCategories[story?.story_details?.type_of_story]?.[actualFormNumber + 1]?.name);
+  const nextForm = useCallback(() => {
+    const nextFormKey =
+      formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[
+        actualFormNumber + 1
+      ]?.name;
+
+    setSelectedForm(nextFormKey);
     setActualFormNumber(actualFormNumber + 1);
     setArrayRun(0);
-  };
+  }, [actualFormNumber, formCategories, pendingStory, story]);
 
-  const backForm = () => {
-    setSelectedForm(formCategories[story?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name);
+  const backForm = useCallback(() => {
+    const prevFormKey = formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name;
+
+    setSelectedForm(prevFormKey);
     setActualFormNumber(actualFormNumber - 1);
     setArrayRun(0);
-  };
+  }, [actualFormNumber, formCategories, pendingStory]);
 
   const setDefault = async () => {
-    const formValues = formCategories[story?.story_details?.type_of_story];
-    if (story?.cover_image) {
-      const imageFile = await FetchFileService(`${cdn_url}${story?.cover_image}`);
-      const fileBlob = await imageFile?.data?.blob();
-      const file = new File([fileBlob], story?.cover_image?.split('/').pop(), { type: fileBlob.type });
-      const defaultValues = {
-        [formValues[0].name]: {
-          title: story?.title,
-          description: story?.description,
-          cover_image: file,
-        },
-        ...story?.story_details?.general_info,
-      };
-      setValues(defaultValues);
+    try {
+      const formValues = story?.id
+        ? formCategories[story?.story_details?.type_of_story]
+        : formCategories[pendingStory?.story_details?.type_of_story];
+
+      const source = story?.id ? story : pendingStory;
+
+      if (source?.cover_image) {
+        const imageFile = await FetchFileService(`${cdn_url}${source?.cover_image}`);
+        const fileBlob = await imageFile?.data?.blob();
+        const file = new File([fileBlob], source?.cover_image?.split('/').pop(), { type: fileBlob.type });
+
+        const defaultValues = {
+          [formValues[0].name]: {
+            title: source?.title,
+            description: source?.description,
+            cover_image: file,
+          },
+          ...source?.story_details?.general_info,
+        };
+        setValues(defaultValues);
+      }
+    } catch (error) {
+      console.error('Error setting default values:', error);
     }
   };
 
   UseFirstRender(() => {
-    if (story?.id) setDefault();
-    if (!update && !actualRoute && story?.url) setActualRoute(story?.url);
-    if (!selectedForm && story?.id)
+    if (story?.id) {
+      setDefault();
       setSelectedForm(formCategories[story?.story_details?.type_of_story]?.[actualFormNumber]?.name);
-  }, [story]);
+      return;
+    }
+
+    if (!story?.id && pendingStory) {
+      console.log('No Story ID, but pendingStory found. Loading pendingStory details...');
+      setDefault();
+      setSelectedForm(formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber]?.name);
+      return;
+    }
+
+    
+    console.log('No Story ID and no pendingStory. Rendering default form...');
+    setValues({});
+    setSelectedForm(formCategories['life_story']?.[0]?.name); 
+  }, [story, pendingStory]);
 
   const processFile = (prev_stories: any, prompts: {}, updatedValues: any) => {
+    const idSource = story?.id ? story : pendingStory;
     dispatch(
       getUploadSignedUrl(
-        { file: `stories/${prev_stories?.title}/${prev_stories?.name_image}`, type: prev_stories?.type_image },
+        {
+          file: `stories/${prev_stories?.title}/${prev_stories?.name_image}`,
+          type: prev_stories?.type_image,
+        },
         async (res: any) => {
           try {
             const response = await FetchFileService(
@@ -196,11 +262,23 @@ export const EditStory: FC<any> = () => {
             );
 
             if (response?.ok) {
-              const valuesFinal: any = finalPayload(prev_stories, prompts, story?.story_details?.type_of_story);
-              valuesFinal.id = story?.id;
-              dispatch(updateStory({valuesFinal, router}));
+              const valuesFinal: any = finalPayload(prev_stories, prompts, idSource?.story_details?.type_of_story);
+              valuesFinal.id = idSource?.id; 
+              if (story?.id) {
+                dispatch(updateStory({ valuesFinal, router }));
+              } else {
+                const file = values.story_title_image?.cover_image;
+                const fileSizeBytes = calculateFileSize(file);
+                const valuesFinal: any = finalPayload(
+                  { ...prev_stories, fileSize: fileSizeBytes },
+                  prompts,
+                  idSource?.story_details?.type_of_story,
+                );
+                const result = dispatch(createStories(valuesFinal));
+              }
             }
           } catch (error) {
+            console.error('File processing failed:', error);
           }
         },
       ),
@@ -211,8 +289,8 @@ export const EditStory: FC<any> = () => {
     if (Array.isArray(submit.current)) {
       submit.current.forEach((item: any) => {
         if (Array.isArray(item)) {
-          item.forEach((item: any) => {
-            item?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+          item.forEach((subItem: any) => {
+            subItem?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
           });
         } else {
           item?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -227,29 +305,33 @@ export const EditStory: FC<any> = () => {
 
   const updateAction = useCallback(
     (newValues: any) => {
+      const idSource = story?.id ? story : pendingStory;
       const updatedValues = { ...values, ...newValues };
+
       const imageFile = updatedValues?.story_title_image
         ? updatedValues?.story_title_image?.cover_image
         : updatedValues?.story_title?.cover_image;
 
       const valuesCopy = transformPayload(
         updatedValues,
-        story?.story_details?.type_of_story,
+        idSource?.story_details?.type_of_story,
         user?.id,
         user?.email,
         imageFile?.name,
         imageFile?.type,
-        story?.status,
+        idSource?.status, 
       );
-      processFile(valuesCopy, story?.story_details?.prompts, updatedValues);
+
+      processFile(valuesCopy, idSource?.story_details?.prompts, updatedValues);
     },
-    [values, story],
+    [values, story, pendingStory], 
   );
+
   const { template } = useSelector(templatesSelector);
   useEffect(() => {
     if (template?.template?.colors) {
-      const colors = template.template.colors.reduce((acc:any, color:any) => {
-        // Map each color to the corresponding palette key
+      const colors = template.template.colors.reduce((acc: any, color: any) => {
+        
         switch (color.PLabel) {
           case 'storyBackground':
             acc.storyBackgroundColor = color.PValue;
@@ -266,45 +348,45 @@ export const EditStory: FC<any> = () => {
         return acc;
       }, {});
 
-      // Set the colors to the adminPalette state
+      
       setAdminPalette({
-        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
-        textColor: colors.textColor || '#fff', // Fallback
-        accentColor: colors.accentColor || '#BF5700', // Fallback
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', 
+        textColor: colors.textColor || '#ccc', 
+        accentColor: colors.accentColor || '#BF5700', 
       });
     }
-  }, [template]); // Make sure to add template to the dependency array
+  }, [template]); 
 
-  const backgroundColorEdit=adminPalette.storyBackgroundColor
+  const backgroundColorEdit = adminPalette.storyBackgroundColor;
   const accentColor = adminPalette.accentColor;
-  const textColorButton=adminPalette.textColor;
+  const textColorButton = adminPalette.textColor;
   const buttontext =
-    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
-      ? textColorButton // Custom background for the specific page
+    router.pathname === '/app/story/[id]/update' 
+      ? textColorButton 
       : palette?.primary;
- const buttonBackground =
-    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
-      ? accentColor // Custom background for the specific page
+  const buttonBackground =
+    router.pathname === '/app/story/[id]/update' 
+      ? accentColor 
       : palette?.cardBackground;
-      const notificationBackground =
-    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
-      ? accentColor // Custom background for the specific page
+  const notificationBackground =
+    router.pathname === '/app/story/[id]/update' 
+      ? accentColor 
       : palette?.primary;
-      const EditStoryBackground =
-    router.pathname === '/app/story/[id]/update' // Replace '/specific-page' with your desired route
-      ? backgroundColorEdit // Custom background for the specific page
+  const EditStoryBackground =
+    router.pathname === '/app/story/[id]/update' 
+      ? backgroundColorEdit 
       : palette?.primary;
 
-       useEffect(() => {
+  useEffect(() => {
     if (EditStoryBackground) {
-      // Dynamically set the body background color with !important
+      
       document.body.style.setProperty('background-color', `${EditStoryBackground} `, 'important');
-     
+
       return () => {
         document.body.style.removeProperty('background-color');
       };
     }
-  }, [template,EditStoryBackground]);
+  }, [template, EditStoryBackground]);
 
   const updateButton = () => {
     submitAction();
@@ -318,7 +400,7 @@ export const EditStory: FC<any> = () => {
         padding={isMobile ? '0 1rem' : '0 0.7rem 0 1rem'}
         width={'100%'}
         justifyContent={'flex-start'}
-        // bgcolor={EditStoryBackground}
+        
         flexDirection={'column'}
         height={isMobile ? '100vh' : '100%'}
         alignItems={isMobile ? 'flex-start' : 'center'}
@@ -377,12 +459,18 @@ export const EditStory: FC<any> = () => {
               sx={{ backdropFilter: 'blur(1.5625rem)' }}>
               <Box display={'flex'} justifyContent={'flex-end'}>
                 <Box width={'5.75rem'} marginRight={'1rem'}>
-                  <MuiButton type='submit' disabled={false} loading={false} method={switchStatus} variant={'outlined'}
-                   sx={{'&:hover': {
-      borderColor: buttonBackground,  // Change the border color on hover
-              // Change the text color on hover
-    },
-  }}>
+                  <MuiButton
+                    type='submit'
+                    disabled={false}
+                    loading={false}
+                    method={switchStatus}
+                    variant={'outlined'}
+                    sx={{
+                      '&:hover': {
+                        borderColor: buttonBackground, 
+                        
+                      },
+                    }}>
                     <Typography variant='button' color={palette.white}>
                       {t('cancel')}
                     </Typography>
@@ -398,11 +486,11 @@ export const EditStory: FC<any> = () => {
                     variant={'contained'}
                     method={updateButton}
                     sx={{
-    backgroundColor: buttonBackground,
-    '&:hover': {
-      backgroundColor: buttonBackground, // Add your hover color
-    },
-  }}>
+                      backgroundColor: buttonBackground,
+                      '&:hover': {
+                        backgroundColor: buttonBackground, 
+                      },
+                    }}>
                     <Typography variant='button'>{t('save')}</Typography>
                   </MuiButton>
                 </Box>
@@ -416,7 +504,7 @@ export const EditStory: FC<any> = () => {
                       loading={false}
                       variant={'text'}
                       method={() => backForm()}>
-                      <ChevronLeftIconComponent color={actualFormNumber == 0 ? palette.gray : buttontext } />
+                      <ChevronLeftIconComponent color={actualFormNumber == 0 ? palette.gray : buttontext} />
                       <Typography
                         marginLeft={'0.5rem'}
                         variant='body1'
@@ -452,7 +540,7 @@ export const EditStory: FC<any> = () => {
                 ? currentForm?.map((item: any, index: number) =>
                     item?.type === 'array' ? (
                       <ArrayDynamicForm
-                      color={accentColor}
+                        color={accentColor}
                         setSubmit={(sub: any) => setSubmitArray(index, sub)}
                         submitHandler={(values: any) => handleSubmitArray(values, item?.subtitle || item?.title)}
                         key={index}
@@ -483,7 +571,9 @@ export const EditStory: FC<any> = () => {
                       isEdit
                       defaultValues={values[selectedForm] ? values[selectedForm] : null}
                       title={
-                        formCategories[story?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name
+                        formCategories[
+                          story?.id ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story
+                        ]?.[actualFormNumber - 1]?.name
                       }></ArrayDynamicForm>
                   )
                 : !!currentForm && (
@@ -513,7 +603,7 @@ export const EditStory: FC<any> = () => {
                     </MuiButton>
                   </Box>
                   <MuiStepper
-                  buttonBackground={buttonBackground}
+                    buttonBackground={buttonBackground}
                     steps={formCategories[story?.story_details?.type_of_story]}
                     actualStep={actualFormNumber}
                   />

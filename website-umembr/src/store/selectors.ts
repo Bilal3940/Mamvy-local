@@ -19,6 +19,7 @@ const extrasSelector = (state:any)=>state.extraContent;
 const orderSelector = (state: any) => state.orders ?? {};
 const purchaseSelector = (state: any) => state.purchase ?? {};
 const storagelogSelector = (state: any) => state.storageLog?.storageLog || {};
+const pendingStorySelector = (state:any)=> state?.story?.pendingStory || {};
 
-export { analyticsSelector, authSelector,subscriptionSelector,StoragePopupSelector, collaboratorSelector, forgotSelector, homeSelector, intermitenceSelector, hideGradientSelector, backgroundChangeSelector, memorySelector, notificationsSelector, storySelector, currentStorySelector, hasChangesSelector , templatesSelector,purchaseSelector, extrasSelector, orderSelector,storagelogSelector};
+export {pendingStorySelector, analyticsSelector, authSelector,subscriptionSelector,StoragePopupSelector, collaboratorSelector, forgotSelector, homeSelector, intermitenceSelector, hideGradientSelector, backgroundChangeSelector, memorySelector, notificationsSelector, storySelector, currentStorySelector, hasChangesSelector , templatesSelector,purchaseSelector, extrasSelector, orderSelector,storagelogSelector};
 

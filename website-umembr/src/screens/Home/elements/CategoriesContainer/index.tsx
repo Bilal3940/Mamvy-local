@@ -2,7 +2,15 @@ import { Grid, Typography } from '@mui/material';
 import { styles } from '../../styles';
 import StoryItem from '../StoryItem';
 
-const CategoriesContainer = ({ title, data, t, isMobile, scrollMargin, containerRef, handleItemClick }: any) => {
+const CategoriesContainer = ({ 
+  title, 
+  data, 
+  t, 
+  isMobile, 
+  scrollMargin, 
+  containerRef, 
+  handleItemClick 
+}: any) => {
   return (
     <Grid
       container
@@ -15,7 +23,7 @@ const CategoriesContainer = ({ title, data, t, isMobile, scrollMargin, container
       display={'flex'}
       flexDirection={'column'}
       justifyContent={'flex-start'}>
-      <Typography margin={!isMobile ? '0 1.75rem' : '0  1.25rem'} variant={isMobile ? 'h5' : 'h4'}>
+      <Typography margin={!isMobile ? '0 1.75rem' : '0 1.25rem'} variant={isMobile ? 'h5' : 'h4'}>
         {t(title)}
       </Typography>
       <Grid
@@ -26,10 +34,30 @@ const CategoriesContainer = ({ title, data, t, isMobile, scrollMargin, container
         gap={'0.75rem'}
         display={'flex'}
         sx={styles.scrollableContainer}
-        width={'100%'}>
-        {data?.map((item: any) => {
-          return <StoryItem key={item.id} isMobile={isMobile} item={item} handleItemClick={handleItemClick} />;
-        })}
+        width={'100%'}
+        flexDirection={data.length === 1 ? 'column' : 'row'} // Adjust layout for single item
+        // justifyContent={data.length === 1 ? 'center' : 'flex-start'} // Center a single item
+        // alignItems={data.length === 1 ? 'center' : 'flex-start'}
+        >
+        {data.length > 0 ? (
+          data.map((item: any) => (
+            <StoryItem 
+              key={item.id} 
+              isMobile={isMobile} 
+              item={item} 
+              handleItemClick={handleItemClick} 
+              singleItem={data.length === 1} // Pass a prop to handle single-item styling
+            />
+          ))
+        ) : (
+          <StoryItem 
+          key={data?.id} 
+          isMobile={isMobile} 
+          item={data} 
+          handleItemClick={handleItemClick} 
+          singleItem={data.length === 1} // Pass a prop to handle single-item styling
+        />
+        )}
       </Grid>
     </Grid>
   );

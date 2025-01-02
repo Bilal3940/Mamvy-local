@@ -59,8 +59,8 @@ const makeStore: any = ({ isServer }: any) => {
     const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage();
     const persistConfig = {
       key: 'memvy-nextjs',
-      whitelist: ['auth','subscription','order', 'tempconfig', 'extraContent','purchase', 'storageLog'],
-      blacklist: ['page', 'intermitence', 'home', 'forgotPassword'],
+      whitelist: ['auth','subscription','order', 'tempconfig' ,'purchase', 'storageLog'],
+      blacklist: ['page', 'intermitence', 'home', 'forgotPassword','extraContent'],
       storage,
     };
     const sagaMiddleware = createSagaMiddleware();

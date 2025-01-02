@@ -44,7 +44,8 @@ export const SubscriptionPopup: React.FC = () => {
             backdropFilter: 'blur(1.5625rem)',
             width: isMobile ? '100%' : '82%',
             minWidth: '60%',
-            height: isMobile ? '100%' : 'auto',
+            height: isMobile ? '100%' : '90%',
+            // minHeight:'90%',
             overflow: 'auto',
             position: 'relative',
           }}>

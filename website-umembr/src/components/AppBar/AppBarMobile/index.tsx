@@ -106,8 +106,8 @@ export const MuiAppBarMobile: FC<any> = ({adminPalette, search, setSearch }) => 
       },
     },
     {
-      label: 'settings',
-      action: () => router.push('/app/settings'),
+      label: 'My profile',
+      action: () => router.push('/app/profile'),
     },
     {
       label: 'logout',

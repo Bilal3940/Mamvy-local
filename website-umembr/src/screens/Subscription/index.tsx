@@ -49,6 +49,7 @@ const SubscriptionContainer: React.FC<SubscriptionContainerProps> = ({ handleNex
               display={ isMobile ? 'grid' : 'flex'}
               sx={{
                 
+                
                 flex:'1',
                 height:'100%',
                 overflow: 'auto',

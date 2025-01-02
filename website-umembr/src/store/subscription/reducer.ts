@@ -15,7 +15,10 @@ import {
   CANCEL_SUBSCRIPTION_ASYNC,
   RESUME_SUBSCRIPTION_ASYNC,
   RENEW_SUBSCRIPTION_ASYNC,
-  UPDATE_SUBSCRIPTION_STATUS_ASYNC
+  UPDATE_SUBSCRIPTION_STATUS_ASYNC,
+  GET_PAYMENT_METHOD_ASYNC,
+  UPDATE_PAYMENT_METHOD_ASYNC,
+  FETCH_LATEST_INVOICE_ASYNC
 } from './action-types';
 
 const initialState: any = {
@@ -23,8 +26,10 @@ const initialState: any = {
   product: {},
   selectedTier: null,
   actionSuccess: null,
-  checkoutSession: null, // Add a field to store the checkout session data if needed
+  checkoutSession: null, 
   SubscriptionStatus: [],
+  paymentMethod: null, 
+  latestInvoice: null, 
 };
 
 const subscription = (state = initialState, { type, payload }: any) => {
@@ -95,6 +100,25 @@ const subscription = (state = initialState, { type, payload }: any) => {
         checkoutSession: payload,
         actionSuccess: true,
       };
+      case GET_PAYMENT_METHOD_ASYNC:
+        return {
+          ...state,
+          paymentMethod: payload, // Assuming `paymentMethod` field for storing API response
+          actionSuccess: true,
+        };
+  
+      case UPDATE_PAYMENT_METHOD_ASYNC:
+        return {
+          ...state,
+          paymentMethod: { ...state.paymentMethod, ...payload }, // Update payment method details
+          actionSuccess: true,
+        };
+        case FETCH_LATEST_INVOICE_ASYNC:
+          return {
+            ...state,
+            latestInvoice: payload, // Store the latest invoice data
+            actionSuccess: true,
+          };
 
     case CLEAR_SELECTED_TIER:
       return initialState;

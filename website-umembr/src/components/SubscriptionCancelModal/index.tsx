@@ -48,9 +48,9 @@ export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDe
   return (
     <Modal open={open} onClose={handleClose} sx={styles.modal}>
       <Box
-        width={isMobile ? '90%' : '50.1875rem'}
+        width={isMobile ? '90%' : '40.1875rem'}
         height={'100%'}
-        maxHeight={'20rem'}
+        maxHeight={'16rem'}
         display={'flex'}
         flexDirection={'column'}
         alignItems={'center'}
@@ -59,33 +59,19 @@ export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDe
         justifyContent={'space-between'}
         position={'relative'}
         bgcolor={palette.cardBackground}
-        border={`0.063rem solid ${palette.cardBorder}`}
-        sx={{ backdropFilter: 'blur(1.5625rem)' }}>
+        sx={{ backdropFilter: 'blur(1.5625rem)', outline: 'none' }}
+        border={isMobile ? 'none' : `0.063rem solid ${palette.cardBorder}`}>
         <Typography
           fontWeight={isMobile ? 500 : 600}
           textAlign={'center'}
           width={isMobile ? '80%' : '100%'}
-          margin={isMobile ? 'auto' : '0 1rem'}
           variant={isMobile ? 'h5' : 'h4'}>
           {t('want_cancel_membership')}
         </Typography>
         <Typography textAlign={isMobile ? 'center' : 'left'} variant={isMobile ? 'body2' : 'body1'}>
           {t('enter_confirm_text')}
         </Typography>
-        <Typography variant='body1' mb={2} sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-          {confirmationText}
-        </Typography>
-        <TextField
-          variant='outlined'
-          fullWidth
-          sx={{
-            background: '#fff',
-          }}
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder='Enter the text here'
-        />
-        <Divider sx={{ my: 2, width: '100%' }} />
+        <Divider sx={{ width: '100%' }} />
         <Box display='flex' justifyContent='flex-end' width='100%'>
           <Box marginRight={'1rem'}>
             <MuiButton
@@ -94,8 +80,10 @@ export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDe
               variant={'outlined'}
               method={handleClose}
               sx={{
+              
                 '&:hover': {
                   borderColor: palette?.primary,
+                  
                 },
               }}>
               <Typography variant='button' color={palette.white}>
@@ -106,12 +94,17 @@ export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDe
           <Box marginRight={'1rem'}>
             <MuiButton
               type='button'
-              variant='contained'
+              variant='outline'
               method={handleConfirm}
-              backgroundColor={palette?.primary}
+              backgroundColor={palette?.error}
+              sx={{
+                '&:hover': {
+                  backgroundColor: palette?.error,
+                },
+              }}
               disabled={loading}>
               <Typography variant='button' color={palette.white}>
-                {loading ? 'Deleting...' : 'Confirm'}
+                {t('cancel_my_subscription')}
               </Typography>
             </MuiButton>
           </Box>

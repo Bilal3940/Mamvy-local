@@ -49,7 +49,7 @@ const Main: React.FC = () => {
   const story = useSelector(currentStorySelector);
   const { showPublishModal } = useSelector(intermitenceSelector);
   const { template, actionSuccess } = useSelector(templatesSelector);
-  const { collaborators } = useSelector(collaboratorSelector);
+  const { collaborators, actionSuccessColab } = useSelector(collaboratorSelector);
   const [loading, setLoading]=useState(false);
   const { extraContent } = useSelector(extrasSelector);
   const [viewStory, setViewStory] = useState(false);
@@ -78,7 +78,7 @@ const Main: React.FC = () => {
 
   UseFirstRender(() => {
     if (story?.id) dispatch(getCollaboratorStory(story?.id));
-  }, [story]);
+  }, [story?.id]);
 
   UseFirstRender(() => {
     if (story && (!story?.private || story?.confirmPassword || foundRole)) {
@@ -365,6 +365,7 @@ const Main: React.FC = () => {
     ellipseRightGradientColor: '#F1E0FF',
     ellipseRightGradientOpacity: 0.20,
 
+    // cardIconColor: adminPalette.accentColor,
     cardIconColor: 'white',
     filterIconsColor: 'rgba(102, 102, 102, 1)',
     filterIconsSelectedColor: 'rgba(191, 87, 0)',
@@ -374,7 +375,7 @@ const Main: React.FC = () => {
   return (
     <>
       {(actionSuccess && extendedPalette && adminPalette && loading ) ? (
-        <div style={{ backgroundColor: extendedPalette.storyBackground, minHeight: '200vh' }}>
+        <Box style={{ backgroundColor: extendedPalette.storyBackground, minHeight: '200vh' }}>
           {extendedPalette.isEllipseCheck.isEllipseLeft && (
             <Box
               sx={{
@@ -432,12 +433,12 @@ const Main: React.FC = () => {
             userId={story?.user_id}
           />
           {/* <GridLayoutCheck /> */}
-          <MediaGrid extendedPalette={extendedPalette} story={story && story} />
+          <MediaGrid actionSuccessColab={actionSuccessColab} extendedPalette={extendedPalette} story={story && story} />
           <MemoryFloatingActionButtons
             story={story}
             isMobile={isMobile}
             user={user}
-            extendedPalette={"white"}
+            extendedPalette={'white'}
           />
           {!foundRole && !story?.confirmPassword && story?.private && story.url === router.query?.id && (
             <PrivateStoryModal open={privateStatus} onClose={handlePublication} />
@@ -449,7 +450,7 @@ const Main: React.FC = () => {
             mediaContent={selectedMemorie}
             method={() => closeCollaboratorsModal()}
           />
-        </div>
+        </Box>
       ) : (
         <Box width={'100%'} sx={{backgroundColor:'black'}} height={'100vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
           <CircularProgress sx={{ color: palette.faintGray }} />

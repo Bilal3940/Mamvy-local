@@ -1,5 +1,5 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { actionObject, showDialog } from '../../utils/common';
+import { actionObject, checkPermissions, redirectToLogin, showDialog } from '../../utils/common';
 
 import {
   GET_PRODUCTS,
@@ -22,6 +22,12 @@ import {
   RENEW_SUBSCRIPTION,
   UPDATE_SUBSCRIPTION_STATUS_ASYNC,
   UPDATE_SUBSCRIPTION_STATUS,
+  UPDATE_PAYMENT_METHOD,
+  GET_PAYMENT_METHOD,
+  GET_PAYMENT_METHOD_ASYNC,
+  UPDATE_PAYMENT_METHOD_ASYNC,
+  FETCH_LATEST_INVOICE_ASYNC,
+  FETCH_LATEST_INVOICE,
 } from './action-types';
 import { authSelector } from '../selectors';
 import FetchService from '@/utils/FetchService';
@@ -49,7 +55,15 @@ function* getProductsAsync({ payload }: any): any {
 function* createCheckoutSessionAsync({ payload }: any): any {
   try {
     const { user } = yield select(authSelector);
-    // if (!checkPermissions(user?.roles, 'PRODUCTS_GET')) throw new Error('not_allowed');
+
+    // Check if token exists
+    if (!user?.token) {
+      yield call(showDialog, 'Your session has expired. Please log in again.', 'warning');
+      yield call(redirectToLogin); // Add a function to handle redirection
+      return;
+    }
+
+    
     let url = `/subscription/create-checkout-session`;
     const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
     if (result) {
@@ -61,6 +75,34 @@ function* createCheckoutSessionAsync({ payload }: any): any {
     yield call(showDialog, message, 'error');
   }
 }
+
+
+function* getLatestInvoiceAsync({ payload }: any): any {
+  try {
+    const { user } = yield select(authSelector);
+
+    // Check if token exists
+    if (!user?.token) {
+      yield call(showDialog, 'Your session has expired. Please log in again.', 'warning');
+      yield call(redirectToLogin); // Add a function to handle redirection
+      return;
+    }
+
+    const url = `/stripe/latest-invoice`; // Update with your endpoint
+    const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
+
+    if (result) {
+      yield put(actionObject(FETCH_LATEST_INVOICE_ASYNC, result)); // Replace with your action type
+    }
+  } catch (error: any) {
+    let message = error?.message;
+    if (error?.message?.includes('error')) {
+      message = JSON.parse(message)?.error;
+    }
+    yield call(showDialog, message, 'error');
+  }
+}
+
 
 
 
@@ -207,6 +249,45 @@ function* updateSubscriptionStatusAsync({ payload }: any): any {
   }
 }
 
+function* getPaymentMethodAsync({ payload }: any): any {
+  try {
+    const { user } = yield select(authSelector); // Assuming authSelector contains user information
+    const url = `/stripe/get-payment-method`;
+    const body = JSON.stringify({ userId: payload.userId });
+
+    const { result } = yield call(FetchService, url, 'POST', body, user?.token);
+    if (result) {
+      yield put(actionObject(GET_PAYMENT_METHOD_ASYNC, result)); // Replace with the appropriate action type
+    }
+  } catch (error: any) {
+    let message = error?.message;
+    if (error?.message?.includes('error')) message = JSON.parse(message)?.error;
+    yield call(showDialog, message, 'error');
+  }
+}
+
+
+function* updatePaymentMethodAsync({ payload }: any): any {
+  try {
+    const { user } = yield select(authSelector); // Assuming authSelector contains user information
+    const url = `/stripe/update-payment-method`;
+    const body = JSON.stringify({
+      paymentMethodId: payload.paymentMethodId,
+      updates: payload.updates,
+    });
+
+    const { result } = yield call(FetchService, url, 'POST', body, user?.token);
+    if (result) {
+      yield put(actionObject(UPDATE_PAYMENT_METHOD_ASYNC, result)); // Replace with the appropriate action type
+    }
+  } catch (error: any) {
+    let message = error?.message;
+    if (error?.message?.includes('error')) message = JSON.parse(message)?.error;
+    yield call(showDialog, message, 'error');
+  }
+}
+
+
 
 
 export function* watchSetSelectedTier() {
@@ -216,6 +297,20 @@ export function* watchSetSelectedTier() {
 export function* watchcreateCheckoutSession() {
   yield takeLatest(CREATE_CHECKOUT_SESSION, createCheckoutSessionAsync);
 }
+
+export function* watchGetPaymentMethod() {
+  yield takeLatest(GET_PAYMENT_METHOD, getPaymentMethodAsync); // Replace with the actual action type constant
+}
+
+
+export function* watchUpdatePaymentMethod() {
+  yield takeLatest(UPDATE_PAYMENT_METHOD, updatePaymentMethodAsync); // Replace with the actual action type constant
+}
+
+export function* watchGetLatestInvoice() {
+  yield takeLatest(FETCH_LATEST_INVOICE, getLatestInvoiceAsync);
+}
+
 
 export function* watchGetProducts() {
   yield takeLatest(GET_PRODUCTS, getProductsAsync);

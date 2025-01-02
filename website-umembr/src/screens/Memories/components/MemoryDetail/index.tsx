@@ -4,7 +4,7 @@ import { UseFirstRender } from '@/hooks';
 import { approveMemory, deleteNotification, setCreateMemoryStep, viewMemory, viewMemoryG } from '@/store/actions';
 import { authSelector, currentStorySelector, notificationsSelector } from '@/store/selectors';
 import { checkPermissions, findNotificationByMemoryId } from '@/utils';
-import { Box, Modal, Theme, Typography, useMediaQuery } from '@mui/material';
+import { Box, Chip, Modal, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -178,7 +178,21 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
               fontWeight={'600'}>
               {mediaContent?.title}
             </Typography>
-
+   {!mediaContent?.approved && (
+        <Chip
+          label="Pending Approval"
+          size="small"
+          sx={{
+             color: '#00008B', // Text color
+      backgroundColor: '#ADD8E6', // Optional background color for better contrast
+            position: 'absolute',
+          left:'11rem',
+            fontFamily: 'DM Sans',
+            fontSize: '12px',
+            fontWeight: 500,
+          }}
+        />
+      )}
             <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={isMobile ? '100%' : '50%'}>
               { !isLocked && ( (checkPermissions(user?.roles || [], 'CLIENT_MEMORY_DELETE', story?.id) &&
                 user?.id === mediaContent?.user_id) ||

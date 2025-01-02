@@ -556,6 +556,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
                       <Typography
                         variant='caption'
                         sx={{
+                          color:"#B3BED4",
                           fontFamily: 'DM Sans',
                           fontSize: { xs: '10px', sm: '12px' },
                           fontWeight: 400,
@@ -576,12 +577,12 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
                   />
 
                   {/* Approval Status */}
-                  {!item.approved && (
+                  {/* {!item.approved && (
                     <Chip
                       label='Pending Approval'
-                      color='warning'
                       size='small'
                       sx={{
+                        color='#B3BED4',
                         position: 'absolute',
                         top: 8,
                         right: 50,
@@ -590,7 +591,26 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
                         fontWeight: 500,
                       }}
                     />
-                  )}
+                  )} */}
+                  {!item.approved && (
+  <Chip
+    label="Pending Approval"
+    size="small"
+    sx={{
+      color: '#00008B', // Text color
+      backgroundColor: '#ADD8E6', // Optional background color for better contrast
+      position: 'absolute',
+      top: 8,
+      right: 50,
+      fontFamily: 'DM Sans',
+      fontSize: '12px',
+      fontWeight: 500,
+      borderRadius: '4px', // Optional: Customize corner rounding
+      padding: '2px 8px', // Optional: Adjust padding for a more compact look
+    }}
+  />
+)}
+
                 </Box>
 
                 {/* Content */}

@@ -82,8 +82,13 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
                 minHeight: 'auto',
                 color: extendedPalette.edittextColor,
                 textDecoration: 'none', // Prevents the button from having a default height
+                borderRadius: '9999px',
               }}
-              startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} />}
+              startIcon={<Image src={'/icons/editmem.svg'} alt={'icon'} width={13} height={13} style={
+                {
+marginRight:'-5px',
+                }
+              }/>}
               onClick={EditMemvy} // Move the onClick here, as the inner Button is redundant
             >
               Edit this Memvy
@@ -151,9 +156,10 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
               src={coverImage}
               alt='Cover Image'
               layout='intrinsic'
-              width={200}
-              height={200}
+              width={150}
+              height={150}
               style={{
+                marginBottom:'10px',
                 borderRadius: '10px',
               }}
             />

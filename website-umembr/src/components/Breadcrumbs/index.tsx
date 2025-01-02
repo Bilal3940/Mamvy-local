@@ -69,7 +69,7 @@ export const MuiBreadcrumbs = ({ route }: IBreadcrumbsProps) => {
       <Box display={'flex'} alignItems={'center'}>
         <Typography
           sx={styles.title}
-          color={accentColor} 
+          color={'#B3BED4'} 
           fontSize={'1.25rem'}
           fontWeight={'700'}>
           {t(title)}

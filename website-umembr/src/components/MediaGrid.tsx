@@ -315,23 +315,69 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
   const toggleSortingOrder = () => {
     setIsChronological((prev?: any) => !prev);
   };
+  console.log("i am story",story)
+  console.log("i am user",user)
+  console.log("i am memories loaded",memoriesLoaded)
 
+  // const filteredMediaItems = memoriesLoaded
+  //   ?.filter(
+  //     (item: any) =>
+  //       (filter === 'All' || item.type === filter.toLowerCase()) &&
+  //       (!search ||
+  //         (search.length >= 3 &&
+  //           (item.title?.toLowerCase().includes(search.toLowerCase()) ||
+  //             item.username?.toLowerCase().includes(search.toLowerCase())))),
+  //   )
+  //   ?.sort((a: any, b: any) => {
+  //     if (!isChronological) {
+  //       return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+  //     } else {
+  //       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  //     }
+  //   });
+  // const filteredMediaItems = memoriesLoaded
+  // ?.filter((item: any) => {
+  //   const isCreator = item.user_id === user.id; // Collaborator who created the memory
+
+  //   return (
+  //     (item.approved || (!item.approved && isCreator)) && // Approved or pending created by the user
+  //     (filter === 'All' || item.type === filter.toLowerCase()) &&
+  //     (!search ||
+  //       (search.length >= 3 &&
+  //         (item.title?.toLowerCase().includes(search.toLowerCase()) ||
+  //           item.username?.toLowerCase().includes(search.toLowerCase()))))
+  //   );
+  // })
+  // ?.sort((a: any, b: any) => {
+  //   if (!isChronological) {
+  //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+  //   } else {
+  //     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  //   }
+  // });
   const filteredMediaItems = memoriesLoaded
-    ?.filter(
-      (item: any) =>
-        (filter === 'All' || item.type === filter.toLowerCase()) &&
-        (!search ||
-          (search.length >= 3 &&
-            (item.title?.toLowerCase().includes(search.toLowerCase()) ||
-              item.username?.toLowerCase().includes(search.toLowerCase())))),
-    )
-    ?.sort((a: any, b: any) => {
-      if (!isChronological) {
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-      } else {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }
-    });
+  ?.filter((item: any) => {
+    const isCreator = item.user_id === user.id; // Collaborator who created the memory
+    const isStoryOwner = story.user_id === user.id // Owner of the story
+
+    return (
+      (item.approved || (!item.approved && (isCreator || isStoryOwner))) && // Approved or pending visible to creator or story owner
+      (filter === 'All' || item.type === filter.toLowerCase()) &&
+      (!search ||
+        (search.length >= 3 &&
+          (item.title?.toLowerCase().includes(search.toLowerCase()) ||
+            item.username?.toLowerCase().includes(search.toLowerCase()))))
+    );
+  })
+  ?.sort((a: any, b: any) => {
+    if (!isChronological) {
+      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    } else {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }
+  });
+
+
 
   const allItemsLoaded = visibleItems >= filteredMediaItems.length;
 

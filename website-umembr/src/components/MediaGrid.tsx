@@ -431,6 +431,12 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette,actionSucc
       borderRadius: '16px',
       zIndex:'998',
       margin: '8px',
+      top: 0, // Ensures stickiness
+        '@media (max-width: 600px)': {
+          position: 'sticky', // Sticky for mobile screens
+          top: 55, // Stick to the top of the viewport
+          zIndex: 1000, // Ensure it stays above other content
+        },
     }}>
     <Search
       color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}

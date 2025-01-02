@@ -36,7 +36,7 @@ interface CustomPopperProps {
 export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, width = '10rem' }: CustomPopperProps) => {
   const { t } = useTranslation();
   const { pathname } = useRouter();
-  let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :color;
+  let bgColor =  pathname ===   '/app/home' ? palette.cardBackground :'transparent';
   let bghoverColor =  pathname ===   '/app/home' ? palette.primary :hovercolor;
 
 
@@ -51,7 +51,9 @@ export const MuiDropdown = ({ hovercolor,color,isOpen, handleClose, listItem, wi
           right={0}
           width={width}
           zIndex={10}
+          // sx={styles(color).dropDown}
           sx={styles(color).dropDown}
+          
           id='dropdown'
           animate={isOpen ? 'open' : 'closed'}>
           <MotionList

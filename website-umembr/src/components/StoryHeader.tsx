@@ -76,7 +76,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
               variant='contained'
               sx={{
                 ...extendedPalette.editButton,
-                padding: '12px 12px', // Adjust padding to reduce size
+                padding: '10px 10px 10px 14px', // Adjust padding to reduce size
                 fontSize: '12px', // Smaller text size
                 minWidth: 'auto', // Prevents the button from having a default width
                 minHeight: 'auto',

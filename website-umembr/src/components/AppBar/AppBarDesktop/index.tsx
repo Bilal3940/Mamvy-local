@@ -250,7 +250,7 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
           background: 'transparent',
           width:'99.45%',
           left:'0',
-          backdropFilter: intermitenceData?.backgroundChange ? 'blur(1.5625rem)' : 'none',
+          backdropFilter: intermitenceData?.backgroundChange ? 'blur(1rem)' : 'none',
 
         }}>
         <Box display={'flex'} padding={'1rem'} justifyContent={'space-between'} alignItems={'center'}>

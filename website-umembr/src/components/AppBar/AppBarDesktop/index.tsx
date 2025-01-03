@@ -258,7 +258,7 @@ const padding = pathname === '/app/home' ? '1rem' : '0 65px';
         }}
         
         >
-        <Box display={'flex'} padding={'1rem'} justifyContent={'space-between'} alignItems={'center'}>
+        <Box display={'flex'} padding={pathname === '/app/home' ? '1rem' : '0 65 0 65px'} justifyContent={'space-between'} alignItems={'center'}>
           <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
          {  <ProfilePopup
               onClick={handleDrawerChange}

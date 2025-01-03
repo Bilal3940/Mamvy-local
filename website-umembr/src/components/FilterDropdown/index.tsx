@@ -229,7 +229,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
             style={{ pointerEvents: isOpen ? 'auto' : 'none' }}>
             <Box zIndex={'10002'} display={'flex'} justifyContent={'center'} marginBottom={'0.5rem'}>
               <MuiTabs
-                color={accentColor}
+                color={'#B3BED4'}
                 tabs={filterTabs}
                 value={showSection}
                 width='100%'

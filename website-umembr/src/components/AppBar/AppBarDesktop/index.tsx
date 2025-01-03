@@ -40,6 +40,7 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
   const dispatch = useDispatch();
   const intermitenceData = useSelector(intermitenceSelector);
   const router = useRouter();
+  const { pathname } = useRouter();
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
@@ -241,6 +242,8 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
     return () => { resizeObserver.disconnect() }
   }, [router?.pathname]);
 //  console.log("ïntermitttance data", intermitenceData)
+const padding = pathname === '/app/home' ? '1rem' : '0 65px';
+
   return (
     <>
       <MotionAppBar

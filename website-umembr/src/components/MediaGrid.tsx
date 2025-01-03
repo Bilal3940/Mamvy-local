@@ -367,7 +367,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
               position: 'relative',
               borderRadius: '16px',
               zIndex: '998',
-              margin: '8px',
+              margin: '0 74px 0 73px',
               top: 0,
               '@media (max-width: 600px)': {
                 position: 'sticky',
@@ -458,7 +458,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
           <Masonry
             columns={{ xs: 1, sm: 2, md: 4 }}
             spacing={2}
-            sx={{ position: 'relative', margin: 0, zIndex: '900' }}>
+            sx={{ position: 'relative', margin: 0, zIndex: '900', padding:'0 65px 0 65px' }}>
             {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
               <Paper
                 onClick={() => AllowOpenModel(item)}

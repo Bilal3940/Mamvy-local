@@ -4,6 +4,7 @@ import {
   changeBackground,
   closePublishModal,
   getCollaboratorStory,
+  getMemories,
   getTemplate,
   hideGradient,
   setCode,
@@ -20,7 +21,7 @@ import {
   templatesSelector,
 } from '@/store/selectors';
 import { cdn_url } from '@/utils';
-import { Box, CircularProgress, Theme, useMediaQuery } from '@mui/material';
+import { Box, CircularProgress, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,6 +33,7 @@ import StoryHeader from './StoryHeader';
 import MemoryFloatingActionButtons from '@/screens/Memories/components/MemoryFloatingActionButtons';
 import { PrivateStoryModal } from '@/screens/Memories/components/PrivateStoryModal';
 import { AddCollaborators } from '@/screens/Memories/components';
+import PullToRefresh from 'react-pull-to-refresh'
 
 const Main: React.FC = () => {
   const handleBackClick = () => {
@@ -57,6 +59,9 @@ const Main: React.FC = () => {
   const router = useRouter();
   const [tryCode, setTryCode] = useState(true);
   const [foundRole, setFoundRole] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [indicatorText, setIndicatorText] = useState("↓ Pull to refresh");
+  const startY = useRef<number | null>(null);
 
   UseFirstRender(() => {
     if (router.query?.id && !router.query.code) {
@@ -264,6 +269,12 @@ const Main: React.FC = () => {
       document.head.removeChild(styleElement);
     };
   }, [template]);
+  const handleRefresh = () => {
+    return new Promise<void>((resolve) => {
+
+      resolve();
+    });
+  };
 
   const extendedPalette = {
     storyBackground: adminPalette.storyBackgroundColor,
@@ -368,11 +379,90 @@ const Main: React.FC = () => {
     filterIconsSelectedColor: 'rgba(191, 87, 0)',
     filterIconsHoverColor: adminPalette.accentColor,
   };
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const isMouseDown = useRef(false); // Use useRef for isMouseDown
+
+  const handleStart = (e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => {
+    alert("hello i am called")
+    if (contentRef.current && contentRef.current.scrollTop === 0) {
+      if ("touches" in e) {
+        startY.current = e.touches[0].clientY;
+      } else {
+        isMouseDown.current = true; // Set mouse state
+        startY.current = e.clientY;
+      }
+    }
+  };
+
+  const handleMove = (e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => {
+    if (startY.current === null || isRefreshing) return;
+
+    let currentY = 0;
+    if ("touches" in e) {
+      currentY = e.touches[0].clientY;
+    } else if (isMouseDown.current) {
+      currentY = e.clientY;
+    } else {
+      return;
+    }
+
+    const distance = currentY - (startY.current || 0);
+
+    if (distance > 50) {
+      setIndicatorText("Release to refresh");
+    }
+  };
+
+  const handleEnd = (e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => {
+    if (startY.current === null || isRefreshing) return;
+
+    let endY = 0;
+    if ("touches" in e) {
+      endY = e.changedTouches[0].clientY;
+    } else if (isMouseDown.current) {
+      endY = e.clientY;
+    }
+
+    const distance = endY - (startY.current || 0);
+
+    if (distance > 4) {
+      performRefresh();
+    } else {
+      resetIndicator();
+    }
+
+    startY.current = null;
+    isMouseDown.current = false; 
+  };
+
+  const performRefresh = async () => {
+    setIsRefreshing(true);
+    dispatch(getMemories(story?.id));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    setIsRefreshing(false);
+  };
+
+  const resetIndicator = () => {
+    setIndicatorText("↓ Pull to refresh");
+  };
+
 
   return (
     <>
+        <Box
+        width={'100%'}
+      ref={contentRef}
+      onTouchStart={handleStart}
+      onTouchMove={handleMove}
+      onTouchEnd={handleEnd}
+    >    
+     {    isRefreshing && 
+            <Box zIndex={1000000} position={'relative'} top={'4rem'} width={'100%'}  display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <CircularProgress  sx={{bgcolor:'black', margin:'1rem', borderRadius:'100%',  color: palette.faintGray }} />
+        </Box>}
       {(actionSuccess && extendedPalette && adminPalette && loading ) ? (
-        <Box style={{ backgroundColor: extendedPalette.storyBackground, minHeight: '200vh' }}>
+        <Box style={{ backgroundColor: extendedPalette.storyBackground, minHeight: '100%' }}>
           {extendedPalette.isEllipseCheck.isEllipseLeft && (
             <Box
               sx={{
@@ -453,7 +543,9 @@ const Main: React.FC = () => {
           <CircularProgress sx={{ color: palette.faintGray }} />
         </Box>
       )}
-    </>
+      </Box>
+</>
+
   );
 };
 

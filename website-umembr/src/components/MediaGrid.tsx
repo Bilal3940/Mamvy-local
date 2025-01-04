@@ -194,7 +194,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
             setModalOpen(false);
             handleOpenModal(item);
 
-            window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
+            router.push(`/app/story/${story?.url}/?memoryId=${item?.id}`);
           } else {
             setModalOpen(true);
           }
@@ -205,12 +205,12 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
         setModalOpen(false);
         handleOpenModal(item);
 
-        window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
+        router.push(`/app/story/${story?.url}/?memoryId=${item?.id}`);
       }
     } else {
       handleOpenModal(item);
 
-      window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
+      router.push(`/app/story/${story?.url}/?memoryId=${item?.id}`);
     }
   };
   const AllowHandleLoadMore = () => {

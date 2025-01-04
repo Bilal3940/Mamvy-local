@@ -383,7 +383,6 @@ const Main: React.FC = () => {
   const isMouseDown = useRef(false); // Use useRef for isMouseDown
 
   const handleStart = (e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => {
-    alert("hello i am called")
     if (contentRef.current && contentRef.current.scrollTop === 0) {
       if ("touches" in e) {
         startY.current = e.touches[0].clientY;
@@ -425,7 +424,7 @@ const Main: React.FC = () => {
 
     const distance = endY - (startY.current || 0);
 
-    if (distance > 4) {
+    if (distance > 20) {
       performRefresh();
     } else {
       resetIndicator();

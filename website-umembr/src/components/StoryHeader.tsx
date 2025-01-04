@@ -76,7 +76,7 @@ return (
   variant="contained"
   sx={{
     ...extendedPalette.editButton,
-    padding: '10px 10px 10px 15px', // Slightly increased horizontal padding for a balanced pill shape
+    padding: '10px 15px 10px 18px',
     fontSize: '12px',
     minWidth: 'auto',
     minHeight: 'auto',
@@ -87,12 +87,14 @@ return (
     justifyContent: 'center', // Centers content within the button
   }}
   startIcon={
+    
     <Image
       src="/icons/editmem.svg"
       alt="Edit Icon"
       width={13}
+
       height={13}
-      style={{marginRight:'-0.2rem'}}    />
+           />
   }
   onClick={EditMemvy}
 >
@@ -150,13 +152,14 @@ return (
           )}
         </>
       ) : (
+        coverImage &&
         <Box
           sx={{
             display: 'flex', 
             justifyContent: 'center',
             alignItems: 'center',
-            width: { xs: 200, sm: 200 },
-            height: { xs: 200, sm: 200 },
+            width: 'auto',
+            height: 'auto',
           }}>
           <Image
             src={coverImage}
@@ -166,6 +169,7 @@ return (
             height={150}
             style={{
               borderRadius: '10px',
+              objectFit:'scale-down'
             }}
           />
         </Box>

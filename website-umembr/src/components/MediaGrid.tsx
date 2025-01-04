@@ -577,7 +577,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
                       />
                     </Box>
                   )}
-                  {item.type === 'video' && <VideoThumbnail videoSrc={`${cdn_url}${item.asset}`} />}
+                  {item.type === 'video' && <VideoThumbnail extendedPalette={extendedPalette} videoSrc={`${cdn_url}${item.asset}`} />}
                   {item.type === 'audio' && (
                     <div
                       style={{

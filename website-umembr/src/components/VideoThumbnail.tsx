@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Theme, useMediaQuery } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
 
@@ -12,12 +12,14 @@ const extractYouTubeId = (url: string): string | null => {
 
 interface VideoThumbnailProps {
   videoSrc: string;
+  extendedPalette:any;
 }
 
-const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
+const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc,extendedPalette }) => {
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const isLarge = useMediaQuery((template: Theme) => template.breakpoints.up('lg'));
 
   useEffect(() => {
     const youtubeId = extractYouTubeId(videoSrc);
@@ -65,7 +67,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
   }, [videoSrc]);
 
   return (
-    <Box minHeight={'18.4rem'} >
+    <Box minHeight={isLarge ? '14.4rem' : '100%'} >
       {thumbnail ? (
         <Box style={{ position: "relative" }}>
   <Image 
@@ -73,8 +75,10 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
     alt="Video Thumbnail" 
     width={100}
     height={100}
-
-    style={{width:'100%', height:'auto'}} 
+    style={{
+      width:'100%',
+      height: '100%'
+    }}
   />
           <Box
             style={{
@@ -95,7 +99,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc }) => {
           />
         </Box>
       ) : (
-        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} minHeight={'10rem'} > <CircularProgress/> </Box>
+        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} minHeight={'10rem'} > <CircularProgress sx={{color: extendedPalette.buttonbackgroundIcon }}/> </Box>
       )}
 
       <video ref={videoRef} style={{ display: "none" }} preload="metadata" crossOrigin="anonymous">

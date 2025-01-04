@@ -33,7 +33,7 @@ import StoryHeader from './StoryHeader';
 import MemoryFloatingActionButtons from '@/screens/Memories/components/MemoryFloatingActionButtons';
 import { PrivateStoryModal } from '@/screens/Memories/components/PrivateStoryModal';
 import { AddCollaborators } from '@/screens/Memories/components';
-import PullToRefresh from 'react-pull-to-refresh'
+
 
 const Main: React.FC = () => {
   const handleBackClick = () => {
@@ -458,7 +458,7 @@ const Main: React.FC = () => {
     >    
      {    isRefreshing && 
             <Box zIndex={1000000} position={'relative'} top={'4rem'} width={'100%'}  display={'flex'} justifyContent={'center'} alignItems={'center'}>
-          <CircularProgress  sx={{bgcolor:'black', margin:'1rem', borderRadius:'100%',  color: palette.faintGray }} />
+          <CircularProgress  sx={{margin:'1rem', borderRadius:'100%',  color: extendedPalette.buttonbackgroundIcon }} />
         </Box>}
       {(actionSuccess && extendedPalette && adminPalette && loading ) ? (
         <Box style={{ backgroundColor: extendedPalette.storyBackground, minHeight: '100%' }}>

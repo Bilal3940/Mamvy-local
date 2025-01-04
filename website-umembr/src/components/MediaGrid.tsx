@@ -9,6 +9,7 @@ import {
   useMediaQuery,
   CircularProgress,
   Chip,
+  Theme,
 } from '@mui/material';
 
 import Image from 'next/image';
@@ -89,6 +90,8 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
   const dispatch = useDispatch();
   const { actionSuccess, memoriesLoaded } = useSelector(memorySelector);
   const [openModal, setOpenModal] = useState(false);
+  const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('md'));
+  
   const [search, setSearch] = useState('');
   const router = useRouter();
   const { extraContent } = useSelector(extrasSelector);
@@ -357,23 +360,24 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
         {actionSuccessColab && (
           <Box
             sx={{
-              padding: '10px 1px 10px 8px',
+              padding: '10px 1px 10px 9px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               mb: 2,
               backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
               flexDirection: 'row',
-              position: 'relative',
+              position:isMobile?'relative': 'sticky',
               borderRadius: '16px',
               zIndex: '998',
-              margin: '0 74px 0 73px',
-              top: 0,
-              '@media (max-width: 600px)': {
-                position: 'sticky',
-                top: 55,
-                zIndex: 1000,
-              },
+              backdropFilter:'blur(1.562rem)',
+              margin:isMobile?'8px': '0 74px 0 73px',
+              top:isMobile? 0: 55,
+              // '@media (max-width: 600px)': {
+              //   position: 'sticky',
+              //   top: 55,
+              //   zIndex: 1000,
+              // },
             }}>
             <Search
               color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
@@ -456,9 +460,9 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
 
         {actionSuccessColab && actionSuccess && memoriesLoaded.length > 0 ? (
           <Masonry
-            columns={{ xs: 1, sm: 2, md: 4 }}
-            spacing={2}
-            sx={{ position: 'relative', margin: 0, zIndex: '900', padding:'0 65px 0 65px' }}>
+            columns={{ xs: 1, sm: 2, md: 4, lg: 3 ,xl:4}}
+            spacing={3}
+            sx={{ position: 'relative', margin: '0 auto', zIndex: '900', padding:isMobile?'':'0 65px 0 65px' }}>
             {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
               <Paper
                 onClick={() => AllowOpenModel(item)}

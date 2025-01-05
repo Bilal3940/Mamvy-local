@@ -26,11 +26,12 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({ handleClose }) => {
   };
 
   return (
-    <Box width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
       <Elements stripe={stripePromise}>
         <Box
           width={'100%'}
           margin={'0 auto'}
+          height={'90vh'}
+          overflow={'auto'}
           padding={'20px'}
           borderRadius={'0.6rem'}
           // boxShadow={
@@ -41,6 +42,5 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({ handleClose }) => {
           <PaymentForm  />
         </Box>
       </Elements>
-    </Box>
   );
 };

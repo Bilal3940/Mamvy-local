@@ -58,6 +58,7 @@ interface iButtonProps {
   disabled?: any;
   padding?: string;
   loading?: boolean;
+  width?: any;
   children: any;
   variant?: any;
   borderRadius?: string;
@@ -72,6 +73,7 @@ interface iButtonProps {
 
 export const MuiButton = ({
   height = '2.375rem',
+  width,
   disabled,
   padding,
   loading,
@@ -89,6 +91,7 @@ export const MuiButton = ({
 }: iButtonProps) => {
   const buttonStyles = {
     height,
+    width:width ? width : '100%',
     padding,
     borderRadius,
     backgroundColor,
@@ -103,7 +106,7 @@ export const MuiButton = ({
         ...buttonStyles,
         ...sx,  // Merge custom styles
       }}
-      fullWidth
+      
       onClick={method}
       disabled={disabled}
       type={type}

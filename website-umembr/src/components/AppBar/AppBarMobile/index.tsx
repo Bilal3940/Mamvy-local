@@ -81,8 +81,12 @@ export const MuiAppBarMobile: FC<any> = ({adminPalette, search, setSearch }) => 
     if (event?.target?.alt !== 'filters') setOpenFilters(false);
   };
 
-  useEffect(() => {
-    if (router.pathname == '/app/home' || router?.pathname == '/app/story/[id]') return setShowHomeElements(true);
+  // useEffect(() => {
+  //   if (router.pathname == '/app/home' || router?.pathname == '/app/story/[id]') return setShowHomeElements(true);
+  //   setShowHomeElements(false);
+  // }, [router.pathname]);
+    useEffect(() => {
+    if (router.pathname == '/app/home' ) return setShowHomeElements(true);
     setShowHomeElements(false);
   }, [router.pathname]);
 
@@ -291,6 +295,52 @@ export const MuiAppBarMobile: FC<any> = ({adminPalette, search, setSearch }) => 
                       </Box>
                     </ClickAwayListener>
                   </Box>
+                  <Box>
+                    <MuiIconButton
+                      icon='/icons/settings'
+                      altIcon='settings'
+                      background={buttonBackground}
+                      borderColor={palette?.cardBorder}
+                      method={(event: any) => {
+                        setShowDropdown(event);
+                        handleCloseFilters(event);
+                        handleCloseNotifications(event);
+                      }}
+                    />
+                    <ClickAwayListener onClickAway={(event: any) => handleClose(event)} disableReactTree={true}>
+                      <Box position={'relative'}>
+                        <MuiDropdown isOpen={isOpen} handleClose={()=>{ handleClose}} listItem={getSettingsMobileOptions} />
+                      </Box>
+                    </ClickAwayListener>
+
+                    <ClickAwayListener
+                      onClickAway={(event: any) => handleCloseNotifications(event)}
+                      disableReactTree={true}>
+                      <Box position={'relative'}>
+                        <NotificationsPreview
+                          isOpen={openNotification}
+                          handleClose={handleCloseNotifications}
+                          listItem={notificationsData}
+                          type={notificationsType}
+                        />
+                      </Box>
+                    </ClickAwayListener>
+                  </Box>
+                </>
+              )}
+            </Box>
+          )}
+                    {!showHomeElements && (
+            <Box
+              display={'flex'}
+              justifyContent={'flex-end'}
+              flexGrow={isExpanded ? 1 : 0}
+              zIndex={2}
+              alignItems={'center'}
+              gap={'0.5rem'}>
+
+              {!isExpanded && (
+                <>
                   <Box>
                     <MuiIconButton
                       icon='/icons/settings'

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Avatar, Box, Button, Theme, Typography, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
 
 import { palette } from '@/theme/constants';
@@ -10,6 +10,7 @@ interface ProfilePopupProps {
 }
 
 const ProfilePopup = ({ onClick, user, showName }: ProfilePopupProps) => {
+  const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('lg'));
   return (
     <Button type={'button'} sx={{ padding: 0 }} onClick={onClick}>
       <Box
@@ -32,7 +33,7 @@ const ProfilePopup = ({ onClick, user, showName }: ProfilePopupProps) => {
             <Image src={`/icons/person-outlined.svg`} alt={'avatar'} width={24} height={24} quality={80} />
           )}
           {showName && (
-            <Typography variant={'h5'} marginLeft={'0.5rem'}>
+            <Typography variant={isMobile ? 'body2' :'h5'} marginLeft={'0.5rem'}>
               {`${user?.name || ''} ${user?.lastname || ''}`}
             </Typography>
           )}

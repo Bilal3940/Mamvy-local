@@ -99,7 +99,7 @@ export const MainContent = ({ extendedPalette,description, media, boxRef, height
         ref={boxRef}
         position={'relative'}
         height={isMobile ? '30vh' : height ? 'calc(100% - 5rem)' : '22rem'}
-        maxHeight={isMobile ? '30vh' : '22rem'}
+        maxHeight={isMobile ? '30vh' : '20rem'}
         marginTop={'1.5rem'}
         sx={{
           aspectRatio: (media?.type === 'image' || media?.asset_type?.includes('image')) || media?.cover_image ? aspectRatio : '16/9',

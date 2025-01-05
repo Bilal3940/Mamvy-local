@@ -4,13 +4,13 @@ import { UseFirstRender } from '@/hooks';
 import { approveMemory, deleteNotification, setCreateMemoryStep, viewMemory, viewMemoryG } from '@/store/actions';
 import { authSelector, currentStorySelector, notificationsSelector } from '@/store/selectors';
 import { checkPermissions, findNotificationByMemoryId } from '@/utils';
-import { Box, Chip, Modal, Theme, Typography, useMediaQuery } from '@mui/material';
+import { Box, Chip, Fade, keyframes, Modal, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {  templatesSelector } from '@/store/selectors'
+import { templatesSelector } from '@/store/selectors';
 import { AudioContent } from '../AudioContent';
 import { ImageContent } from '../ImageContent';
 import { MainContent } from '../MainContent';
@@ -24,10 +24,10 @@ interface ModalDetailProps {
   mediaContent?: any;
   method: () => void;
   isLocked?: boolean | false;
-  extendedPalette?:any;
+  extendedPalette?: any;
 }
 
-export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaContent, method }: ModalDetailProps) => {
+export const MemoryDetail = ({ extendedPalette, isLocked, open, onClose, mediaContent, method }: ModalDetailProps) => {
   const { t } = useTranslation();
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -39,13 +39,13 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
   const dispatch = useDispatch();
   const router = useRouter();
   const [adminPalette, setAdminPalette] = useState({
-    storyBackgroundColor: '#333333', // Default value
-    textColor: '#fff', // Default value
-    accentColor: '#BF5700', // Default value
+    storyBackgroundColor: '#333333', 
+    textColor: '#fff', 
+    accentColor: '#BF5700', 
   });
 
   const [approve, setApprove] = useState();
-  UseFirstRender(() => { 
+  UseFirstRender(() => {
     if (mediaContent?.id) {
       setMediaSelected('home');
       dispatch(viewMemory(mediaContent?.id));
@@ -57,14 +57,38 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
     switch (media) {
       case 'home':
         return (
-          <MainContent extendedPalette={extendedPalette} description={mediaContent?.description} media={mediaContent} boxRef={boxRef} height={height} />
+          <MainContent
+            extendedPalette={extendedPalette}
+            description={mediaContent?.description}
+            media={mediaContent}
+            boxRef={boxRef}
+            height={height}
+          />
         );
       case 'image':
-        return <ImageContent color={accentColor} mediaData={mediaContent?.memory_details?.complementaryImage} boxRef={boxRef} />;
+        return (
+          <ImageContent
+            color={accentColor}
+            mediaData={mediaContent?.memory_details?.complementaryImage}
+            boxRef={boxRef}
+          />
+        );
       case 'text':
-        return <TextContent  color={accentColor} mediaData={mediaContent?.memory_details?.complementaryText} boxRef={boxRef} />;
+        return (
+          <TextContent
+            color={accentColor}
+            mediaData={mediaContent?.memory_details?.complementaryText}
+            boxRef={boxRef}
+          />
+        );
       case 'video':
-        return <VideoContent  color={accentColor} mediaData={mediaContent?.memory_details?.complementaryVideo} boxRef={boxRef} />;
+        return (
+          <VideoContent
+            color={accentColor}
+            mediaData={mediaContent?.memory_details?.complementaryVideo}
+            boxRef={boxRef}
+          />
+        );
       case 'audio':
         return <AudioContent mediaData={mediaContent?.memory_details?.complementaryAudio} boxRef={boxRef} />;
 
@@ -118,8 +142,8 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
 
   useEffect(() => {
     if (template?.template?.colors) {
-      const colors = template.template.colors.reduce((acc:any, color:any) => {
-        // Map each color to the corresponding palette key
+      const colors = template.template.colors.reduce((acc: any, color: any) => {
+        
         switch (color.PLabel) {
           case 'storyBackground':
             acc.storyBackgroundColor = color.PValue;
@@ -136,19 +160,45 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
         return acc;
       }, {});
 
-      // Set the colors to the adminPalette state
+      
       setAdminPalette({
-        storyBackgroundColor: colors.storyBackgroundColor || '#333333', // Fallback if color is missing
-        textColor: colors.textColor || '#fff', // Fallback
-        accentColor: colors.accentColor || '#BF5700', // Fallback
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333', 
+        textColor: colors.textColor || '#fff', 
+        accentColor: colors.accentColor || '#BF5700', 
       });
     }
-  }, [template]); // Make sure to add template to the dependency array
+  }, [template]); 
 
   const accentColor = adminPalette.accentColor;
+  const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
+  const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0);
+  }
+`;
   return (
-    <Modal open={open} onClose={onClose} sx={styles.modal}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      sx={{
+        ...styles.modal,
+        animation: `${open ? fadeIn : fadeOut} 0.25s ease-in-out`,
+      }}>
       <Box
         display={'flex'}
         width={isMobile ? '100%' : '40.1875rem'}
@@ -179,42 +229,53 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
               {mediaContent?.title}
             </Typography>
 
-
             <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={isMobile ? '100%' : '50%'}>
-            {!mediaContent?.approved && (
-        <Chip
-          label="Pending Approval"
-          size="small"
-          sx={{
-             color: '#00008B', 
-      backgroundColor: '#ADD8E6', 
-            position: 'relative',
-          right:isMobile ? '2rem' : '0rem',
-            fontFamily: 'DM Sans',
-            fontSize: '12px',
-            fontWeight: 500,
-          }}
-        />
-      )}
-
-              { !isLocked && ( (checkPermissions(user?.roles || [], 'CLIENT_MEMORY_DELETE', story?.id) &&
-                user?.id === mediaContent?.user_id) ||
-                user?.id === story?.user_id ||
-                user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')  )  && (
-                <Box width={'6.5rem'} marginRight={'1rem'}>
-                  <MuiButton type='button' loading={false} variant={'outlined'} method={method} sx={{
-    '&:hover': {
-      borderColor: accentColor,  // Change the border color on hover
-      color: '#EB8334',         // Change the text color on hover
-    },
-  }}>
-                    <Typography variant='button' color={palette.white}>
-                      {t('delete')}
-                    </Typography>
-                  </MuiButton>
-                </Box>
+              {!mediaContent?.approved && (
+                <Chip
+                  label='Pending Approval'
+                  size='small'
+                  sx={{
+                    color: '#00008B',
+                    backgroundColor: '#ADD8E6',
+                    position: 'relative',
+                    top: isMobile ? '3rem' : '0rem',
+                    right: isMobile ? '0rem' : '2rem',
+                    left: isMobile ? '3rem' : '',
+                    fontFamily: 'DM Sans',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                  }}
+                />
               )}
-              {!approve && !isLocked && 
+
+              {!isLocked &&
+                ((checkPermissions(user?.roles || [], 'CLIENT_MEMORY_DELETE', story?.id) &&
+                  user?.id === mediaContent?.user_id) ||
+                  user?.id === story?.user_id ||
+                  user?.roles?.find(
+                    (role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner',
+                  )) && (
+                  <Box width={'6.5rem'} marginRight={'1rem'}>
+                    <MuiButton
+                      type='button'
+                      loading={false}
+                      variant={'outlined'}
+                      method={method}
+                      sx={{
+                        '&:hover': {
+                          borderColor: accentColor, 
+                          color: '#EB8334', 
+                        },
+                      }}>
+                      <Typography variant='button' color={palette.white}>
+                        {t('delete')}
+                      </Typography>
+                    </MuiButton>
+                  </Box>
+                )}
+              {!approve &&
+                !isLocked &&
                 (checkPermissions(user?.roles || [], 'CLIENT_STORY_UPDATE', story?.id) ||
                   user?.id === story?.user_id ||
                   user?.roles?.find(
@@ -228,44 +289,52 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
                       variant={'contained'}
                       disabled={false}
                       method={() => {
-                        // dispatch(approveMemory({ id: selectedMemorie?.id, story_id: story?.id }));
+                        
 
                         handleAcceptMemory();
                       }}
-                       sx={{
-    '&:hover': {
-      backgroundColor: accentColor, // Set your desired hover background color here
-    },
-  }}
-                      >
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: accentColor, 
+                        },
+                      }}>
                       <Typography variant='button' color={palette.white}>
                         {t('accept')}
                       </Typography>
                     </MuiButton>
                   </Box>
                 )}
-              {!isLocked &&  ((checkPermissions(user?.roles || [], 'CLIENT_MEMORY_UPDATE', story?.id) &&
-                user?.id === mediaContent?.user_id) ||
-                user?.id === story?.user_id ||
-                user?.roles?.find((role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner')) && (
-                <Box width={'6.5rem'} marginRight={'1rem'}>
-                  <Link
-                    href={`/app/story/${story?.url}/memory/create?memoryId=${mediaContent?.id}`}
-                    onClick={() => {
-                      dispatch(setCreateMemoryStep(1));
-                    }}>
-                    <MuiButton type='button' backgroundColor={accentColor} loading={false} variant={'contained'} disabled={false}  sx={{
-    '&:hover': {
-      backgroundColor: accentColor, // Set your desired hover background color here
-    },
-  }}>
-                      <Typography variant='button' color={palette.white}>
-                        {t('edit_mayus')}
-                      </Typography>
-                    </MuiButton>
-                  </Link>
-                </Box>
-              )}
+              {!isLocked &&
+                ((checkPermissions(user?.roles || [], 'CLIENT_MEMORY_UPDATE', story?.id) &&
+                  user?.id === mediaContent?.user_id) ||
+                  user?.id === story?.user_id ||
+                  user?.roles?.find(
+                    (role: any) => role.story_id === story?.id && role.role.name === 'Story_Owner',
+                  )) && (
+                  <Box width={'6.5rem'} marginRight={'1rem'}>
+                    <Link
+                      href={`/app/story/${story?.url}/memory/create?memoryId=${mediaContent?.id}`}
+                      onClick={() => {
+                        dispatch(setCreateMemoryStep(1));
+                      }}>
+                      <MuiButton
+                        type='button'
+                        backgroundColor={accentColor}
+                        loading={false}
+                        variant={'contained'}
+                        disabled={false}
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: accentColor, 
+                          },
+                        }}>
+                        <Typography variant='button' color={palette.white}>
+                          {t('edit_mayus')}
+                        </Typography>
+                      </MuiButton>
+                    </Link>
+                  </Box>
+                )}
               <MuiIconButton icon='/icons/close' altIcon='close' background={'transparent'} method={onClose} />
             </Box>
           </Box>
@@ -279,7 +348,7 @@ export const MemoryDetail = ({extendedPalette,isLocked, open, onClose, mediaCont
                 <MuiIconButton
                   icon={`/icons/${item?.icon}`}
                   altIcon={item?.icon}
-                  // background={mediaSelected === item?.name ? palette?.primary : palette?.black}
+                  
                   background={accentColor}
                   method={() => setMediaSelected(item?.name)}
                   label={item?.label}

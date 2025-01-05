@@ -21,7 +21,7 @@ import {
 } from '@/store/selectors';
 import { extendedPalette, palette } from '@/theme/constants';
 import { cdn_url, checkPermissions, checkRoleAndPermission, logoutWithFacebook } from '@/utils';
-import { AppBar, Box, ClickAwayListener, Stack, Typography } from '@mui/material';
+import { AppBar, Box, ClickAwayListener, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
 import { currentStorySelector, templatesSelector } from '@/store/selectors';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
@@ -40,7 +40,6 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
   const dispatch = useDispatch();
   const intermitenceData = useSelector(intermitenceSelector);
   const router = useRouter();
-  const { pathname } = useRouter();
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
@@ -58,6 +57,8 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
   const { user} = useSelector(authSelector);
   const prompts = getPropmtsOptions(stories, story);
   const collaborators = getCollaboratorsOptions(user?.collaborators || [], story);
+  const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('md'));
+
 
 
 //  console.log("query", query)
@@ -242,8 +243,6 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
     return () => { resizeObserver.disconnect() }
   }, [router?.pathname]);
 //  console.log("ïntermitttance data", intermitenceData)
-const padding = pathname === '/app/home' ? '1rem' : '0 65px';
-
   return (
     <>
       <MotionAppBar
@@ -253,12 +252,13 @@ const padding = pathname === '/app/home' ? '1rem' : '0 65px';
           background: 'transparent',
           width:'99.45%',
           left:'0',
+          padding:(router?.pathname == '/app/story/[id]' && !isMobile) ? '0px 64px' : '0px',
           backdropFilter: intermitenceData?.backgroundChange ? 'blur(1.5625rem)' : 'none',
 
         }}
         
         >
-        <Box display={'flex'} padding={pathname === '/app/home' ? '1rem' : '1rem 65px 0 65px'} justifyContent={'space-between'} alignItems={'center'}>
+        <Box display={'flex'} padding={'1rem'} justifyContent={'space-between'} alignItems={'center'}>
           <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
          {  <ProfilePopup
               onClick={handleDrawerChange}

@@ -43,12 +43,17 @@ const { user } = useSelector(authSelector);
 const router = useRouter();
 const dispatch = useDispatch();
 
+console.log("i am the collaborators", collaborators);
+
 const images =
   collaborators &&
-  collaborators?.map((collaborator: any) => ({
-    src: collaborator.user.picture ? `${cdn_url}${collaborator.user.picture}` : '/default-profile.png', 
-    alt: `${collaborator.user.name} ${collaborator.user.lastname}`, 
+  collaborators.map((collaborator: any) => ({
+    src: collaborator.picture ? `${cdn_url}${collaborator.picture}` : '/default-profile.png',
+    alt: `${collaborator.name} ${collaborator.lastname}`,
   }));
+
+console.log("Mapped images", images);
+
 const EditMemvy = () => {
   dispatch(refreshUserData());
   if (checkRoleAndPermission(user?.roles, 'Subscriber_Individual', 'CLIENT_MEMORY_UPDATE', story?.user_id)) {
@@ -193,6 +198,8 @@ return (
       Created {formatDate(createdDate)}
     </Typography>
 }
+
+{images &&
     <Box
       sx={{
         display: 'flex',
@@ -201,7 +208,7 @@ return (
         height: images.length > 0 ? '4rem' : '0.4rem',
       }}>
       <AvatarGroup max={6}>
-        {images.map((collab, index) => (
+        {images.map((collab:any, index:any) => (
           <Avatar
             key={index}
             title={collab?.alt}
@@ -214,7 +221,7 @@ return (
           />
         ))}
       </AvatarGroup>
-    </Box>
+    </Box>}
 
     <Box
       sx={{

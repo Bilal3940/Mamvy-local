@@ -1,5 +1,5 @@
 import { palette } from '@/theme/constants';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Link, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import NextLink from 'next/link';
 import { useEffect, useState } from 'react';
@@ -15,6 +15,8 @@ export const MuiBreadcrumbs = ({ route }: IBreadcrumbsProps) => {
   const { t } = useTranslation();
   const title = typeof route === 'string' ? route : route?.title;
   const State = typeof route === 'string' ? '' : route?.publish;
+  const isnotLarge = useMediaQuery((template: Theme) => template.breakpoints.down('lg'));
+
   const [adminPalette, setAdminPalette] = useState({
     storyBackgroundColor: '#333333', 
     textColor: '#fff', 
@@ -63,14 +65,14 @@ export const MuiBreadcrumbs = ({ route }: IBreadcrumbsProps) => {
         href={'/app/home'}
         component={NextLink}
         onClick={() => window.scrollTo(0, 0)}
-        fontSize={'1.25rem'}>
+        fontSize={isnotLarge ? '1rem' :'1.25rem'}>
         {t('home')}
       </Link>
       <Box display={'flex'} alignItems={'center'}>
         <Typography
           sx={styles.title}
           color={'#B3BED4'} 
-          fontSize={'1.25rem'}
+          fontSize={isnotLarge ? '1rem' :'1.25rem'}
           fontWeight={'700'}>
           {t(title)}
         </Typography>
@@ -79,7 +81,7 @@ export const MuiBreadcrumbs = ({ route }: IBreadcrumbsProps) => {
         </Typography>
 
         {user.id === story?.user_id && (
-          <span style={{ color: palette.primary, fontWeight: '700', fontSize: '1.25rem' }}>
+          <span style={{ color: palette.primary, fontWeight: '700', fontSize:isnotLarge ? '1rem' :'1.25rem' }}>
             {typeof State === 'string' ? State : <State />}
           </span>
         )}

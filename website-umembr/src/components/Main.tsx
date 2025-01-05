@@ -461,16 +461,17 @@ const Main: React.FC = () => {
           <CircularProgress  sx={{margin:'1rem', borderRadius:'100%',  color: extendedPalette.buttonbackgroundIcon }} />
         </Box>}
       {(actionSuccess && extendedPalette && adminPalette && loading ) ? (
-        <Box style={{ backgroundColor: extendedPalette.storyBackground, minHeight: '100%' }}>
-          {extendedPalette.isEllipseCheck.isEllipseLeft && (
+        <Box sx={{minheight:'100vh', maxHeight:'100vh', overflowY:'auto', backgroundColor: extendedPalette.storyBackground,padding:(router?.pathname == '/app/story/[id]' && !isMobile) ? '0px 64px' : '0px', }}>
+
+{extendedPalette.isEllipseCheck.isEllipseLeft && (
             <Box
               sx={{
-                position: 'absolute',
+                position: 'fixed',
                 left: '0%',
                 top: '0%',
                 zIndex: 0,
                 width: '80rem',
-                height: '20%',
+                // height: '20%',
                 pointerEvents: 'none',
                 backgroundRepeat: 'no-repeat, no-repeat',
                 backgroundSize: 'contain, contain',
@@ -486,13 +487,13 @@ const Main: React.FC = () => {
           {extendedPalette.isEllipseRightCheck.isEllipseRight && (
             <Box
               sx={{
-                position: 'absolute',
+                position: 'fixed',
                 right:isMobile ? '-4%'  :'-20%',
                 top:isMobile ? '8%': '12%',
 
                 zIndex: 0,
                 width: '60%',
-                height: '20%',
+                // height: '20%',
 
                 backgroundRepeat: 'no-repeat, no-repeat',
                 pointerEvents: 'none',
@@ -514,7 +515,7 @@ const Main: React.FC = () => {
             title={story?.title}
             createdDate={story?.created_at}
             description={story?.description}
-            collaborators={collaborators?.collaborators}
+            collaborators={story?.collaborators}
             onBackClick={handleBackClick}
             userId={story?.user_id}
           />

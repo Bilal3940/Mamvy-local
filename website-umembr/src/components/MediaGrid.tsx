@@ -90,14 +90,12 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
   const dispatch = useDispatch();
   const { actionSuccess, memoriesLoaded } = useSelector(memorySelector);
   const [openModal, setOpenModal] = useState(false);
-  const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('md'));
-  
   const [search, setSearch] = useState('');
   const router = useRouter();
   const { extraContent } = useSelector(extrasSelector);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const { status: deleteStatusMemory, switchStatus: switchDeleteMemory } = UseIntermitence();
-
+  const isMobile = useMediaQuery((template: Theme) => template.breakpoints.down('md'));
   const [filter, setFilter] = useState('All');
   const [rotate, setRotate] = useState(false);
   const { stories } = useSelector(homeSelector);
@@ -194,7 +192,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
             setModalOpen(false);
             handleOpenModal(item);
 
-            router.push(`/app/story/${story?.url}/?memoryId=${item?.id}`);
+            window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
           } else {
             setModalOpen(true);
           }
@@ -205,12 +203,12 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
         setModalOpen(false);
         handleOpenModal(item);
 
-        router.push(`/app/story/${story?.url}/?memoryId=${item?.id}`);
+        window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
       }
     } else {
       handleOpenModal(item);
 
-      router.push(`/app/story/${story?.url}/?memoryId=${item?.id}`);
+      window.history.pushState({}, '', `/app/story/${story?.url}/?memoryId=${item?.id}`);
     }
   };
   const AllowHandleLoadMore = () => {
@@ -353,14 +351,15 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
         return null;
     }
   };
-  console.log('i am the success of colab', actionSuccessColab);
   return (
     <>
       <div>
         {actionSuccessColab && (
+          <>
+
           <Box
             sx={{
-              padding: '10px 1px 10px 9px',
+              padding: '10px 1px 10px 8px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -369,15 +368,10 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
               flexDirection: 'row',
               position:isMobile?'relative': 'sticky',
               borderRadius: '16px',
+              backdropFilter:'blur(1.5625rem)',
               zIndex: '998',
-              backdropFilter:'blur(1.562rem)',
-              margin:isMobile?'8px': '0 74px 0 73px',
-              top:isMobile? 0: 55,
-              // '@media (max-width: 600px)': {
-              //   position: 'sticky',
-              //   top: 55,
-              //   zIndex: 1000,
-              // },
+              margin:isMobile?'8px': '8px',
+              top:isMobile? 0: '9%',
             }}>
             <Search
               color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
@@ -414,6 +408,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
                 flexWrap: { xs: 'nowrap', sm: 'nowrap' },
                 gap: '2px',
                 margin: '0',
+                padding:'0 5px 0 0',
               }}>
               <MuiIconButton
                 icon='/icons/filter'
@@ -440,19 +435,20 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
                 method={(event: any) => setShowFilters(event)}
               />
 
-              <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
+
+            </Box>
+          </Box>
+          <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
                 <Box position={'relative'}>
                   <FilterDropdown
                     extendedPalette={extendedPalette}
                     callbackfunction={(flag: boolean) => callbackfunction(flag)}
-                    top={'4rem'}
+                    // top={'rem'}
                     isOpen={openFilters}
                     listItem={[prompts, collaborators, types]}
                   />
                 </Box>
-              </ClickAwayListener>
-            </Box>
-          </Box>
+              </ClickAwayListener></>
         )}
         {isDivider && <Divider sx={styles.divider} />}
 
@@ -460,9 +456,9 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
 
         {actionSuccessColab && actionSuccess && memoriesLoaded.length > 0 ? (
           <Masonry
-            columns={{ xs: 1, sm: 2, md: 4, lg: 3 ,xl:4}}
-            spacing={3}
-            sx={{ position: 'relative', margin: '0 auto', zIndex: '900', padding:isMobile?'':'0 65px 0 65px' }}>
+            columns={{ xs: 1, sm: 2, md: 4, lg: 4 }}
+            spacing={2}
+            sx={{ position: 'relative', margin: 0, zIndex: '900'}}>
             {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
               <Paper
                 onClick={() => AllowOpenModel(item)}
@@ -476,7 +472,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
                   flexDirection: 'column',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
-                  animation: `fadeInUp 0.8s ease-out`,
+                  animation: `fadeInUp 1s ease-out`,
                   animationFillMode: 'forwards',
                   opacity: 0,
                   transform: 'translateY(4rem)',
@@ -651,9 +647,11 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
           </Box>
         )}
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+        <Box sx={{width:'100%', mb:'1rem', display: 'flex', justifyContent: 'center', alignItems:'center', alignContent:'center',  marginTop: 2 }}>
           {!allItemsLoaded && (
             <MuiButton
+            minWidth={'10rem'}
+            width={'10rem'}
               type='button'
               loading={false}
               backgroundColor={extendedPalette.buttonbackgroundIcon}
@@ -685,6 +683,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
           onClose={switchDeleteMemory}
           confirmMethod={deleteMemory}
         />
+
       </div>
     </>
   );

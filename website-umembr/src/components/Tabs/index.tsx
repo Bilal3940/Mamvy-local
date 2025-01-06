@@ -58,7 +58,7 @@ export const MuiTabs: FC<ITabsProps> = ({ color,tabs, value, width, extraStyle, 
             color: bgColor, // Hover color for all tabs
           },
           '&.Mui-selected': {
-            color: bgColor, // Set label color to red for the selected tab
+            color: '#B3BED4', // Set label color to red for the selected tab
           },
         }}
       />

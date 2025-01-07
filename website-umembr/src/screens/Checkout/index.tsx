@@ -7,17 +7,6 @@ interface CheckoutProps {
 
 export const Checkout: React.FC<CheckoutProps> = ({ handleClose }) => {
   return (
-    <Container
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-        overflow:'auto',
-
-      }}
-    >
       <CheckoutForm handleClose={handleClose} />
-    </Container>
   );
 }

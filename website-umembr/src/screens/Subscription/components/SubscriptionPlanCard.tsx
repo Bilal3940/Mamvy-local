@@ -27,10 +27,10 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
         marginBottom: '1rem',
         borderRadius: '0.625rem',
         width: '17.375rem',
-        borderColor: selectedPlan === price.priceId ? 'rgba(228, 222, 255, 0.2)' : palette.dirtyWhite,
+        borderColor: palette.dirtyWhite,
         borderWidth: '1px',
         cursor: 'pointer',
-        background: selectedPlan === price.priceId ? 'rgba(19, 21, 68, 0.5)' : palette.dirtyWhite,
+        background:  palette.dirtyWhite,
         backdropFilter: 'blur(50%)',
         display: 'flex',
         flexDirection: 'column',
@@ -50,18 +50,18 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
             fontSize='1rem'
             gutterBottom
             sx={{
-              color: selectedPlan === price.priceId ? palette.dirtyWhite : 'inherit',
+              color:'inherit',
             }}>
             {price.name}
           </Typography>
           <Typography
             sx={{
-              color: selectedPlan === price.priceId ? palette.dirtyWhite : 'inherit',
+              color: 'inherit',
             }}>
             <Typography
               sx={{
                 display: 'inline',
-                color: selectedPlan === price.priceId ? palette.dirtyWhite : 'inherit',
+                color: 'inherit',
                 fontSize: '2.25rem',
               }}>
               {price.interval === '1 month'
@@ -72,7 +72,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
               sx={{
                 display: 'inline',
                 justifyContent: 'center',
-                color: selectedPlan === price.priceId ? palette.dirtyWhite : 'inherit',
+                color:  'inherit',
                 fontSize: '1rem',
               }}>
               / month
@@ -82,7 +82,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
                 variant='subtitle1'
                 sx={{
                   display: 'block',
-                  color: selectedPlan === price.priceId ? palette.dirtyWhite : 'inherit',
+                  color: 'inherit',
                   marginTop: '0.5rem',
                 }}>
                 (${(price.amount / 100).toFixed(2)} / {price.interval === '12 months' ? 'year' : '3 years'})
@@ -95,7 +95,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
           variant='body2'
           paragraph
           sx={{
-            color: selectedPlan === price.priceId ? palette.dirtyWhite : 'inherit',
+            color: 'inherit',
           }}>
           {price.description}
         </Typography>
@@ -104,15 +104,15 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
       <Box display='flex' alignItems='center' justifyContent='center' sx={{ paddingBottom: '1rem' }}>
         <Button
           sx={{
-            bgcolor: `${selectedPlan === price.priceId ? '#fff' : '#0072CE'}`,
+            bgcolor: '#0072CE',
             height: '3.18rem',
             width: '13.75rem',
             borderRadius: '12.5rem',
             '&:hover': {
-              bgcolor: `${selectedPlan === price.priceId ? '#fff' : '#0072CE'}`,
+              bgcolor:'#0072CE',
             },
           }}>
-          <Typography color={selectedPlan === price.priceId ? '#0072CE' : '#fff'} variant='button'>
+          <Typography color='#fff' variant='button'>
             Choose plan
           </Typography>
         </Button>

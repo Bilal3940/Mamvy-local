@@ -457,8 +457,8 @@ const Main: React.FC = () => {
       onTouchEnd={handleEnd}
     >    
      {    isRefreshing && 
-            <Box zIndex={1000000} position={'relative'} top={'4rem'} width={'100%'}  display={'flex'} justifyContent={'center'} alignItems={'center'}>
-          <CircularProgress  sx={{margin:'1rem', borderRadius:'100%',  color: extendedPalette.buttonbackgroundIcon }} />
+            <Box zIndex={10000} position={'relative'} top={'4rem'} width={'100%'}  display={'flex'} justifyContent={'center'} alignItems={'center'}>
+           <CircularProgress  sx={{ margin:'1rem', borderRadius:'100%',  color: extendedPalette.buttonbackgroundIcon }} />
         </Box>}
       {(actionSuccess && extendedPalette && adminPalette && loading ) ? (
         <Box sx={{minheight:'100vh', maxHeight:'100vh', overflowY:'auto', backgroundColor: extendedPalette.storyBackground,padding:(router?.pathname == '/app/story/[id]' && !isMobile) ? '0px 64px' : '0px', }}>

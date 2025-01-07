@@ -31,72 +31,104 @@ export const SubscriptionPopup: React.FC = () => {
           justifyContent: 'center',
           alignItems: 'center',
           border: 'none',
-          height: '100%',
+          maxHeight:'100%',
           width: '100%',
           overflow: 'hidden',
         }}>
-        <Box
-          padding={isMobile ? '1rem' : '1.5rem'}
-          borderRadius={'1.25rem'}
-          border={`0.063rem solid ${palette.cardBorder}`}
-          sx={{
-            backgroundColor: 'rgba(34, 42, 103, 0.5)',
-            backdropFilter: 'blur(1.5625rem)',
-            width: isMobile ? '100%' : '82%',
-            minWidth: '60%',
-            height: isMobile ? '100%' : '90%',
-            // minHeight:'90%',
-            overflow: 'auto',
-            position: 'relative',
-          }}>
-          {/* Close Button */}
-          <Button
-            onClick={handleClosePopup}
-            sx={{
-              position: 'absolute',
-              top: '1rem',
-              right: '1rem',
-              zIndex: 10,
-              backgroundColor: palette?.cardBackground,
-              border: `0.063rem solid ${palette?.cardBorder}`,
-              color: palette?.dirtyWhite,
-            }}>
-            ✕
-          </Button>
 
-          {/* Modal Content */}
-          {step === 1 && (
-            <>
+        {/* Modal Content */}
+        {step === 1 && (
+          <>
+            <Box
+              padding={isMobile ? '1rem' : '1.5rem'}
+              borderRadius={'1.25rem'}
+              border={`0.063rem solid ${palette.cardBorder}`}
+              sx={{
+                backgroundColor: 'rgba(34, 42, 103, 0.5)',
+                backdropFilter: 'blur(1.5625rem)',
+                width: isMobile ? '100%' : '82%',
+                minWidth: '60%',
+                height: isMobile ? '100vh' : '90%',
+                // minHeight:'90%',
+                overflow: 'auto',
+                position: 'relative',
+              }}>
               <Typography variant='h6' fontSize={'1rem'} align='center' mt={4} component='h2' gutterBottom>
                 Welcome to Memvy!
               </Typography>
               <SubscriptionContainer handleNext={goToNextStep} />
-            </>
-          )}
-          {step === 2 && (
-            <>
-              <Box mt={2} display='flex' justifyContent='flex-start'>
-                <Button
-                  onClick={() => {
-                    setStep(1);
-                  }}
-                  color='error'>
-                  <MuiIconButton
-                    icon='/icons/left-arrow'
-                    background={palette?.cardBackground}
-                    borderColor={palette?.cardBorder}
-                    iconHeight={16}
-                    iconWidth={16}
-                    width={32}
-                    height={32}
-                    altIcon='left-arrow'
-                  />
-                </Button>
-              </Box>
-              <Checkout handleClose={handleClose} />
-            </>
-          )}
-        </Box>
+            </Box>
+          </>
+        )}
+{step === 2 && (
+  <Box
+    height={'100%'}
+    sx={{
+      backdropFilter: 'blur(1.5625rem)',
+      height: isMobile ? '100%' : '100%',
+      borderRadius: '1rem',
+      overflow: 'auto',
+      position: 'relative',
+    }}
+    maxHeight={'60%'}
+    display={'flex'}
+    flexDirection={'column'}
+    justifyContent={'center'}
+    alignItems={'center'}
+    width={'100%'}
+  >
+    {/* Container for Back and Close Buttons */}
+    <Box 
+      display={'flex'} 
+      justifyContent={'space-between'} 
+      alignItems={'center'} 
+      width={'100%'} 
+      // px={2} // Padding for some spacing
+    >
+      {/* Back Button */}
+      {step === 2 && (
+        <Button
+          onClick={() => {
+            setStep(1);
+          }}
+          color="error"
+        >
+          <MuiIconButton
+            icon="/icons/left-arrow"
+            background={palette?.cardBackground}
+            borderColor={palette?.cardBorder}
+            iconHeight={16}
+            iconWidth={16}
+            width={32}
+            height={32}
+            altIcon="left-arrow"
+          />
+        </Button>
+      )}
+
+      {/* Close Button */}
+      <Button
+        onClick={handleClosePopup}
+          color="error"
+        >
+          <MuiIconButton
+            icon="/icons/close"
+            background={palette?.cardBackground}
+            borderColor={palette?.cardBorder}
+            iconHeight={14}
+            iconWidth={14}
+            width={32}
+            height={32}
+            altIcon="close"
+          />
+        </Button>
+    </Box>
+
+    {/* Main Content */}
+    <Checkout handleClose={handleClose} />
+  </Box>
+)}
+
       </Container>
     </Modal>
   );

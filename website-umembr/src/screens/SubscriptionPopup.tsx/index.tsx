@@ -48,7 +48,7 @@ export const SubscriptionPopup: React.FC = () => {
                 backdropFilter: 'blur(1.5625rem)',
                 width: isMobile ? '100%' : '82%',
                 minWidth: '60%',
-                height: isMobile ? '100%' : '90%',
+                height: isMobile ? '100vh' : '90%',
                 // minHeight:'90%',
                 overflow: 'auto',
                 position: 'relative',
@@ -83,7 +83,7 @@ export const SubscriptionPopup: React.FC = () => {
       justifyContent={'space-between'} 
       alignItems={'center'} 
       width={'100%'} 
-      px={2} // Padding for some spacing
+      // px={2} // Padding for some spacing
     >
       {/* Back Button */}
       {step === 2 && (

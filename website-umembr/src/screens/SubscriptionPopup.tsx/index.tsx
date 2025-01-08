@@ -20,6 +20,7 @@ export const SubscriptionPopup: React.FC = () => {
     setStep(1);
   };
   const handleClosePopup = () => {
+    console.log("i am clicked")
     dispatch(closeSubscriptionPopup());
   };
 
@@ -29,6 +30,7 @@ export const SubscriptionPopup: React.FC = () => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
+          padding:'0rem',
           alignItems: 'center',
           border: 'none',
           maxHeight:'100%',
@@ -39,8 +41,9 @@ export const SubscriptionPopup: React.FC = () => {
         {/* Modal Content */}
         {step === 1 && (
           <>
+          
             <Box
-              padding={isMobile ? '1rem' : '1.5rem'}
+              padding={isMobile ? '0rem' : '1.5rem'}
               borderRadius={'1.25rem'}
               border={`0.063rem solid ${palette.cardBorder}`}
               sx={{
@@ -49,10 +52,31 @@ export const SubscriptionPopup: React.FC = () => {
                 width: isMobile ? '100%' : '82%',
                 margin: '1rem',
                 minWidth: '60%',
-                height: '98vh',
+                height: '80%',
                 overflow: 'auto',
                 position: 'relative',
               }}>
+                <Box
+      sx={{
+        position: 'absolute',
+        top: '1rem',
+        right: '1rem',
+        zIndex: 10,
+      }}
+    >
+      <Button onClick={handleClosePopup} color="error">
+        <MuiIconButton
+          icon="/icons/close"
+          background={palette?.cardBackground}
+          borderColor={palette?.cardBorder}
+          iconHeight={14}
+          iconWidth={14}
+          width={32}
+          height={32}
+          altIcon="close"
+        />
+      </Button>
+    </Box>
               <Typography variant='h6' fontSize={'1rem'} align='center' mt={4} component='h2' gutterBottom>
                 Welcome to Memvy!
               </Typography>

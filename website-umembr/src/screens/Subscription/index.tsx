@@ -37,7 +37,7 @@ const SubscriptionContainer: React.FC<SubscriptionContainerProps> = ({ handleNex
 
 
   return (
-    <Container  sx={{ padding: '1rem 0', overflow:'auto' }}>
+    <Container  sx={{ padding:isMobile ? '0rem' :'1rem 0', overflow:'auto' }}>
       {products &&
         products.map((product: any) => (
           <Box key={product.productId}>
@@ -69,7 +69,7 @@ const SubscriptionContainer: React.FC<SubscriptionContainerProps> = ({ handleNex
             </Box>
             <Box width={isMobile? '100%': '90%'} margin={'0 auto'}>
 
-                <FAQ/>
+                {/* <FAQ/> */}
 
 
             </Box>

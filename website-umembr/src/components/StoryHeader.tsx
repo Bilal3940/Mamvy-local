@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authSelector } from '@/store/selectors';
 import { cdn_url, checkRoleAndPermission, formatDate } from '@/utils';
 import { useRouter } from 'next/router';
-import { openModal, openSubscriptionPopup, refreshUserData } from '@/store/actions';
+import { closeModal, openModal, openSubscriptionPopup, refreshUserData } from '@/store/actions';
 import { palette } from '@/theme/constants';
 import CollaboratorDialog from './CollaboratorDialog';
 
@@ -71,6 +71,7 @@ const EditMemvy = () => {
     router.push(`/app/story/${title}/update`);
   } else {
     dispatch(openModal({ content: 'You are not a subscriber.' }));
+    dispatch(closeModal())
     setTimeout(() => {
       dispatch(openSubscriptionPopup());
     }, 2000);

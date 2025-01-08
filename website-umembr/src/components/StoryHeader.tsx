@@ -1,7 +1,7 @@
 import React from 'react';
-import { AppBar, Toolbar, Button, Box, Typography, Avatar, AvatarGroup, ThemeProvider, Divider } from '@mui/material';
+import { AppBar, Toolbar, Button, Box, Typography, Avatar, AvatarGroup, ThemeProvider, Divider, ListItemText, DialogTitle, DialogContent, List, ListItem, Dialog, Grid, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
-import { createTheme } from '@mui/material/styles';
+import { createTheme, Theme } from '@mui/material/styles';
 
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,9 +39,18 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
   userId,
   story,
 }) => {
-  const { user } = useSelector(authSelector);
-  const router = useRouter();
-  const dispatch = useDispatch();
+const { user } = useSelector(authSelector);
+const router = useRouter();
+const dispatch = useDispatch();
+const [open, setOpen] = React.useState(false);
+const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+const handleOpen = () => {
+  setOpen(true);
+};
+
+const handleClose = () => {
+  setOpen(false);
+};
 
   const images =
     collaborators &&
@@ -208,21 +217,105 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({
         </Box>
       )}
 
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          margin: '0 20px',
-          marginBottom: '30px',
-        }}>
-        <Typography variant='body1' fontFamily={'DM Sans'} style={{ ...extendedPalette.description }}>
-          {description}
-        </Typography>
-      </Box>
-    </div>
-  );
+    <Typography
+      variant='h3'
+      sx={{
+        fontFamily: 'sans-serif',
+        fontSize: { xs: '35px', sm: '55px' },
+        color: extendedPalette.storyTitle,
+        textAlign: 'center',
+        marginBottom: '10px',
+      }}>
+      {title}
+    </Typography>
+    {createdDate &&
+    <Typography variant='h6' sx={{ ...extendedPalette.dateStyle, fontSize: { xs: '12px', sm: '16px' } }}>
+      {/* Created {format(new Date(), 'MMM dd, yyyy')} */}
+      Created {formatDate(createdDate)}
+    </Typography>
+}
+
+{images &&
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: images.length > 0 ? '4rem' : '0.4rem',
+      }}>
+      <AvatarGroup max={6}>
+        {images.map((collab:any, index:any) => (
+          <Avatar
+            key={index}
+            title={collab?.alt}
+            alt={collab?.alt}
+            src={collab?.src}
+            sx={{
+              width: { xs: 36, sm: 40 },
+              height: { xs: 36, sm: 40 },
+            }}
+          />
+        ))}
+      </AvatarGroup>
+    </Box>}
+{/* {images && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: images.length > 0 ? '4rem' : '0.4rem',
+          }}
+        >
+          <AvatarGroup
+            max={6}
+            componentsProps={{
+              additionalAvatar: {
+                onClick: handleOpen, // Open popup on overflow click
+                style: { cursor: 'pointer' }, // Make it visually clickable
+              },
+            }}
+          >
+            {images.map((collab, index) => (
+              <Avatar
+                key={index}
+                title={collab?.alt}
+                alt={collab?.alt}
+                src={collab?.src}
+                sx={{
+                  width: { xs: 36, sm: 40 },
+                  height: { xs: 36, sm: 40 },
+                }}
+              />
+            ))}
+          </AvatarGroup>
+        </Box>
+      )} */}
+
+      {/* Popup for showing all collaborators */}
+      {/* <CollaboratorDialog
+        open={open}
+        handleClose={handleClose}
+        images={images}
+        handleOpen={handleOpen}
+        isMobile={isMobile}
+        palette={palette}
+      /> */}
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        margin: '0 20px',
+        marginBottom: '30px',
+      }}>
+      <Typography variant='body1' fontFamily={'DM Sans'} style={{ ...extendedPalette.description }}>
+        {description}
+      </Typography>
+    </Box>
+  </div>
+);
 };
 
 export default StoryHeader;

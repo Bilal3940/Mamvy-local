@@ -71,7 +71,7 @@ export const AddCollaborators = ({ add, onClose,extendedPalette }: ModalDetailPr
         <Box display={'flex'} flexDirection={'column'} width={'100%'} gap={'1rem'}>
           <Box display={'flex'} alignItems={'center'}>
             <Box display={'flex'} gap={'1rem'} alignItems={'center'} width={'100%'}>
-              <Image src='/icons/add-people.svg' alt='invite' width={24} height={24} />
+              <Image src='/icons/add-people-white.svg' alt='invite' width={24} height={24} />
               <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
                 {t('manage access')}
               </Typography>

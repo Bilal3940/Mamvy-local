@@ -166,6 +166,8 @@ export const Profile = () => {
   const manageSub = () => {
     if (!showManageSubscription) {
       dispatch(getPaymentMethod({ userId: user?.id }));
+      console.log(paymentMethod, 'success');
+
       if (paymentMethod) {
         setShowManageSubscription(true);
       }

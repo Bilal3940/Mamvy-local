@@ -40,8 +40,8 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
   const { user } = useSelector(authSelector);
   const { latestInvoice } = useSelector(subscriptionSelector);
   const dispatch = useDispatch();
-  const [expiryMonth, setExpiryMonth] = useState(String(paymentMethodResponse?.paymentMethod.card.exp_month) || '');
-  const [expiryYear, setExpiryYear] = useState(String(paymentMethodResponse?.paymentMethod.card.exp_year) || '');
+  const [expiryMonth, setExpiryMonth] = useState(String(paymentMethodResponse?.paymentMethod?.card?.exp_month) || '');
+  const [expiryYear, setExpiryYear] = useState(String(paymentMethodResponse?.paymentMethod?.card?.exp_year) || '');
 
   const isValidExpiryMonth = /^\d{2}$/.test(expiryMonth) && parseInt(expiryMonth) >= 1 && parseInt(expiryMonth) <= 12;
   const isValidExpiryYear = /^\d{4}$/.test(expiryYear) && parseInt(expiryYear) >= 2024;
@@ -84,7 +84,7 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
 
     return onClick;
   };
-  const endDate = new Date(paymentMethodResponse?.subscriptionDetails.endDate || '');
+  const endDate = new Date(paymentMethodResponse?.subscriptionDetails?.endDate || '');
   const renewDate = endDate.toLocaleDateString('en-GB');
   return (
     <>
@@ -103,14 +103,16 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
 
       {/* Section 1: Storage */}
       <Box mb={0.6}>
-        <Box my={2} mb={4}>
+        {paymentMethodResponse?.success===true? <Box my={2} mb={4}>
           <Typography fontSize={'1.4rem'} variant='body2' color={'#131544'}>
             Payment Method
           </Typography>
           <Typography fontSize={'0.87rem'} variant='body2' color={'#131544'}>
             Your next bill is for ${paymentMethodResponse?.subscriptionDetails.nextInvoiceAmount} USD on {renewDate}
           </Typography>
-          <Card
+       {paymentMethodResponse.paymentMethod.type ==='card' && <> 
+       
+         <Card
             sx={{
               display: 'flex',
               flexDirection: 'row',
@@ -168,8 +170,144 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
             <Typography variant={'button'} color={`#7A859B`} mx={1}>
               Update Payment Method
             </Typography>
-          </Button>
+          </Button></>
+        } 
+        {paymentMethodResponse.paymentMethod.type==='link' && <Card
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+            },
+          }}>
+          <CardMedia
+            component='img'
+            sx={{
+              width: 67,
+              height: 'auto',
+              objectFit: 'contain',
+            }}
+            image={`/images/${paymentMethodResponse?.paymentMethod.type.toLowerCase()}.svg`}
+            alt={`${paymentMethodResponse?.paymentMethod.type} logo`}
+          />
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              flex: 1,
+            }}>
+            <CardContent sx={{ flex: '1 0 auto' }}>
+              <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
+                {`${paymentMethodResponse?.paymentMethod.type.charAt(0).toUpperCase()}` +
+                  `${paymentMethodResponse?.paymentMethod.type.slice(1)} `}
+                account: {paymentMethodResponse?.paymentMethod.link.email}
+              </Typography>
+
+            </CardContent>
+          </Box>
+        </Card>}
+        {paymentMethodResponse.paymentMethod.type ==='google_pay'  && <> 
+       
+       <Card
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+            },
+          }}>
+          <CardMedia
+            component='img'
+            sx={{
+              width: 67,
+              height: 'auto',
+              objectFit: 'contain',
+            }}
+            image={`/images/${paymentMethodResponse?.paymentMethod?.type.toLowerCase()}.svg`}
+            alt={`${paymentMethodResponse?.paymentMethod?.type} logo`}
+          />
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              flex: 1,
+            }}>
+            <CardContent sx={{ flex: '1 0 auto' }}>
+              <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
+                {`${paymentMethodResponse?.paymentMethod?.google_pay?.brand.charAt(0).toUpperCase()}` +
+                  `${paymentMethodResponse?.paymentMethod?.google_pay?.brand.slice(1)}`}
+                card ending in {paymentMethodResponse?.paymentMethod?.apple_pay?.last4}
+              </Typography>
+              
+            </CardContent>
+          </Box>
+        </Card>
+
+        </>
+      } 
+        {paymentMethodResponse.paymentMethod.type ==='apple_pay'  && <> 
+       
+       <Card
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+            },
+          }}>
+          <CardMedia
+            component='img'
+            sx={{
+              width: 67,
+              height: 'auto',
+              objectFit: 'contain',
+            }}
+            image={`/images/${paymentMethodResponse?.paymentMethod?.type.toLowerCase()}.svg`}
+            alt={`${paymentMethodResponse?.paymentMethod?.type} logo`}
+          />
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              flex: 1,
+            }}>
+            <CardContent sx={{ flex: '1 0 auto' }}>
+              <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
+                {`${paymentMethodResponse?.paymentMethod.apple_pay.brand.charAt(0).toUpperCase()}` +
+                  `${paymentMethodResponse?.paymentMethod.apple_pay.brand.slice(1)}`}
+                card ending in {paymentMethodResponse?.paymentMethod.apple_pay.last4}
+              </Typography>
+              
+            </CardContent>
+          </Box>
+        </Card>
+
+        </>
+      } 
         </Box>
+        :
+        <Box my={2} mb={4}>
+        <Typography fontSize={'1.4rem'} variant='body2' color={'#131544'}>
+          Free Subscription
+        </Typography>
+
+      </Box>
+        }
         <Divider sx={{ border: `0.063rem solid ${palette.divider}`, margin: '0.4rem 0' }} />
       </Box>
 
@@ -251,10 +389,10 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
                   fullWidth
                   disabled={true}
                   autoComplete='off'
-                  placeholder={`*************** ${paymentMethodResponse?.paymentMethod.card.last4}`}
+                  placeholder={`*************** ${paymentMethodResponse?.paymentMethod?.card?.last4|| '****'}`}
                   label='Card Number'
                   isDarkTheme={false}
-                  value={`*************** ${paymentMethodResponse?.paymentMethod.card.last4}`}
+                  value={`*************** ${paymentMethodResponse?.paymentMethod?.card?.last4||'****'}`}
                   helperText='Card number is hidden for security'
                   error={false}
                   sx={{
@@ -283,7 +421,7 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
                   fullWidth
                   disabled={false}
                   autoComplete='off'
-                  placeholder={`${paymentMethodResponse?.paymentMethod.card.exp_month}`}
+                  placeholder={`${paymentMethodResponse?.paymentMethod?.card?.exp_month}`}
                   label='Expiry Month'
                   isDarkTheme={false}
                   sx={{

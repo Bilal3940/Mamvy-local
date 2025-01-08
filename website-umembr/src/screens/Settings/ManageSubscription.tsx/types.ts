@@ -16,6 +16,9 @@ export interface PaymentMethodResponse {
     allow_redisplay: string;
     billing_details: BillingDetails;
     card: Card;
+    link:Link;
+    apple_pay:ApplePay;
+    google_pay:ApplePay;
     created: number;
     customer: string;
     livemode: boolean;
@@ -55,7 +58,23 @@ export interface PaymentMethodResponse {
     three_d_secure_usage: ThreeDSecureUsage;
     wallet: string | null;
   }
+  export interface Link {
+    email: string;
+  }
   
+
+
+
+
+  export interface ApplePay {
+    
+      type: string;
+      payment_method_id: string;
+      last4: string;
+      brand: string;
+    
+  
+  }
   export interface CardChecks {
     address_line1_check: string | null;
     address_postal_code_check: string;

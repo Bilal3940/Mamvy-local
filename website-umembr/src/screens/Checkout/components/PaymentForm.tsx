@@ -35,20 +35,6 @@ export default function PaymentForm() {
       })
       .then((data) => data?.result?.clientSecret);
   }, []);
-  const appearance = {
-    rules: {
-      '.RadioIcon': {
-        width: '24px'
-      },
-      '.RadioIconOuter': {
-        stroke: '#E0E6EB'
-      },
-      '.RadioIconInner': {
-        r: '16'
-      }
-    }
-  };
-
   const options = {fetchClientSecret};
 
   return (

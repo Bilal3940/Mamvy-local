@@ -1,3 +1,4 @@
+
 {
   "app_name": "Memvy",
   "email": "Email",
@@ -72,8 +73,12 @@
   "notification_mayus": "NOTIFICATIONS",
   "privacy_mayus": "PRIVACY",
   "edit_mayus": "EDIT",
+  "save_mayus":"SAVE",
   "home": "Home",
   "privacy": "Privacy",
+  "privacy_policy": "Privacy policy",
+  "term_conditions": "Terms & conditions",
+  "contact":"Contact",
   "profile_picture": "Profile Picture",
   "not_results": "No results found",
   "broadening_search": "Please try broadening your search",
@@ -271,7 +276,7 @@
   "add_image": "Add an image for this item",
   "add_audio": "Add an audio for this item",
   "add_video": "Add a video for this item",
-
+  "memories":"Memories",
   "share_memory": "Share a Memory of how this person positively affected your life",
   "add_media": "Add media to this item",
   "add_video_memory": "Click to add a Video Memory",
@@ -299,9 +304,10 @@
   "name_of_event_minus": "Name of the event",
   "country": "Country",
   "are_you_sure": "Are you sure you want to delete this Memory?",
-  "memory_going_deleted": "The following Memory will be permanently deleted.",
+  "did_you_mean": "Did you mean {{suggestion}}?",
+  "memory_going_deleted": "This memory will be permanently deleted and this action cannot be undone.",
   "are_you_sure_want": "Are you sure you want that?",
-  "aprove": "APROVE",
+  "aprove": "APPROVE",
   "back_minus": "Back",
   "next_minus": "Next",
   "click_on_template": "Select a story template",
@@ -369,5 +375,13 @@
   "general_notes_minus_minus": "General Notes",
   "this_might_take_some_time":"This might take some time.",
   "uploading_video":"Uploading Video",
-  "athletes":"Athletes"
+  "athletes":"Athletes",
+  "cancel_subscription":"Cancel subscription",
+  "delete_account":"Delete account",
+  "want_cancel_membership":"Are you sure you want to cancel your membership?",
+  "enter_confirm_text":"We are sad to see you go. Any Memvys you own may be deleted in the future.",
+  "cancel_my_subscription":"Cancel my subscription",
+  "email_not_match":"Email entered does not match!",
+  "storage_reached_80":"You have used 80% of available storage space."
+
 }

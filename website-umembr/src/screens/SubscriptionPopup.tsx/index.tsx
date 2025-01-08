@@ -47,9 +47,9 @@ export const SubscriptionPopup: React.FC = () => {
                 backgroundColor: 'rgba(34, 42, 103, 0.5)',
                 backdropFilter: 'blur(1.5625rem)',
                 width: isMobile ? '100%' : '82%',
+                margin: '1rem',
                 minWidth: '60%',
-                height: isMobile ? '100vh' : '90%',
-                // minHeight:'90%',
+                height: '98vh',
                 overflow: 'auto',
                 position: 'relative',
               }}>
@@ -77,15 +77,15 @@ export const SubscriptionPopup: React.FC = () => {
     alignItems={'center'}
     width={'100%'}
   >
-    {/* Container for Back and Close Buttons */}
+
     <Box 
       display={'flex'} 
       justifyContent={'space-between'} 
       alignItems={'center'} 
       width={'100%'} 
-      // px={2} // Padding for some spacing
+
     >
-      {/* Back Button */}
+
       {step === 2 && (
         <Button
           onClick={() => {
@@ -124,7 +124,7 @@ export const SubscriptionPopup: React.FC = () => {
         </Button>
     </Box>
 
-    {/* Main Content */}
+
     <Checkout handleClose={handleClose} />
   </Box>
 )}

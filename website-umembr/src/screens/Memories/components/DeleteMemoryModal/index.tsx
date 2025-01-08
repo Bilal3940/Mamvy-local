@@ -46,7 +46,7 @@ export const DeleteMemoryModal = ({extendedPalette ,open, onClose, confirmMethod
         <Box display={'flex'} justifyContent={'space-between'}>
           <Typography
             fontWeight={isMobile ? 500 : 600}
-            textAlign={isMobile ? 'center' : 'left'}
+            textAlign={isMobile ? 'center' : 'center'}
             width={isMobile ? '80%' : '100%'}
             margin={isMobile ? 'auto' : '0 1rem'}
             variant={isMobile ? 'h5' : 'h4'}>
@@ -54,7 +54,7 @@ export const DeleteMemoryModal = ({extendedPalette ,open, onClose, confirmMethod
           </Typography>
         </Box>
 
-        <Typography textAlign={isMobile ? 'center' : 'left'} variant={isMobile ? 'body2' : 'body1'}>
+        <Typography textAlign={isMobile ? 'center' : 'center'} variant={isMobile ? 'body2' : 'body1'}>
           {t('memory_going_deleted')}
         </Typography>
 

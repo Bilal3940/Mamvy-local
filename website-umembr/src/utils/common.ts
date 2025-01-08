@@ -31,7 +31,7 @@ export const formatDate = (dateString: string): string => {
   return `${month} ${day < 10 ? "0" + day : day}, ${year}`;
 };
 
-// Some overloads to help with typings on reducers & action definitions
+
 export function actionObject<ActionType>(
   type: ActionType,
   payload?: never,
@@ -65,17 +65,17 @@ export function actionObject(type: any, payload: any, callback: any, optional: a
   return { type, payload, callback, optional };
 }
 
-// export const actionObject = <T>(
-//   type: string,
-//   payload?: any | null,
-//   callback?: ({ ok, message, value, data }: any) => void,
-//   optional?: any,
-// ) => ({
-//   type,
-//   payload,
-//   callback,
-//   optional,
-// });
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Useful to be able to wait for a callback to execute before continuing
@@ -86,7 +86,7 @@ export function promisifiedCallback<CallbackDataType = void>(
   callback: SagaCallback<CallbackDataType>;
   promise: Promise<Parameters<SagaCallback<CallbackDataType>>[0]>;
 } {
-  let callbackWithContext: SagaCallback<CallbackDataType> = () => {};
+  let callbackWithContext: SagaCallback<CallbackDataType> = () => { };
 
   const promise = new Promise((s: (result: Parameters<SagaCallback<CallbackDataType>>[0]) => void) => {
     callbackWithContext = (params) => {
@@ -103,7 +103,7 @@ export function promisifiedCallback<CallbackDataType = void>(
 
 export function* showModal(message = '', type: 'SHOW_MODAL') {
   const { open } = yield select((state: any) => state.intermitence.modal);
-  
+
   if (!open) {
     yield put(openModal({ content: message }));
   }
@@ -136,30 +136,30 @@ export const checkPermissions = (roles: any, permission: any, story_id: any = nu
         return true;
       return false;
     }
-    // if (role?.role?.permissions?.find((p: any) => p?.name === permission)) return true;
+
   }
   return false;
 };
-// export const checkRoleAndPermission = (roles: any, roleName: string, permission: string, user_id: any) => {
-//   for (const role of roles) {
-//     // Check if the role matches the given role name, user_id, and contains the specified permission
-//     if (
-//       role?.user_id === user_id &&
-//       role?.role?.name === roleName &&
-//       role?.role?.permissions?.some((p: any) => p?.name === permission)
-//     ) {
-//       return true;
-//     }
-//   }
-//   return false;
-// };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const checkRoleAndPermission = (roles: any | any[], roleName: string, permission: string, user_id: any) => {
-  // Ensure roles is treated as an array for consistent iteration
+
   const rolesArray = Array.isArray(roles) ? roles : [roles];
 
   for (const role of rolesArray) {
-    // Check if the role matches the given role name, user_id, and contains the specified permission
+
     if (
       role?.user_id === user_id &&
       role?.role?.name === roleName &&
@@ -422,13 +422,13 @@ const translate = (key: any, value: any) => {
 };
 
 export function redirectToLogin() {
-  window.location.href = '/app/login'; // Replace with your login route
+  window.location.href = '/app/login';
 }
 
-export  const formatPastDate = (createdDate: string): string => {
+export const formatPastDate = (createdDate: string): string => {
   const now = new Date();
   const date = new Date(createdDate);
-  
+
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
   const diffInMinutes = Math.floor(diffInSeconds / 60);
   const diffInHours = Math.floor(diffInMinutes / 60);
@@ -436,37 +436,37 @@ export  const formatPastDate = (createdDate: string): string => {
   const diffInMonths = now.getMonth() - date.getMonth() + (12 * (now.getFullYear() - date.getFullYear()));
   const diffInYears = now.getFullYear() - date.getFullYear();
 
-  // Less than 1 minute ago
+
   if (diffInSeconds < 60) {
     return diffInSeconds === 1 ? '1 second ago' : `${diffInSeconds} seconds ago`;
   }
 
-  // Less than 1 hour ago
+
   if (diffInMinutes < 60) {
     return diffInMinutes === 1 ? '1 minute ago' : `${diffInMinutes} minutes ago`;
   }
 
-  // Less than 1 day ago
+
   if (diffInHours < 24) {
     return diffInHours === 1 ? '1 hour ago' : `${diffInHours} hours ago`;
   }
 
-  // Yesterday
+
   if (diffInDays === 1) {
     return 'Yesterday';
   }
 
-  // Within the past month
+
   if (diffInDays < 31) {
     return `${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}`;
   }
 
-  // More than 1 month ago but within the same year
- if (diffInMonths < 12) {
+
+  if (diffInMonths < 12) {
     return `${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`;
   }
 
-  // More than 1 year ago
+
   return `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
 };
 
@@ -482,19 +482,19 @@ export function debounce<T extends (...args: any[]) => unknown>(func: T, timeout
 }
 
 export const hasUserPurchasedTheStory = (userId: number, storyId: number, userPurchases: any) => {
-  // console.log('Checking for storyId:', storyId);
-  // console.log('User Purchases:', userPurchases);
 
-  // Loop through the userPurchases array
+
+
+
   for (let purchase of userPurchases) {
-    // Check if both userId and storyId match
+
     if (purchase.storyId === storyId && purchase.userId === userId) {
-      // console.log('Match found!');
-      return true; // Return true immediately if a match is found
+
+      return true;
     }
   }
 
-  // If no match was found after the loop, return false
+
   return false;
 }
 
@@ -507,15 +507,15 @@ export const mapProps = async (store: any, action: any) => {
 
 export const calculateAspectRatio = (width: any, height: any) => {
   try {
-    // Find the greatest common divisor (GCD) of the width and height
+
     const gcd = (a: any, b: any): any => {
       return b === 0 ? a : gcd(b, a % b);
     };
 
-    // Calculate the GCD of the given width and height
+
     const divisor = gcd(width, height);
 
-    // Calculate and return the simplified aspect ratio
+
     const aspectWidth = width / divisor;
     const aspectHeight = height / divisor;
 
@@ -553,4 +553,5 @@ export const faqs = [
 ];
 
 
-export { convertToTitleCase, statusManagement, translate, worldcountries ,popularDomains};
+export { convertToTitleCase, statusManagement, translate, worldcountries, popularDomains };
+

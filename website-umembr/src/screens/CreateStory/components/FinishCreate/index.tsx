@@ -40,11 +40,11 @@ export const FinishCreate: FC<any> = ({ handleCreateStories, creating }) => {
           marginBottom={'1rem'}>
           {t('almost_there')}
         </Typography>
-        <Typography variant={'h4'} textAlign={'center'} color={palette.white}>
+        <Typography mb={'1.5rem'} variant={'h4'} textAlign={'center'} color={palette.white}>
           {t('click_create')}
         </Typography>
       </Box>
-      <Box width={'5.75rem'}>
+      <Box  width={'5.75rem'}>
         <MuiButton
           method={handleCreateStories}
           type='submit'

@@ -1,5 +1,5 @@
 import { palette } from '@/theme/constants';
-import { Box, Divider, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
+import { Avatar, Box, Divider, Grid, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, collaboratorSelector, storySelector } from '@/store/selectors';
@@ -12,7 +12,7 @@ import { RemoveCollaborator } from '../RemoveCollaborator';
 import { UseFirstRender } from '@/hooks';
 import { styles } from '../styles';
 import stringSimilarity from 'string-similarity';
-import { emailRegex, popularDomains } from '@/utils';
+import { cdn_url, emailRegex, popularDomains } from '@/utils';
 
 export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   const { t } = useTranslation();
@@ -199,6 +199,7 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
     }
     return result || '';
   };
+  console.log(validatedCollaborators)
 
   return (
     <form ref={formRef} onSubmit={formikSubmit} style={{ width: '100%' }}>
@@ -209,19 +210,29 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
         {validatedCollaborators?.length > 0 &&
           validatedCollaborators.map((user: any) => {
             return (
-              <Grid key={user?.id} container spacing={2}>
+              <Grid key={user?.user?.id} container spacing={2}>
                 {isMobile ? (
                   <Grid item xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid display={'flex'} item xs={9} flexDirection={'column'}>
                       <Grid>
-                        <Image width={100} height={100} src={user?.picture} alt='hello' />
+                        {/* <Image width={50} height={50} style={{borderRadius:'100%'}} src={`${cdn_url}${user?.user?.picture}`} alt={user?.user?.name} /> */}
+                        <Avatar
+            key={user?.user?.id}
+            title={user?.user?.alt}
+            alt={user?.user?.alt}
+            src={`${cdn_url}${user?.user?.picture}`}
+            sx={{
+              width: { xs: 36, sm: 40 },
+              height: { xs: 36, sm: 40 },
+            }}
+          />
                       </Grid>
                       <Grid>
-                        <Typography align='left'>{user?.user?.email}</Typography>
+                        {/* <Typography align='left'>{user?.user?.email}</Typography> */}
                       </Grid>
                       <Grid>
                         <Typography align='left'>
-                          {capitalizeAndRemoveS(user?.user_type)} | {user?.role?.name.replace(/_/g, ' ')}
+                          {/* {capitalizeAndRemoveS(user?.user_type)} | {user?.role?.name.replace(/_/g, ' ')} */}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -238,6 +249,7 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
                   </Grid>
                 ) : (
                   <>
+                  
                     <Grid item xs={6}>
                       <Typography align='center'>{user?.user?.email}</Typography>
                     </Grid>
@@ -520,6 +532,7 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
                           { id: 'owner', name: 'Owner' },
                           { id: 'collaborator', name: 'Collaborator' },
                           { id: 'viewer', name: 'Viewer' },
+                          {id:'uga_collaborator', name:'UGA Collaborator'},
                         ]}
                       />
                     </Box>

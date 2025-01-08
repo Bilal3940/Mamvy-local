@@ -15,9 +15,9 @@ import {
   CLEAR_PENDING_STORY,
   SET_PENDING_STORY_ASYNC,
   LOAD_PENDING_STORY_ASYNC
-  // SET_PENDING_STORY,
-  // LOAD_PENDING_STORY,
-  // CLEAR_PENDING_STORY,
+
+
+
 } from './action-types';
 
 const initialState = {
@@ -57,12 +57,11 @@ const stories = (state = initialState, { type, payload }: any) => {
     case DELETE_STORY_ASYNC:
       return { ...state, story: {} };
 
-    // // Handle pending story actions
+
     case SET_PENDING_STORY_ASYNC:
-      console.log("i am the payload of pending story", payload);
       return { ...state, pendingStory: payload };
     case LOAD_PENDING_STORY_ASYNC:
-        return { ...state };
+      return { ...state };
     case CLEAR_PENDING_STORY:
       return { ...state, pendingStory: null };
     default:

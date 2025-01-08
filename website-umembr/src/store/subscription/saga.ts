@@ -63,7 +63,7 @@ function* createCheckoutSessionAsync({ payload }: any): any {
       return;
     }
 
-    
+
     let url = `/subscription/create-checkout-session`;
     const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
     if (result) {
@@ -172,17 +172,16 @@ function* cancelSubscriptionAsync({ payload }: any): any {
     const { user } = yield select(authSelector);
     const url = `stripe/cancel-subscription`;
     const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
-    
+
     if (result) {
       yield put(actionObject(CANCEL_SUBSCRIPTION_ASYNC, result));
       yield call(showDialog, `Subscription canceled successfully`, 'success');
       yield put(actionObject(REFRESH_USER_DATA))
     }
   } catch (error: any) {
-    console.log("I am the error", error);
 
     // Safely extract the error message
-    const message =  JSON.parse(error.message);
+    const message = JSON.parse(error.message);
     // Display the message in the dialog
     yield call(showDialog, message.message, 'error');
   }
@@ -194,7 +193,7 @@ function* resumeSubscriptionAsync({ payload }: any): any {
     const { user } = yield select(authSelector);
     const url = `stripe/resume-subscription`;
     const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
-    
+
     if (result) {
       yield put(actionObject(RESUME_SUBSCRIPTION_ASYNC, result));
       yield call(showDialog, `Subscription canceled successfully`, 'success');
@@ -203,7 +202,7 @@ function* resumeSubscriptionAsync({ payload }: any): any {
   } catch (error: any) {
 
     // Safely extract the error message
-    const message =  JSON.parse(error.message);
+    const message = JSON.parse(error.message);
     // Display the message in the dialog
     yield call(showDialog, message.message, 'error');
   }
@@ -215,7 +214,7 @@ function* renewSubscriptionAsync({ payload }: any): any {
     const { user } = yield select(authSelector);
     const url = `stripe/renew-subscription`;
     const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
-    
+
     if (result) {
       yield put(actionObject(RENEW_SUBSCRIPTION_ASYNC, result));
       yield call(showDialog, `Subscription renewed successfully.`, 'success');
@@ -224,7 +223,7 @@ function* renewSubscriptionAsync({ payload }: any): any {
   } catch (error: any) {
 
     // Safely extract the error message
-    const message =  JSON.parse(error.message);
+    const message = JSON.parse(error.message);
     // Display the message in the dialog
     yield call(showDialog, message.message, 'error');
   }
@@ -235,7 +234,7 @@ function* updateSubscriptionStatusAsync({ payload }: any): any {
     const { user } = yield select(authSelector);
     const url = `/stripe/updateStatusSubscription`;
     const { result } = yield call(FetchService, url, 'POST', payload, user?.token);
-    
+
     if (result) {
       yield put(actionObject(UPDATE_SUBSCRIPTION_STATUS_ASYNC, result));
       yield put(actionObject(REFRESH_USER_DATA))
@@ -243,7 +242,7 @@ function* updateSubscriptionStatusAsync({ payload }: any): any {
   } catch (error: any) {
 
     // Safely extract the error message
-    const message =  JSON.parse(error.message);
+    const message = JSON.parse(error.message);
     // Display the message in the dialog
     yield call(showDialog, message.message, 'error');
   }

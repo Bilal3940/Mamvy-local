@@ -16,7 +16,7 @@ import { authSelector, StoragePopupSelector } from '../selectors';
 import {
   CLEAN_PREV_PROMPTS,
   CLEAR_PENDING_STORY,
-  // CLEAR_PENDING_STORY,
+  
   CREATE_PAYLOAD,
   CREATE_PAYLOAD_TRIGGER,
   CREATE_STORIES,
@@ -26,14 +26,14 @@ import {
   GET_STORY_STATUS_ASYNC,
   LOAD_PENDING_STORY,
   LOAD_PENDING_STORY_ASYNC,
-  // LOAD_PENDING_STORY,
+  
   SET_ACTUAL_STORY,
   SET_CODE,
   SET_CREATE_SECTION,
   SET_CREATE_SECTION_TRIGGER,
   SET_PENDING_STORY,
   SET_PENDING_STORY_ASYNC,
-  // SET_PENDING_STORY,
+  
   SET_PROMPTS,
   SET_PROMPTS_TRIGGER,
   SET_PUBLICATION,
@@ -59,29 +59,28 @@ function* setPrompts({ payload }: any) {
   yield put(actionObject(SET_PROMPTS_TRIGGER, payload));
 }
 
-function* getStoryStatus({ payload }: any){
-try{
-  const { result } = yield call(FetchService, 'stories/getStoryStatus', 'GET', payload);
-  yield put(actionObject(GET_STORY_STATUS_ASYNC, result));
-}catch(error){
+function* getStoryStatus({ payload }: any) {
+  try {
+    const { result } = yield call(FetchService, 'stories/getStoryStatus', 'GET', payload);
+    yield put(actionObject(GET_STORY_STATUS_ASYNC, result));
+  } catch (error) {
 
-}
+  }
 
 }
 
 function* createStory({ payload }: any) {
   try {
-    const storagePopup :boolean  = yield select(StoragePopupSelector) 
+    const storagePopup: boolean = yield select(StoragePopupSelector)
     const { user } = yield select(authSelector);
     const { result } = yield call(FetchService, 'stories', 'POST', payload, user?.token);
     yield put(actionObject(CREATE_STORIES_ASYNC, result));
-    console.log("i am the boolean response",result?.usedStoragePercentage, result?.storagePopupTriggered, "storagePopup", storagePopup)
 
     if (result?.usedStoragePercentage >= 80 && !storagePopup) {
-      yield put (openModal({ content: "You have used 80% of available storage space."}))
-      yield put (hidePopup())
+      yield put(openModal({ content: "You have used 80% of available storage space." }))
+      yield put(hidePopup())
     } else {
-      if(result?.usedStoragePercentage < 80 && storagePopup )
+      if (result?.usedStoragePercentage < 80 && storagePopup)
         yield put(showPopup())
     }
     yield put(actionObject(CLEAN_PREV_PROMPTS));
@@ -97,43 +96,42 @@ function* actualStory({ payload }: ReturnType<typeof actualStoryAction>) {
   const { confirmPassword, id, router } =
     typeof payload === 'object'
       ? {
-          ...payload,
-          confirmPassword: payload.confirmPassword ? `/${payload.confirmPassword}` : '',
-        }
+        ...payload,
+        confirmPassword: payload.confirmPassword ? `/${payload.confirmPassword}` : '',
+      }
       : {
-          id: payload,
-          router: undefined,
-          confirmPassword: '',
-        };
+        id: payload,
+        router: undefined,
+        confirmPassword: '',
+      };
   try {
     const { user } = yield select(authSelector);
     const { result } = yield call(FetchService, `stories/${id}${confirmPassword}`, 'GET', {}, user?.token);
     yield put(actualStoryAsync(result));
   } catch (error: any) {
     router?.push("/404")
-  //  if (user.token) router?.push('/app/home');
-   // else {
-      // router?.push('/app/login');
-   // }
+    
+    
+    
+    
   }
 }
 
 
-function* updateStoryAsync({payload}: ReturnType<typeof updateStory>) {
+function* updateStoryAsync({ payload }: ReturnType<typeof updateStory>) {
   try {
-    const storagePopup :boolean  = yield select(StoragePopupSelector) 
+    const storagePopup: boolean = yield select(StoragePopupSelector)
     const { user } = yield select(authSelector);
     const { result } = yield call(FetchService, `stories/${payload?.valuesFinal?.id}`, 'PUT', payload.valuesFinal, user?.token);
     yield put(updateStoryAsyncAction(result));
 
     yield put(updateStoryActionG(result));
-    console.log("i am the boolean response",result?.usedStoragePercentage, result?.storagePopupTriggered, "storagePopup", storagePopup)
 
     if (result?.usedStoragePercentage >= 80 && !storagePopup) {
-      yield put (openModal({ content: "You have used 80% of available storage space."}))
-      yield put (hidePopup())
+      yield put(openModal({ content: "You have used 80% of available storage space." }))
+      yield put(hidePopup())
     } else {
-      if(result?.usedStoragePercentage < 80 && storagePopup )
+      if (result?.usedStoragePercentage < 80 && storagePopup)
         yield put(showPopup())
     }
     payload.router.push(`/app/story/${result?.url}`);

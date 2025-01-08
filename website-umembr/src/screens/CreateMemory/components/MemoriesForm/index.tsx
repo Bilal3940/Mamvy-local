@@ -230,8 +230,8 @@ export const MemoriesForm: FC<any> = () => {
     <>
       <Box display={'flex'} flexDirection={'column'} width={'100%'} height={'100%'} position={'relative'}>
         <Box
-          position={'fixed'}
-          top={isMobile ? '0' : '4.5rem'}
+          position={'relative'}
+          top={isMobile ? '0' : '1rem'}
           left={isMobile ? '3rem' :'13rem'}
           width={'100%'}
           zIndex={10}

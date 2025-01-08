@@ -5,6 +5,7 @@ import {
   createStories,
   getUploadSignedUrl,
   loadPendingStory,
+  openSubscriptionPopup,
   setPendingStory,
   updateStory,
   updateStoryViewG,
@@ -20,6 +21,7 @@ import { palette } from '@/theme/constants';
 import {
   calculateFileSize,
   cdn_url,
+  checkRoleAndPermission,
   ExtractCallbackType,
   FetchFileService,
   fileConverter,
@@ -38,6 +40,7 @@ import ChevronRightIconComponent from '../../../public/icons/components/chevron-
 import { formsByCategory } from '../../screens/CreateStory/forms';
 import { formCategories } from '../../screens/CreateStory/formsCategories';
 import { CancelModal } from './components';
+import { RefreshUserData } from '@/utils/fetchUserData';
 
 export const EditStory: FC<any> = () => {
   const { t } = useTranslation();
@@ -232,16 +235,12 @@ export const EditStory: FC<any> = () => {
     }
 
     if (!story?.id && pendingStory) {
-      console.log('No Story ID, but pendingStory found. Loading pendingStory details...');
       setDefault();
       setSelectedForm(formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber]?.name);
       return;
     }
-
-    
-    console.log('No Story ID and no pendingStory. Rendering default form...');
     setValues({});
-    setSelectedForm(formCategories['life_story']?.[0]?.name); 
+    setSelectedForm(formCategories['life_story']?.[0]?.name);
   }, [story, pendingStory]);
 
   const processFile = (prev_stories: any, prompts: {}, updatedValues: any) => {
@@ -263,7 +262,7 @@ export const EditStory: FC<any> = () => {
 
             if (response?.ok) {
               const valuesFinal: any = finalPayload(prev_stories, prompts, idSource?.story_details?.type_of_story);
-              valuesFinal.id = idSource?.id; 
+              valuesFinal.id = idSource?.id;
               if (story?.id) {
                 dispatch(updateStory({ valuesFinal, router }));
               } else {
@@ -304,7 +303,7 @@ export const EditStory: FC<any> = () => {
   };
 
   const updateAction = useCallback(
-    (newValues: any) => {
+    async (newValues: any) => {
       const idSource = story?.id ? story : pendingStory;
       const updatedValues = { ...values, ...newValues };
 
@@ -319,19 +318,31 @@ export const EditStory: FC<any> = () => {
         user?.email,
         imageFile?.name,
         imageFile?.type,
-        idSource?.status, 
+        idSource?.status,
       );
-
-      processFile(valuesCopy, idSource?.story_details?.prompts, updatedValues);
+      const res = await RefreshUserData(user?.token, user?.id);
+      const userData = res?.result;
+      const subsperm = checkRoleAndPermission(
+        userData?.roles,
+        'Subscriber_Individual',
+        'CLIENT_STORY_CREATE',
+        // 'Client',
+        user?.id,
+      );
+      if (!subsperm) {
+        localStorage.setItem('router_history', `/app/story/${story?.url}`)
+        dispatch(openSubscriptionPopup());
+      } else {
+        processFile(valuesCopy, idSource?.story_details?.prompts, updatedValues);
+      }
     },
-    [values, story, pendingStory], 
+    [values, story, pendingStory],
   );
 
   const { template } = useSelector(templatesSelector);
   useEffect(() => {
     if (template?.template?.colors) {
       const colors = template.template.colors.reduce((acc: any, color: any) => {
-        
         switch (color.PLabel) {
           case 'storyBackground':
             acc.storyBackgroundColor = color.PValue;
@@ -348,38 +359,24 @@ export const EditStory: FC<any> = () => {
         return acc;
       }, {});
 
-      
       setAdminPalette({
-        storyBackgroundColor: colors.storyBackgroundColor || '#333333', 
-        textColor: colors.textColor || '#ccc', 
-        accentColor: colors.accentColor || '#BF5700', 
+        storyBackgroundColor: colors.storyBackgroundColor || '#333333',
+        textColor: colors.textColor || '#ccc',
+        accentColor: colors.accentColor || '#BF5700',
       });
     }
-  }, [template]); 
+  }, [template]);
 
   const backgroundColorEdit = adminPalette.storyBackgroundColor;
   const accentColor = adminPalette.accentColor;
   const textColorButton = adminPalette.textColor;
-  const buttontext =
-    router.pathname === '/app/story/[id]/update' 
-      ? textColorButton 
-      : palette?.primary;
-  const buttonBackground =
-    router.pathname === '/app/story/[id]/update' 
-      ? accentColor 
-      : palette?.cardBackground;
-  const notificationBackground =
-    router.pathname === '/app/story/[id]/update' 
-      ? accentColor 
-      : palette?.primary;
-  const EditStoryBackground =
-    router.pathname === '/app/story/[id]/update' 
-      ? backgroundColorEdit 
-      : palette?.primary;
+  const buttontext = router.pathname === '/app/story/[id]/update' ? textColorButton : palette?.primary;
+  const buttonBackground = router.pathname === '/app/story/[id]/update' ? accentColor : palette?.cardBackground;
+  const notificationBackground = router.pathname === '/app/story/[id]/update' ? accentColor : palette?.primary;
+  const EditStoryBackground = router.pathname === '/app/story/[id]/update' ? backgroundColorEdit : palette?.primary;
 
   useEffect(() => {
     if (EditStoryBackground) {
-      
       document.body.style.setProperty('background-color', `${EditStoryBackground} `, 'important');
 
       return () => {
@@ -392,6 +389,13 @@ export const EditStory: FC<any> = () => {
     submitAction();
     setUpdate(true);
   };
+  const handleBack = () => {
+    if (story?.id) {
+      switchStatus();
+    } else {
+      router.push('/app/home');
+    }
+  };
 
   return (
     <>
@@ -400,7 +404,6 @@ export const EditStory: FC<any> = () => {
         padding={isMobile ? '0 1rem' : '0 0.7rem 0 1rem'}
         width={'100%'}
         justifyContent={'flex-start'}
-        
         flexDirection={'column'}
         height={isMobile ? '100vh' : '100%'}
         alignItems={isMobile ? 'flex-start' : 'center'}
@@ -463,12 +466,11 @@ export const EditStory: FC<any> = () => {
                     type='submit'
                     disabled={false}
                     loading={false}
-                    method={switchStatus}
+                    method={handleBack}
                     variant={'outlined'}
                     sx={{
                       '&:hover': {
-                        borderColor: buttonBackground, 
-                        
+                        borderColor: buttonBackground,
                       },
                     }}>
                     <Typography variant='button' color={palette.white}>
@@ -488,7 +490,7 @@ export const EditStory: FC<any> = () => {
                     sx={{
                       backgroundColor: buttonBackground,
                       '&:hover': {
-                        backgroundColor: buttonBackground, 
+                        backgroundColor: buttonBackground,
                       },
                     }}>
                     <Typography variant='button'>{t('save')}</Typography>

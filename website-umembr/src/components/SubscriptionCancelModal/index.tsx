@@ -23,21 +23,13 @@ export const SubscriptionCancelModal = ({ onConfirm, confirmationText }: ModalDe
   const { open } = useSelector((state: any) => state.intermitence?.subscriptionModal);
 
   const handleConfirm = async () => {
-    if (userInput === confirmationText) {
-      setLoading(true);
-      setUserInput('');
       try {
         onConfirm();
         dispatch(closeSubscriptionModal());
         dispatch(refreshUserData());
       } catch (error) {
         console.error('Error:', error);
-      } finally {
-        setLoading(false);
       }
-    } else {
-      dispatch(openModal({ content: 'text_not_match' }));
-    }
   };
 
   const handleClose = () => {

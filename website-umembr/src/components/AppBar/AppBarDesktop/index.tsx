@@ -184,7 +184,7 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
       // Proceed with the existing close logic if no unsaved changes
       if (
         router.pathname?.includes('memory/create') ||
-        (router.pathname?.includes('story') && router.pathname?.includes('update'))
+        (router.pathname?.includes('story') && router.pathname?.includes('update') && story?.id)
       ) {
         router.push(`/app/story/${story?.url}`);
       } else {
@@ -196,7 +196,7 @@ export const MuiAppBarDesktop: FC<any> = ({adminPalette, search, setSearch }) =>
     // Proceed with the existing close logic if no unsaved changes
     if (
       router.pathname?.includes('memory/create') ||
-      (router.pathname?.includes('story') && router.pathname?.includes('update'))
+      (router.pathname?.includes('story') && router.pathname?.includes('update') && story?.id)
     ) {
       router.push(`/app/story/${story?.url}`);
     } else {

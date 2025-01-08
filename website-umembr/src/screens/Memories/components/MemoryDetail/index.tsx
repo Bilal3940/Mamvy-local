@@ -197,7 +197,7 @@ export const MemoryDetail = ({ extendedPalette, isLocked, open, onClose, mediaCo
       onClose={onClose}
       sx={{
         ...styles.modal,
-        animation: `${open ? fadeIn : fadeOut} 0.25s ease-in-out`,
+        animation: `${open ? fadeIn : fadeOut} 250ms ease-in-out`,
       }}>
       <Box
         display={'flex'}

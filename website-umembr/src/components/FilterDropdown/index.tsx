@@ -312,7 +312,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: extendedPalette.buttonbackgroundIcon,
+                                        color: router.pathname == '/app/story/[id]' ? '#B3BED4' : extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -356,7 +356,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: extendedPalette.buttonbackgroundIcon,
+                                        color: router.pathname == '/app/story/[id]' ? '#B3BED4' : extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -400,7 +400,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: extendedPalette.buttonbackgroundIcon,
+                                        color: router.pathname == '/app/story/[id]' ? '#B3BED4' : extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -444,7 +444,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: extendedPalette.buttonbackgroundIcon,
+                                        color: router.pathname == '/app/story/[id]' ? '#B3BED4' : extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -488,7 +488,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: extendedPalette.buttonbackgroundIcon,
+                                        color: router.pathname == '/app/story/[id]' ? '#B3BED4' : extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -532,7 +532,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
                                       color: palette.white,
                                       padding: '0.5rem 0.35rem 0.5rem 0',
                                       '&.Mui-checked': {
-                                        color: extendedPalette.buttonbackgroundIcon,
+                                        color: router.pathname == '/app/story/[id]' ? '#B3BED4' : extendedPalette.buttonbackgroundIcon,
                                       },
                                     }}
                                   />
@@ -574,7 +574,7 @@ export const FilterDropdown = ({ extendedPalette, top, isOpen, listItem, callbac
                                   color: palette.white,
                                   padding: '0.5rem 0.35rem 0.5rem 0',
                                   '&.Mui-checked': {
-                                    color: extendedPalette.buttonbackgroundIcon,
+                                    color: router.pathname == '/app/story/[id]' ? '#B3BED4' : extendedPalette.buttonbackgroundIcon,
                                   },
                                 }}
                               />

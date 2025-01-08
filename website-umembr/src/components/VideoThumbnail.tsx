@@ -12,10 +12,10 @@ const extractYouTubeId = (url: string): string | null => {
 
 interface VideoThumbnailProps {
   videoSrc: string;
-  extendedPalette:any;
+  extendedPalette?: any;
 }
 
-const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc,extendedPalette }) => {
+const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoSrc ,extendedPalette}) => {
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

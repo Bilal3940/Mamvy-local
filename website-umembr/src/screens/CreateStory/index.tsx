@@ -18,7 +18,6 @@ import {
   openModal,
   hidePopup,
   showPopup,
-  // setPendingStory,
 } from '@/store/actions';
 import { TypeStory, FormStories, PromptsStories, FinishCreate } from './components';
 import { useRouter } from 'next/router';
@@ -27,7 +26,14 @@ import { formCategories } from './formsCategories';
 import Image from 'next/image';
 
 import { finalPayload, transformPayload } from '@/utils/transformPayload';
-import { calculateFileSize, checkPermissions, checkRoleAndPermission, FetchFileService, fileConverter, showDialog } from '@/utils';
+import {
+  calculateFileSize,
+  checkPermissions,
+  checkRoleAndPermission,
+  FetchFileService,
+  fileConverter,
+  showDialog,
+} from '@/utils';
 
 import { palette } from '@/theme/constants';
 import ChevronLeftIconComponent from '../../../public/icons/components/chevron-left';
@@ -115,8 +121,8 @@ export const CreateStory = () => {
   const [actualFormNumber, setActualFormNumber] = useState(0);
   const [values, setValues] = useState<any>({});
   const [selectedPrompts, setSelectedPrompts] = useState<selectedPromptsState>({});
-  // const {SubscriptionStatus, actionSuccess} = useSelector(subscriptionSelector)
-  const storagePopup = useSelector((state:any) => state.storageLog.storagePopup);
+
+  const storagePopup = useSelector((state: any) => state.storageLog.storagePopup);
   const [creating, setCreating] = useState(false);
   const submit = useRef<any>(null);
   const steps = [
@@ -259,227 +265,73 @@ export const CreateStory = () => {
     }
   }, [dispatch]);
 
-  // const processFile = (prev_stories: any, prompts: {}) => {
-  //   dispatch(
-  //     getUploadSignedUrl(
-  //       { file: `stories/${prev_stories?.title}/${prev_stories?.name_image}`, type: prev_stories?.type_image },
-  //       async (res: any) => {
-  //         try {
-  //           const response = await FetchFileService(
-  //             res?.value?.url?.uploadUrl,
-  //             'PUT',
-  //             values.story_title_image?.cover_image,
-  //             prev_stories?.type_image,
-  //           );
-  //           if (response?.ok) {
-  //             const valuesFinal = finalPayload(prev_stories, prompts, storySection);
-
-  //             const result = dispatch(createStories(valuesFinal));
-  //             return result;
-  //           }
-  //         } catch (error) {}
-  //       },
-  //     ),
-  //   );
-  // };
-  // const MAX_FILE_SIZE_MB = 100;
-  // const processFile = (prev_stories: any, prompts: {}) => {
-  //   const file = values.story_title_image?.cover_image;
-  
-  //   // Calculate file size in bytes or MB (if preferred)
-  //   const fileSizeBytes = file.size;
-  //   const fileSizeMB = fileSizeBytes / (1024 * 1024); // Convert to MB if needed
-  //   console.log("File size in bytes:", fileSizeBytes);
-  //   console.log("File size in MB:", fileSizeMB);
-  
-  //   dispatch(
-  //     getUploadSignedUrl(
-  //       { file: `stories/${prev_stories?.title}/${prev_stories?.name_image}`, type: prev_stories?.type_image },
-  //       async (res: any) => {
-  //         try {
-  //           const response = await FetchFileService(
-  //             res?.value?.url?.uploadUrl,
-  //             'PUT',
-  //             file,
-  //             prev_stories?.type_image,
-  //           );
-  
-  //           if (response?.ok) {
-  //             // Include file size in the final payload
-  //             const valuesFinal = finalPayload({ ...prev_stories, fileSize: fileSizeBytes }, prompts, storySection);
-  
-  //             // Dispatch the createStories action with updated payload
-  //             const result = dispatch(createStories(valuesFinal));
-  //             console.log("i am the result",result)
-  //             return result;
-  //           }
-  //         } catch (error) {
-  //           console.error("Error uploading file:", error);
-  //         }
-  //       },
-  //     ),
-  //   );
-  // };
-  
-
-  // const handleCreateStories = async () => {
-  //   setCreating(true);
-  
-  //   // Refresh user data to get the latest storage information
-  //   const res = await RefreshUserData(user?.token, user?.id);
-  //   const userData = res?.result;
-  //   const perm = checkRoleAndPermission(
-  //     userData?.roles,
-  //     'Subscriber_Individual',
-  //     'CLIENT_STORY_CREATE',
-  //     user?.id
-  //   );
-  
-  //   // Check if user has the required permission
-  //   if (!perm) {
-  //     setCreating(false);
-  //     handleOpenPopup();
-  //     return;
-  //   }
-  
-  //   // Get the file size for the story being created
-  //   const fileSize = calculateFileSize(prev_stories, prompts); // Assuming calculateFileSize returns the size in appropriate units
-  
-  //   // Check storage limits before proceeding
-  //   const usedStorage = userData?.usedStorage || 0;
-  //   const totalStorage = userData?.totalStorage || 0;
-  
-  //   if (usedStorage + fileSize > totalStorage) {
-  //     setCreating(false);
-  //     showDialog("Not enough storage available", "error"); // Assuming showDialog displays a toast or message to the user
-  //     return;
-  //   }
-  
-  //   // Proceed with story creation if storage is sufficient
-  //   setCreating(true);
-  //   processFile(prev_stories, prompts);
-  // };
-
-
-
-
-  
-  const processFile = async(prev_stories:any, prompts:{}) => {
+  const processFile = async (prev_stories: any, prompts: {}) => {
     const file = values.story_title_image?.cover_image;
     const fileSizeBytes = calculateFileSize(file);
 
-  
-  
     dispatch(
       getUploadSignedUrl(
         { file: `stories/${prev_stories?.title}/${prev_stories?.name_image}`, type: prev_stories?.type_image },
-        async (res:any) => {
+        async (res: any) => {
           try {
-            const response = await FetchFileService(
-              res?.value?.url?.uploadUrl,
-              'PUT',
-              file,
-              prev_stories?.type_image,
-            );
-  
+            const response = await FetchFileService(res?.value?.url?.uploadUrl, 'PUT', file, prev_stories?.type_image);
+
             if (response?.ok) {
-              // Include file size in the final payload
-              const valuesFinal = finalPayload(
-                { ...prev_stories, fileSize: fileSizeBytes },
-                prompts,
-                storySection
-              );
-              dispatch(updateSubscriptionStatus({userId: user?.id}))
-              // dispatch(refreshUserData())
-            
-              // Refresh user data to get the latest storage information
+              const valuesFinal = finalPayload({ ...prev_stories, fileSize: fileSizeBytes }, prompts, storySection);
+              dispatch(updateSubscriptionStatus({ userId: user?.id }));
+
               const res = await RefreshUserData(user?.token, user?.id);
               const userData = res?.result;
               const subsperm = checkRoleAndPermission(
                 userData?.roles,
                 'Subscriber_Individual',
                 'CLIENT_STORY_CREATE',
-                // 'Client',
-                user?.id
+
+                user?.id,
               );
-            
-              // const perm = checkPermissions(userData?.roles, 'CLIENT_STORY_CREATE')
-              // Check if the user has the required permission
+
               if (!subsperm) {
                 setCreating(false);
-                localStorage.setItem('pendingStory',JSON.stringify(valuesFinal))
-                dispatch(openSubscriptionPopup())
+                localStorage.setItem('pendingStory', JSON.stringify(valuesFinal));
+                dispatch(openSubscriptionPopup());
                 return;
               }
-          
-  
-              // Dispatch the createStories action with updated payload
+
               const result = dispatch(createStories(valuesFinal));
               return result;
             }
           } catch (error) {
-            console.error("Error uploading file:", error);
+            console.error('Error uploading file:', error);
           }
-        }
-      )
+        },
+      ),
     );
   };
-  
+
   const handleCreateStories = async () => {
     setCreating(true);
-    // const payload ={
-    //   userId: user?.id
-    // }
-    dispatch(updateSubscriptionStatus({userId: user?.id}))
-    // dispatch(refreshUserData())
-  
-    // Refresh user data to get the latest storage information
+
+    dispatch(updateSubscriptionStatus({ userId: user?.id }));
+
     const res = await RefreshUserData(user?.token, user?.id);
     const userData = res?.result;
-    // const subsperm = checkRoleAndPermission(
-    //   userData?.roles,
-    //   'Subscriber_Individual',
-    //   'CLIENT_STORY_CREATE',
-    //   // 'Client',
-    //   user?.id
-    // );
-  
-    // const perm = checkPermissions(userData?.roles, 'CLIENT_STORY_CREATE')
-    // // Check if the user has the required permission
-    // if (!subsperm) {
-    //   setCreating(false);
-    //   const valuesFinal = finalPayload(
-    //     { ...prev_stories },
-    //     prompts,
-    //     storySection
-    //   );
-    //   localStorage.setItem('pendingStory',JSON.stringify(valuesFinal))
-    //   dispatch(openSubscriptionPopup())
-    //   return;
-    // }
-  
-    // // Get the file size for the story being created
+
     const file = values.story_title_image?.cover_image;
     const fileSizeBytes = calculateFileSize(file);
-  
-    // // Check storage limits before proceeding
+
     const usedStorage = userData?.usedStorage || 0;
     const totalStorage = userData?.totalStorage || 0;
 
     if (usedStorage + fileSizeBytes > totalStorage) {
- 
       setCreating(false);
-      // yield call("There is not enough storage in your account.")
-      dispatch(openModal({content:"There is not enough storage in your account."}))
+
+      dispatch(openModal({ content: 'There is not enough storage in your account.' }));
 
       return;
     }
     setCreating(true);
     processFile(prev_stories, prompts);
   };
-  
-
-  
 
   useEffect(() => {
     if (createStep == 0) setValues({});

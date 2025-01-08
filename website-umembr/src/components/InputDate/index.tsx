@@ -65,7 +65,7 @@ export const MuiInputDate: FC<Props> = ({
     <ClickAwayListener onClickAway={() => setShow(false)}>
       <Box position={'relative'} sx={isDarkTheme ? styles(error).darkTheme : styles(error).lightTheme}>
         <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={'en'}>
-          <DatePicker
+          {/* <DatePicker
             onOpen={() => setShow(true)}
             open={show}
             value={date !== '' && date !== null ? moment(date) : null}
@@ -123,7 +123,67 @@ export const MuiInputDate: FC<Props> = ({
                   <Image src={`/icons/down-arrow-dark.svg`} alt={'down-arrow'} width={15} height={15} quality={80} />
                 ),
             }}
-          />
+          /> */}
+          <DatePicker
+  onOpen={() => setShow(true)}
+  open={show}
+  value={date !== '' && date !== null ? moment(date) : null}
+  views={views}
+  label={t(label)}
+  data-cy='input-component'
+  disableFuture={disableFuture}
+  disablePast={disablePast}
+  disabled={disabled}
+  dayOfWeekFormatter={(day) => day.toString().toUpperCase()} 
+  onChange={(date: any) => {
+    setShowCalendar();
+    setNewDate(date);
+    handleDatePicker(date);
+    if (onChange) onChange(name, date);
+  }}
+  format={inputFormat}
+  slotProps={{
+    textField: {
+      InputProps: {
+        startAdornment: !isDarkTheme ? (
+          <Image src={`/icons/calendar.svg`} alt={'calendar'} width={24} height={24} quality={80} />
+        ) : (
+          <Image src={`/icons/calendar.svg`} alt={'calendar'} width={24} height={24} quality={80} />
+        ),
+      },
+      onClick: () => {
+        setShow(true);
+      },
+      value: date !== '' && date !== null ? moment(date) : null,
+      onChange: (value) => {
+        validateDate(value);
+      },
+      placeholder: t(placeholder),
+      sx: {
+        width: '100%',
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: error && palette?.error,
+        },
+
+        '&. MuiDateCalendar-root': {
+          width: '100%',
+        },
+      },
+    },
+    inputAdornment: {
+      position: 'end',
+    },
+  }}
+  slots={{
+    openPickerIcon: () =>
+      isDarkTheme ? (
+        <Image src={`/icons/down-arrow-dark.svg`} alt={'down-arrow'} width={15} height={15} quality={80} />
+      ) : (
+        <Image src={`/icons/down-arrow-dark.svg`} alt={'down-arrow'} width={15} height={15} quality={80} />
+      ),
+  }}
+/>
+
           {error && (
             <Typography
               position={'absolute'}

@@ -8,42 +8,42 @@ import {
 } from "./action-types";
 
 const initialState: any = {
-  storageLogs: [], // Array to store logs if needed
-  storageLog: {}, // Object to store the latest log or detailed log
+  storageLogs: [], 
+  storageLog: {}, 
   actionSuccess: null,
   storagePopup: false,
 };
 
 const storageLog = (state = initialState, { type, payload }: any) => {
   switch (type) {
-        case SHOW_STORAGE_POPUP:
-          return { ...state, storagePopup: false };
-          case HIDE_STORAGE_POPUP:
-            const updatedState = { ...state, storagePopup: true };
-            console.log("Updated State: dev-test", updatedState);
-            return updatedState;
-    case LOG_STORAGE_USAGE_ASYNC: // For creating a new log
+    case SHOW_STORAGE_POPUP:
+      return { ...state, storagePopup: false };
+    case HIDE_STORAGE_POPUP:
+      const updatedState = { ...state, storagePopup: true };
+
+      return updatedState;
+    case LOG_STORAGE_USAGE_ASYNC: 
       return {
         ...state,
         storageLog: payload,
         actionSuccess: true,
       };
 
-    case GET_STORAGE_LOGS_ASYNC: // Update this to store in `storageLog`
+    case GET_STORAGE_LOGS_ASYNC: 
       return {
         ...state,
-        storageLog: payload, // Store the result in `storageLog` instead of `storageLogs`
+        storageLog: payload, 
         actionSuccess: true,
       };
 
-    case GET_STORAGE_LOG: // For fetching a single log if needed
+    case GET_STORAGE_LOG: 
       return {
         ...state,
         storageLog: payload,
         actionSuccess: true,
       };
 
-    case CLEAR_STORAGE_LOGS_DATA: // Reset state
+    case CLEAR_STORAGE_LOGS_DATA: 
       return initialState;
 
     default:

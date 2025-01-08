@@ -74,7 +74,7 @@ export const AudioPlayer = ({ audioData, index, name }: any) => {
   }, [template]); // Make sure to add template to the dependency array
 
   const accentColor = adminPalette.accentColor;
-   let bgColor =    router.pathname ===   '/app/home' ? palette.primary :accentColor;
+   let bgColor =   router ?  router.pathname ===   '/app/home' ? palette.primary :accentColor  : palette?.primary;
 
   return (
     <Box

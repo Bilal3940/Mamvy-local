@@ -18,6 +18,7 @@ import {
   openSubscriptionPopup,
   updateSubscriptionStatus,
   refreshUserData,
+  closeModal,
 } from '@/store/actions';
 import {
   FetchFileService,
@@ -56,9 +57,9 @@ export const Form: FC<any> = ({
   const [type, setType] = useState<any>('');
   const [openModalLoading, setOpenModalLoading] = useState(false);
   const { story } = useSelector(storySelector);
-  const {user} = useSelector(authSelector);
-  const storagePopup = useSelector((state:any) => state.storageLog.storagePopup);
-  const [ isEditing, SetisEditing] = useState(false)
+  const { user } = useSelector(authSelector);
+  const storagePopup = useSelector((state: any) => state.storageLog.storagePopup);
+  const [isEditing, SetisEditing] = useState(false);
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const saveComplementarys = async (complements: any) => {
@@ -103,116 +104,29 @@ export const Form: FC<any> = ({
     dispatch(sendMemory({ ...newData, ...complements }));
     return;
   };
-  // const handleSubmit = (data: any) => {
-  //   data.story_id = story?.id;
-  //   if (memoryData?.mediaType === 'text') {
-  //     saveTextData(data);
-  //     changeMediaTypeScreen();
-  //     dispatch(setHasChanges(false));
-  //     return;
-  //   }
-
-  //   // Open modal when uploading video
-  //   if (type === 'video') {
-  //     setOpenModalLoading(true);
-  //   }
-
-  //   localStorage.setItem('uploading video', 'uploading video');
-  //   dispatch(
-  //     getUploadSignedUrl(
-  //       {
-  //         file:
-  //           type === 'video'
-  //             ? `videos/${data?.media?.name?.split('/')?.pop()}`
-  //             : type === 'image'
-  //             ? `stories/${story?.title}/memory/${data?.media?.name
-  //                 ?.split('/')
-  //                 ?.pop()
-  //                 ?.replace(/\.[^.]+$/, '.webp')}`
-  //             : `stories/${story?.title}/memory/${data?.media?.name?.split('/')?.pop()}`,
-  //         type: type === 'image' ? 'image/webp' : data?.media?.type,
-  //       },
-  //       async (res: any) => {
-  //         try {
-  //           setIsLoading(true);
-  //           let response: any = null;
-  //           if (type === 'image') {
-  //             const newFile = await fileConverter(data?.media);
-  //             response = await FetchFileService(res?.value?.url?.uploadUrl, 'PUT', newFile, 'image/webp');
-  //           } else {
-  //             response = await FetchFileService(res?.value?.url?.uploadUrl, 'PUT', data?.media, data?.media?.type);
-  //           }
-
-  //           if (response?.ok) {
-  //             const newData = { ...data };
-  //             newData.type = type || data?.media?.type?.split('/')[0];
-  //             newData.asset =
-  //               type === 'video'
-  //                 ? `videos/${data?.media?.name?.split('/')?.pop()}`
-  //                 : type === 'image'
-  //                 ? `stories/${story?.title}/memory/${data?.media?.name
-  //                     ?.split('/')
-  //                     ?.pop()
-  //                     ?.replace(/\.[^.]+$/, '.webp')}`
-  //                 : `stories/${story?.title}/memory/${data?.media?.name?.split('/')?.pop()}`;
-  //             newData.asset_type = data?.media?.type;
-  //             newData.prompt = prompt;
-
-  //             const complements = await saveComplementarys(data);
-
-  //             if (defaultItem) {
-  //               newData.id = defaultItem?.id;
-  //               dispatch(updateMemory({ ...newData, ...complements }));
-  //               changeMediaTypeScreen();
-  //               dispatch(setHasChanges(false));
-  //               setIsLoading(false);
-  //               setOpenModalLoading(false); // Close modal when done
-  //               return;
-  //             }
-
-  //             const response =  dispatch(sendMemory({ ...newData, ...complements }));
-  //             changeMediaTypeScreen();
-  //             dispatch(setHasChanges(false));
-
-  //             setIsLoading(false);
-  //             setOpenModalLoading(false);
-  //           }
-  //         } catch (error) {
-  //           setIsLoading(false);
-  //           setOpenModalLoading(false);
-  //         }
-  //       },
-  //     ),
-  //   );
-  // };
-
   const handleSubmit = async (data: any) => {
-    dispatch(refreshUserData())
-    dispatch(updateSubscriptionStatus({userId: story?.user?.id}))
-        const res = await RefreshUserData(user?.token, story?.user?.id);
+    dispatch(refreshUserData());
+    dispatch(updateSubscriptionStatus({ userId: story?.user?.id }));
+    const res = await RefreshUserData(user?.token, story?.user?.id);
     data.story_id = story?.id;
-
 
     // const usedStorage = res?.result?.usedStorage || 0;
     // const totalStorage = res?.result?.totalStorage || 0;
     // const fileSize = data?.media?.size || 0;
     const isOwner = story.user_id === user?.id;
-    
+
     if (!checkRoleAndPermission(story?.user?.roles, 'Subscriber_Individual', 'CLIENT_MEMORY_CREATE', story?.user_id)) {
-      // alert("inside means not subscriber")
-      const message = isOwner
-      ? "You are not a subscriber."
-      : "The creator is not a subscriber."
+      const message = isOwner ? 'You are not a subscriber.' : 'The creator is not a subscriber.';
       // Role check fails
       dispatch(openModal({ content: message }));
-      setTimeout(()=>{
-
-      
-      if(story?.user_id === user?.id){
-        dispatch(openSubscriptionPopup())
-      }
-    },2000)
+      setTimeout(() => {
+        if (story?.user_id === user?.id) {
+          dispatch(openSubscriptionPopup());
+        }
+      }, 1000);
+      dispatch(closeModal())
       return;
+
     }
     if (memoryData?.mediaType === 'text') {
       saveTextData(data);
@@ -224,7 +138,6 @@ export const Form: FC<any> = ({
     if (type === 'video') {
       setOpenModalLoading(true);
     }
-
 
     dispatch(
       getUploadSignedUrl(
@@ -271,32 +184,27 @@ export const Form: FC<any> = ({
               };
 
               const complements = await saveComplementarys(data);
-              console.log("i am the state of popup - dev test", storagePopup)
               if (defaultItem) {
                 newData.id = defaultItem?.id;
                 dispatch(updateMemory({ ...newData, ...complements }));
               } else {
                 dispatch(sendMemory({ ...newData, ...complements }));
               }
-           
-              
+
               changeMediaTypeScreen();
               dispatch(setHasChanges(false));
               setIsLoading(false);
               setOpenModalLoading(false); // Close modal when done
             }
           } catch (error) {
-            console.error("Error uploading file:", error);
+            console.error('Error uploading file:', error);
             setIsLoading(false);
             setOpenModalLoading(false);
           }
-        }
-      )
+        },
+      ),
     );
   };
-
-
-
 
   const handleOnTouched = (key: string) => setTouched({ ...touched, [key]: true });
 
@@ -514,53 +422,51 @@ export const Form: FC<any> = ({
     }, 20);
   }, [memoryData?.mediaType]);
 
-
-
-  // const filteredMediaTypes = isEditing 
-  // ? mediaTypes.filter((item) => item.icon == memoryData?.mediaType) 
+  // const filteredMediaTypes = isEditing
+  // ? mediaTypes.filter((item) => item.icon == memoryData?.mediaType)
   // : mediaTypes;
-  // console.log("memory media type", memoryData?.mediaType)
-  // console.log(filteredMediaTypes)
+  
+  
   return (
     <>
       <form ref={formRef} onSubmit={formikSubmit} style={{ width: '100%', marginRight: '1rem' }}>
         <Grid container display={'flex'} justifyContent={'space-between'} spacing={isMobile ? 1 : 2} ref={ref}>
-        {mediaTypes.map((item: any, index: number) => (
-  <Grid key={`${item.label} + ${index}`} item xs={isMobile ? 12 : 6}>
-    <Box
-      width={'100%'}
-      height={'100%'}
-      borderRadius={'0.5rem'}
-      padding={'0.25rem 0.5rem'}
-      bgcolor={memoryData?.mediaType == item?.icon ? palette?.white : palette.cardBackground}
-      border={`0.063rem solid ${palette.cardBorder}`}
-      display={'flex'}
-      onClick={()=>(isLoading || isEditing ? null : setMedia(item.icon))}
-      sx={{ 
-        backdropFilter: 'blur(1.5625rem)', 
-        cursor: isEditing ? 'not-allowed' : 'pointer',
-        opacity: isEditing && memoryData?.mediaType !== item.icon ? 0.4 : 1 
-      }}
-      justifyContent={'flex-start'}
-      alignItems={'center'}>
-      <Box
-        borderRadius={'0.375rem'}
-        bgcolor={memoryData?.mediaType == item?.icon ? palette.gray : palette.background}
-        display={'flex'}
-        padding={'0.25rem'}
-        justifyContent={'center'}
-        alignItems={'center'}
-        marginRight={'1rem'}>
-        <Image src={`/icons/${item.icon}.svg`} alt={item.icon} width={24} height={24} quality={80} />
-      </Box>
-      <Typography
-        variant='subtitle2'
-        color={memoryData?.mediaType == item?.icon ? palette.gray : palette.white}>
-        {t(item.label)}
-      </Typography>
-    </Box>
-  </Grid>
-))}
+          {mediaTypes.map((item: any, index: number) => (
+            <Grid key={`${item.label} + ${index}`} item xs={isMobile ? 12 : 6}>
+              <Box
+                width={'100%'}
+                height={'100%'}
+                borderRadius={'0.5rem'}
+                padding={'0.25rem 0.5rem'}
+                bgcolor={memoryData?.mediaType == item?.icon ? palette?.white : palette.cardBackground}
+                border={`0.063rem solid ${palette.cardBorder}`}
+                display={'flex'}
+                onClick={() => (isLoading || isEditing ? null : setMedia(item.icon))}
+                sx={{
+                  backdropFilter: 'blur(1.5625rem)',
+                  cursor: isEditing ? 'not-allowed' : 'pointer',
+                  opacity: isEditing && memoryData?.mediaType !== item.icon ? 0.4 : 1,
+                }}
+                justifyContent={'flex-start'}
+                alignItems={'center'}>
+                <Box
+                  borderRadius={'0.375rem'}
+                  bgcolor={memoryData?.mediaType == item?.icon ? palette.gray : palette.background}
+                  display={'flex'}
+                  padding={'0.25rem'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  marginRight={'1rem'}>
+                  <Image src={`/icons/${item.icon}.svg`} alt={item.icon} width={24} height={24} quality={80} />
+                </Box>
+                <Typography
+                  variant='subtitle2'
+                  color={memoryData?.mediaType == item?.icon ? palette.gray : palette.white}>
+                  {t(item.label)}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
           {memoryData?.mediaType !== '' && (
             <>
               <Grid item xs={12} marginTop={isMobile ? '1rem' : 0}>

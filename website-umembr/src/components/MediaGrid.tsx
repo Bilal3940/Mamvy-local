@@ -159,7 +159,6 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
     setSelectedMedia(null);
     switchDeleteMemory();
     dispatch(showPopup());
-    console.log('i am the state after chnageing - dev test', storagePopup);
     router.push(`/app/story/${story?.url}`);
     const { callback, promise } = promisifiedCallback<ExtractCallbackType<typeof removeMemory>>();
     dispatch(removeMemory({ id: selectedMedia?.id, story_id: story?.id }, callback));
@@ -168,8 +167,6 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
       dispatch(getStorageLogs(user?.id));
     }
   };
-
-  console.log('i am the updated state of popup- dev test', storagePopup);
   useEffect(() => {
     if (user && user.id) {
       dispatch(getUserPurchases(user && user?.id));
@@ -356,99 +353,97 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
       <div>
         {actionSuccessColab && (
           <>
-
-          <Box
-            sx={{
-              padding: '10px 1px 10px 8px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 2,
-              backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
-              flexDirection: 'row',
-              position:isMobile?'relative': 'sticky',
-              borderRadius: '16px',
-              backdropFilter:'blur(1.5625rem)',
-              zIndex: '998',
-              margin:isMobile?'8px': '8px',
-              top:isMobile? 0: '9%',
-            }}>
-            <Search
-              color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onClear={() => setSearch('')}
-              sx={{
-                width: {
-                  xs: '12rem',
-                  sm: '16rem',
-                },
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    border: 'none',
-                    color: 'white',
-                  },
-                  '& input': {
-                    color: 'white',
-                  },
-                },
-
-                '& input:-webkit-autofill': {
-                  WebkitTextFillColor: 'white',
-
-                  transition: 'background-color 5000s ease-in-out 0s',
-                },
-              }}
-            />
             <Box
               sx={{
+                padding: '10px 1px 10px 8px',
                 display: 'flex',
-                justifyContent: { xs: 'flex-end', sm: 'flex-end' },
-                flexGrow: 1,
-                flexWrap: { xs: 'nowrap', sm: 'nowrap' },
-                gap: '2px',
-                margin: '0',
-                padding:'0 5px 0 0',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 2,
+                backgroundColor: extendedPalette.toolBarBackground ? extendedPalette.toolBarBackground : null,
+                flexDirection: 'row',
+                position: isMobile ? 'relative' : 'sticky',
+                borderRadius: '16px',
+                backdropFilter: 'blur(1.5625rem)',
+                zIndex: '998',
+                margin: isMobile ? '8px' : '8px',
+                top: isMobile ? 0 : '5rem',
               }}>
-              <MuiIconButton
-                icon='/icons/filter'
-                label='Filter'
-                altIcon='filter'
-                direction='row'
-                background={
-                  isFilterActive
-                    ? `${extendedPalette.buttonbackgroundIcon} !important`
-                    : ` ${palette.black}  !important`
-                }
-                width={80}
-                isRounded={false}
-                height={40}
-                iconHeight={12}
-                iconWidth={20}
+              <Search
+                color={'linear-gradient(174deg, rgba(27, 27, 27, 0.5) -68.72%, rgba(0, 0, 0, 0.5) 269.6%),#333'}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onClear={() => setSearch('')}
                 sx={{
-                  borderRadius: '24px',
-                  '&:hover': {
-                    backgroundColor: `${extendedPalette.buttonbackgroundIcon} !important`,
-                    borderColor: `${extendedPalette.buttonbackgroundIcon}`,
+                  width: {
+                    xs: '12rem',
+                    sm: '16rem',
+                  },
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                      border: 'none',
+                      color: 'white',
+                    },
+                    '& input': {
+                      color: 'white',
+                    },
+                  },
+
+                  '& input:-webkit-autofill': {
+                    WebkitTextFillColor: 'white',
+
+                    transition: 'background-color 5000s ease-in-out 0s',
                   },
                 }}
-                method={(event: any) => setShowFilters(event)}
               />
-
-
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: { xs: 'flex-end', sm: 'flex-end' },
+                  flexGrow: 1,
+                  flexWrap: { xs: 'nowrap', sm: 'nowrap' },
+                  gap: '2px',
+                  margin: '0',
+                  padding: '0 5px 0 0',
+                }}>
+                <MuiIconButton
+                  icon='/icons/filter'
+                  label='Filter'
+                  altIcon='filter'
+                  direction='row'
+                  background={
+                    isFilterActive
+                      ? `${extendedPalette.buttonbackgroundIcon} !important`
+                      : ` ${palette.black}  !important`
+                  }
+                  width={80}
+                  isRounded={false}
+                  height={40}
+                  iconHeight={12}
+                  iconWidth={20}
+                  sx={{
+                    borderRadius: '24px',
+                    '&:hover': {
+                      backgroundColor: `${extendedPalette.buttonbackgroundIcon} !important`,
+                      borderColor: `${extendedPalette.buttonbackgroundIcon}`,
+                    },
+                  }}
+                  method={(event: any) => setShowFilters(event)}
+                />
+              </Box>
             </Box>
-          </Box>
-          <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
-                <Box position={'relative'}>
-                  <FilterDropdown
-                    extendedPalette={extendedPalette}
-                    callbackfunction={(flag: boolean) => callbackfunction(flag)}
-                    // top={'rem'}
-                    isOpen={openFilters}
-                    listItem={[prompts, collaborators, types]}
-                  />
-                </Box>
-              </ClickAwayListener></>
+            <ClickAwayListener onClickAway={handleCloseFilters} disableReactTree={true}>
+              <Box position={'relative'}>
+                <FilterDropdown
+                  extendedPalette={extendedPalette}
+                  callbackfunction={(flag: boolean) => callbackfunction(flag)}
+                  // top={'rem'}
+                  isOpen={openFilters}
+                  listItem={[prompts, collaborators, types]}
+                />
+              </Box>
+            </ClickAwayListener>
+          </>
         )}
         {isDivider && <Divider sx={styles.divider} />}
 
@@ -458,7 +453,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
           <Masonry
             columns={{ xs: 1, sm: 2, md: 4, lg: 4 }}
             spacing={2}
-            sx={{ position: 'relative', margin: 0, zIndex: '900'}}>
+            sx={{ position: 'relative', margin: 0, zIndex: '900' }}>
             {filteredMediaItems.slice(0, visibleItems).map((item: any, index: any) => (
               <Paper
                 onClick={() => AllowOpenModel(item)}
@@ -472,7 +467,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
                   flexDirection: 'column',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
-                  animation: `fadeInUp 1s ease-out`,
+                  animation: `fadeInUp 250ms ease-out`,
                   animationFillMode: 'forwards',
                   opacity: 0,
                   transform: 'translateY(4rem)',
@@ -529,8 +524,8 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
 
                   {/* User Avatar */}
                   <Avatar
-                    src={item?.user?.picture ? `${cdn_url}${item?.user?.picture}` : '/icons/image1.svg'}
-                    alt={item.username}
+                    src={item?.user?.picture ? `${cdn_url}${item?.user?.picture}` : '/default-profile.png'}
+                    alt={`${item?.user?.name} ${item?.user?.lastname}`}
                     sx={{ width: 32, height: 32 }}
                     title={`${item?.user?.name} ${item?.user?.lastname}`}
                   />
@@ -573,7 +568,9 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
                       />
                     </Box>
                   )}
-                  {item.type === 'video' && <VideoThumbnail extendedPalette={extendedPalette} videoSrc={`${cdn_url}${item.asset}`} />}
+                  {item.type === 'video' && (
+                    <VideoThumbnail extendedPalette={extendedPalette} videoSrc={`${cdn_url}${item.asset}`} />
+                  )}
                   {item.type === 'audio' && (
                     <div
                       style={{
@@ -647,11 +644,20 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
           </Box>
         )}
 
-        <Box sx={{width:'100%', mb:'1rem', display: 'flex', justifyContent: 'center', alignItems:'center', alignContent:'center',  marginTop: 2 }}>
+        <Box
+          sx={{
+            width: '100%',
+            mb: '1rem',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignContent: 'center',
+            marginTop: 2,
+          }}>
           {!allItemsLoaded && (
             <MuiButton
-            minWidth={'10rem'}
-            width={'10rem'}
+              minWidth={'10rem'}
+              width={'10rem'}
               type='button'
               loading={false}
               backgroundColor={extendedPalette.buttonbackgroundIcon}
@@ -683,7 +689,6 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
           onClose={switchDeleteMemory}
           confirmMethod={deleteMemory}
         />
-
       </div>
     </>
   );

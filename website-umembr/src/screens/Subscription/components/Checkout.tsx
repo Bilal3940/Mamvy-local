@@ -4,12 +4,15 @@ import { Elements } from "@stripe/react-stripe-js";
 import { PaymentForm } from "./PaymentForm";
 import { Box } from "@mui/material";
 import { stripe_public_key } from "@/utils";
+import { useDispatch } from "react-redux";
+import { openModal } from "@/store/actions";
 
 const stripePromise = loadStripe(stripe_public_key);
 
 export const Checkout: React.FC = () => {
+  const dispatch = useDispatch()
   const handlePaymentSuccess = () => {
-    alert("Payment Successful!");
+    dispatch(openModal({content:"Payment Successful!"}));
   };
 
   const handlePaymentError = (errorMessage: string) => {

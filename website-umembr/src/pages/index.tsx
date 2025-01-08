@@ -35,7 +35,7 @@ const LandingPage: NextPage = () => {
         />
         <meta name='twitter:image' content='' />
       </Head>
-      <Landing />;
+      <Landing />
     </>
   );
 };

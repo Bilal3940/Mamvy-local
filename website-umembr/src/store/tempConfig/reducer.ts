@@ -15,7 +15,7 @@ import {
   const initialState: any = {
     templates: [],
     template: {},
-    actionSuccess: null,
+    actionSuccess: false,
   };
   
   const template = (state = initialState, { type, payload }: any) => {

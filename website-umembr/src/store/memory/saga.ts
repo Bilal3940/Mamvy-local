@@ -1,4 +1,4 @@
-import { FetchService, actionObject,showDialog, showModal } from '@/utils';
+import { FetchService, actionObject, showDialog, showModal } from '@/utils';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import {
   createMemoryActionG,
@@ -46,17 +46,17 @@ function* setMediaType({ payload }: any) {
 function* createMemory({ payload }: any): any {
   try {
     const { user } = yield select(authSelector);
-    const storagePopup  = yield select(StoragePopupSelector);
+    const storagePopup = yield select(StoragePopupSelector);
 
-    
+
     let totalSize = 0;
 
-    
+
     if (payload.media && payload.media.size) {
       totalSize += payload.media.size;
     }
 
-    
+
     if (payload.complementaryMedia && Array.isArray(payload.complementaryMedia)) {
       payload.complementaryMedia.forEach((file: File) => {
         if (file.size) {
@@ -64,48 +64,47 @@ function* createMemory({ payload }: any): any {
         }
       });
     }
-    
+
     const payloadMemory = {
       ...payload,
       totalSize,
     };
 
-    
+
     const response = yield call(FetchService, 'memory', 'POST', payloadMemory, user?.token);
     yield put(actionObject(CREATE_MEMORY_ASYNC, response?.result));
-    console.log("dev-test i am the boolean response", response?.result?.usedStoragePercentage, response?.result?.storagePopupTriggered, "storagePopup", storagePopup)
 
     if (response?.result?.usedStoragePercentage >= 80 && !storagePopup) {
-      yield put (openModal({ content: "You have used 80% of available storage space."}))
-      yield put (hidePopup())
+      yield put(openModal({ content: "You have used 80% of available storage space." }))
+      yield put(hidePopup())
     } else {
-      if(response?.result?.usedStoragePercentage < 80 && storagePopup )
+      if (response?.result?.usedStoragePercentage < 80 && storagePopup)
         yield put(showPopup())
     }
     yield put(createMemoryActionG(response?.result));
   } catch (error: any) {
     let message = error?.message;
     if (error?.message?.includes('error')) message = JSON.parse(message)?.error;
-  
+
     yield call(showModal, message, 'SHOW_MODAL');
-    
+
   }
 }
 
 function* updateMemoryAsync({ payload }: any): any {
   try {
     const { user } = yield select(authSelector);
-    const storagePopup  = yield select(StoragePopupSelector);
+    const storagePopup = yield select(StoragePopupSelector);
 
 
 
-    
+
     let totalSize = 0;
 
-    
+
     if (payload.media && payload.media.size) {
       totalSize += payload.media.size;
-    } 
+    }
 
 
     if (payload.complementaryMedia && Array.isArray(payload.complementaryMedia)) {
@@ -115,12 +114,12 @@ function* updateMemoryAsync({ payload }: any): any {
         }
       });
     }
-  
+
     const payloadMemory = {
       ...payload,
-      totalSize, 
+      totalSize,
     };
-    
+
     const response = yield call(
       FetchService,
       `memory/${payload?.story_id}/${payload?.id}`,
@@ -129,15 +128,14 @@ function* updateMemoryAsync({ payload }: any): any {
       user?.token,
     );
 
-    
+
     yield put(actionObject(UPDATE_MEMORY_ASYNC, response?.result?.updatedMemory));
-    console.log("dev-test  boolean response", response?.result?.updatedMemory?.usedStoragePercentage, response?.result?.updatedMemory?.storagePopupTriggered, "storagePopup", storagePopup)
 
     if (response?.result?.updatedMemory?.usedStoragePercentage >= 80 && !storagePopup) {
-      yield put (openModal({ content: "You have used 80% of available storage space."}))
-      yield put (hidePopup())
+      yield put(openModal({ content: "You have used 80% of available storage space." }))
+      yield put(hidePopup())
     } else {
-      if(response?.result?.updatedMemory?.usedStoragePercentage < 80 && storagePopup )
+      if (response?.result?.updatedMemory?.usedStoragePercentage < 80 && storagePopup)
         yield put(showPopup())
     }
 
@@ -147,7 +145,7 @@ function* updateMemoryAsync({ payload }: any): any {
     if (error?.message?.includes('error')) {
       message = JSON.parse(message)?.error;
     }
-    yield put (openModal({ content: message}))
+    yield put(openModal({ content: message }))
   }
 }
 
@@ -209,7 +207,7 @@ function* deleteMemoryAsync({ payload, callback }: ReturnType<typeof removeMemor
     yield put(actionObject(DELETE_MEMORY_ASYNC, payload?.id));
     yield put(actionObject(GET_STORAGE_LOG, user?.id));
     yield put(deleteMemoryActionG(result?.memory));
-    
+
   } catch (error: any) {
     let message = error?.message;
     if (error?.message?.includes('error')) message = JSON.parse(message)?.error;
@@ -244,7 +242,7 @@ function* paginateBubbles({ payload, callback }: ReturnType<typeof paginateMemor
       ...criterias,
     };
     const { result } = yield call(FetchService, `memory/bubbles/${payload?.storyId}`, 'POST', paramObj, user?.token);
-    const { memoriesLoaded = [] }: { memoriesLoaded: { id: string; [key: string]: unknown }[] } = yield select(
+    const { memoriesLoaded = [] }: { memoriesLoaded: { id: string;[key: string]: unknown }[] } = yield select(
       memorySelector,
     );
     const updatedData = updateAndMerge(memoriesLoaded, result.data);
@@ -267,7 +265,7 @@ function* paginateBubbles({ payload, callback }: ReturnType<typeof paginateMemor
   }
 }
 
-function updateAndMerge<T extends { id: string; [key: string]: unknown }>(oldData: T[], newData: T[]) {
+function updateAndMerge<T extends { id: string;[key: string]: unknown }>(oldData: T[], newData: T[]) {
   const dataMap = new Map(oldData.map((item) => [item.id, item]));
   newData.forEach((item) => dataMap.set(item.id, item));
   return [...dataMap.values()];

@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import {Box, Avatar, Typography, TextField, Button } from '@mui/material';
+import { openModal } from '@/store/actions';
+import { useDispatch } from 'react-redux';
 
 const StepForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const dispatch = useDispatch()
 
   const steps = ['Create Account', 'One Time Payment', 'Access The Story'];
 
   
   const handleNext = () => {
     if (activeStep === 0 && password !== confirmPassword) {
-      alert('Passwords do not match');
+      dispatch(openModal({content:'Passwords do not match'}));
       return;
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

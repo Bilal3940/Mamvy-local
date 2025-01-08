@@ -68,6 +68,7 @@ export const Layout = ({ children }: LayoutProps) => {
             
             height: isMobile ? 'auto' : '100%',
             width: '100%',
+
             minHeight: isMobile ? 'auto' : '100vh',
             overflow: 'visible',
             position: 'relative', 

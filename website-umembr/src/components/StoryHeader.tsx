@@ -71,10 +71,10 @@ const EditMemvy = () => {
     router.push(`/app/story/${title}/update`);
   } else {
     dispatch(openModal({ content: 'You are not a subscriber.' }));
-    dispatch(closeModal())
     setTimeout(() => {
       dispatch(openSubscriptionPopup());
-    }, 2000);
+    }, 3000);
+    dispatch(closeModal())
   }
 };
 

@@ -134,7 +134,7 @@ export const EditStory: FC<any> = () => {
     },
     [currentFormConfig],
   );
-
+ console.log("i am actual form num",actualFormNumber)
   const currentForm = useMemo(() => {
     return currentFormConfig?.[selectedForm];
   }, [currentFormConfig, selectedForm]);
@@ -180,24 +180,63 @@ export const EditStory: FC<any> = () => {
     submit.current[index] = handler;
   };
 
-  const nextForm = useCallback(() => {
-    const nextFormKey =
-      formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[
-        actualFormNumber + 1
-      ]?.name;
+  // const nextForm = useCallback(() => {
+  //   const nextFormKey =
+  //     formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[
+  //       actualFormNumber + 1
+  //     ]?.name;
 
+  //   setSelectedForm(nextFormKey);
+  //   setActualFormNumber(actualFormNumber + 1);
+  //   setArrayRun(0);
+  // }, [actualFormNumber, formCategories, pendingStory, story]);
+
+  // const backForm = useCallback(() => {
+  //   const prevFormKey = formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name;
+
+  //   setSelectedForm(prevFormKey);
+  //   setActualFormNumber(actualFormNumber - 1);
+  //   setArrayRun(0);
+  // }, [actualFormNumber, formCategories, pendingStory]);
+const nextForm = useCallback(() => {
+  // Safely access `type_of_story` and fallback to an empty string if not available
+  const typeOfStory =
+    story?.story_details?.type_of_story || pendingStory?.story_details?.type_of_story || '';
+
+  // Guard for when `actualFormNumber` is undefined or null
+  const nextFormIndex = actualFormNumber + 1;
+  
+  // Check if the next form exists in `formCategories`
+  const nextFormKey =
+    formCategories[typeOfStory]?.[nextFormIndex]?.name || '';  // Fallback to an empty string if undefined
+
+  // Only update if the next form exists
+  if (nextFormKey) {
     setSelectedForm(nextFormKey);
-    setActualFormNumber(actualFormNumber + 1);
+    setActualFormNumber(nextFormIndex);
     setArrayRun(0);
-  }, [actualFormNumber, formCategories, pendingStory, story]);
+  } else {
+    // Optionally handle the case where no next form is available
+    console.warn('No next form available');
+  }
+}, [actualFormNumber, formCategories, pendingStory, story]);
 
   const backForm = useCallback(() => {
-    const prevFormKey = formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name;
-
-    setSelectedForm(prevFormKey);
-    setActualFormNumber(actualFormNumber - 1);
-    setArrayRun(0);
-  }, [actualFormNumber, formCategories, pendingStory]);
+  const prevFormIndex = actualFormNumber - 1;
+  if (prevFormIndex >= 0) {
+    const prevFormKey = formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name;
+    console.log("i am priviuos key",prevFormKey)
+    if (prevFormKey) {
+      setSelectedForm(prevFormKey);
+      setActualFormNumber(prevFormIndex);
+    } else {
+      console.warn('No form found at this index:', prevFormIndex);
+    }
+  } else {
+    console.warn('Cannot go back, already at the first form.');
+  }
+  setArrayRun(0);
+}, [actualFormNumber, formCategories, pendingStory]);
 
   const setDefault = async () => {
     try {
@@ -521,7 +560,8 @@ export const EditStory: FC<any> = () => {
                   <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <MuiButton
                       type='button'
-                      disabled={story?.story_details?.type_of_story == '' ? true : false}
+                      // disabled={story?.story_details?.type_of_story == '' ? true : false}
+                      disabled={story?.story_details?.type_of_story === '' || selectedForm === undefined || actualFormNumber === undefined} // Disable if no form number or undefined
                       loading={false}
                       variant={'text'}
                       method={() => nextForm()}>

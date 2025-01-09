@@ -3,6 +3,7 @@ import { UseFirstRender, UseIntermitence } from '@/hooks';
 import {
   actualStory,
   createStories,
+  deleteStory,
   getUploadSignedUrl,
   loadPendingStory,
   openSubscriptionPopup,
@@ -21,6 +22,7 @@ import { palette } from '@/theme/constants';
 import {
   calculateFileSize,
   cdn_url,
+  checkPermissions,
   checkRoleAndPermission,
   ExtractCallbackType,
   FetchFileService,
@@ -41,6 +43,7 @@ import { formsByCategory } from '../../screens/CreateStory/forms';
 import { formCategories } from '../../screens/CreateStory/formsCategories';
 import { CancelModal } from './components';
 import { RefreshUserData } from '@/utils/fetchUserData';
+import { DeleteStoryModal } from '../Memories/components';
 
 export const EditStory: FC<any> = () => {
   const { t } = useTranslation();
@@ -55,6 +58,7 @@ export const EditStory: FC<any> = () => {
   const [actualRoute, setActualRoute] = useState<string>(story?.url);
   const [selectedForm, setSelectedForm] = useState<any>(null);
   const intermitenceData = useSelector(intermitenceSelector);
+  const { status: deleteStatusStory, switchStatus: switchDeleteStory } = UseIntermitence();
   const pendingStory = useSelector(pendingStorySelector);
 
   UseFirstRender(() => {
@@ -134,7 +138,7 @@ export const EditStory: FC<any> = () => {
     },
     [currentFormConfig],
   );
- console.log("i am actual form num",actualFormNumber)
+
   const currentForm = useMemo(() => {
     return currentFormConfig?.[selectedForm];
   }, [currentFormConfig, selectedForm]);
@@ -180,63 +184,24 @@ export const EditStory: FC<any> = () => {
     submit.current[index] = handler;
   };
 
-  // const nextForm = useCallback(() => {
-  //   const nextFormKey =
-  //     formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[
-  //       actualFormNumber + 1
-  //     ]?.name;
+  const nextForm = useCallback(() => {
+    const nextFormKey =
+      formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[
+        actualFormNumber + 1
+      ]?.name;
 
-  //   setSelectedForm(nextFormKey);
-  //   setActualFormNumber(actualFormNumber + 1);
-  //   setArrayRun(0);
-  // }, [actualFormNumber, formCategories, pendingStory, story]);
-
-  // const backForm = useCallback(() => {
-  //   const prevFormKey = formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name;
-
-  //   setSelectedForm(prevFormKey);
-  //   setActualFormNumber(actualFormNumber - 1);
-  //   setArrayRun(0);
-  // }, [actualFormNumber, formCategories, pendingStory]);
-const nextForm = useCallback(() => {
-  // Safely access `type_of_story` and fallback to an empty string if not available
-  const typeOfStory =
-    story?.story_details?.type_of_story || pendingStory?.story_details?.type_of_story || '';
-
-  // Guard for when `actualFormNumber` is undefined or null
-  const nextFormIndex = actualFormNumber + 1;
-  
-  // Check if the next form exists in `formCategories`
-  const nextFormKey =
-    formCategories[typeOfStory]?.[nextFormIndex]?.name || '';  // Fallback to an empty string if undefined
-
-  // Only update if the next form exists
-  if (nextFormKey) {
     setSelectedForm(nextFormKey);
-    setActualFormNumber(nextFormIndex);
+    setActualFormNumber(actualFormNumber + 1);
     setArrayRun(0);
-  } else {
-    // Optionally handle the case where no next form is available
-    console.warn('No next form available');
-  }
-}, [actualFormNumber, formCategories, pendingStory, story]);
+  }, [actualFormNumber, formCategories, pendingStory, story]);
 
   const backForm = useCallback(() => {
-  const prevFormIndex = actualFormNumber - 1;
-  if (prevFormIndex >= 0) {
-    const prevFormKey = formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name;
-    console.log("i am priviuos key",prevFormKey)
-    if (prevFormKey) {
-      setSelectedForm(prevFormKey);
-      setActualFormNumber(prevFormIndex);
-    } else {
-      console.warn('No form found at this index:', prevFormIndex);
-    }
-  } else {
-    console.warn('Cannot go back, already at the first form.');
-  }
-  setArrayRun(0);
-}, [actualFormNumber, formCategories, pendingStory]);
+    const prevFormKey = formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name;
+
+    setSelectedForm(prevFormKey);
+    setActualFormNumber(actualFormNumber - 1);
+    setArrayRun(0);
+  }, [actualFormNumber, formCategories, pendingStory]);
 
   const setDefault = async () => {
     try {
@@ -312,7 +277,9 @@ const nextForm = useCallback(() => {
                   prompts,
                   idSource?.story_details?.type_of_story,
                 );
-                const result = dispatch(createStories(valuesFinal));
+                localStorage.removeItem('pendingStory');
+                dispatch(createStories({valuesFinal, router, flag:true}));
+              
               }
             }
           } catch (error) {
@@ -373,11 +340,17 @@ const nextForm = useCallback(() => {
         dispatch(openSubscriptionPopup());
       } else {
         processFile(valuesCopy, idSource?.story_details?.prompts, updatedValues);
+
       }
     },
     [values, story, pendingStory],
   );
 
+    const deleteStoryAction = () => {
+      switchDeleteStory();
+      dispatch(deleteStory(story?.id));
+      router.push(`/app/home`);
+    };
   const { template } = useSelector(templatesSelector);
   useEffect(() => {
     if (template?.template?.colors) {
@@ -500,6 +473,16 @@ const nextForm = useCallback(() => {
               bgcolor={palette.cardBackground}
               sx={{ backdropFilter: 'blur(1.5625rem)' }}>
               <Box display={'flex'} justifyContent={'flex-end'}>
+                              {(checkPermissions(user?.roles || [], 'CLIENT_STORY_DELETE', story?.id) ||
+                                user?.id === story?.user_id) && (
+                                <Box width={'6.5rem'} marginRight={'1rem'}>
+                                  <MuiButton type='button' loading={false} variant={'outlined'} method={switchDeleteStory}>
+                                    <Typography variant='button' color={palette.white}>
+                                      {t('delete')}
+                                    </Typography>
+                                  </MuiButton>
+                                </Box>
+                              )}
                 <Box width={'5.75rem'} marginRight={'1rem'}>
                   <MuiButton
                     type='submit'
@@ -560,8 +543,7 @@ const nextForm = useCallback(() => {
                   <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <MuiButton
                       type='button'
-                      // disabled={story?.story_details?.type_of_story == '' ? true : false}
-                      disabled={story?.story_details?.type_of_story === '' || selectedForm === undefined || actualFormNumber === undefined} // Disable if no form number or undefined
+                      disabled={story?.story_details?.type_of_story == '' ? true : false}
                       loading={false}
                       variant={'text'}
                       method={() => nextForm()}>
@@ -674,6 +656,7 @@ const nextForm = useCallback(() => {
         </Box>
       </Box>
       <CancelModal color={accentColor} open={status} onClose={switchStatus} confirmRoute={`/app/story/${story?.url}`} />
+            <DeleteStoryModal open={deleteStatusStory} onClose={switchDeleteStory} confirmMethod={deleteStoryAction} />
     </>
   );
 };

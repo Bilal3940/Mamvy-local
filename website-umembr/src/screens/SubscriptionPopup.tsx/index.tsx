@@ -50,9 +50,9 @@ export const SubscriptionPopup: React.FC = () => {
                 backgroundColor: 'rgba(34, 42, 103, 0.5)',
                 backdropFilter: 'blur(1.5625rem)',
                 width: isMobile ? '100%' : '82%',
-                margin:isMobile? '1rem':'7rem 1rem',
+                margin:isMobile? '3rem 1rem':'7rem 1rem',
                 minWidth: '60%',
-                height: isMobile?'98vh':'95vh',
+                height: isMobile?'100vh':'95vh',
                 overflow: 'auto',
                 position: 'relative',
               }}>

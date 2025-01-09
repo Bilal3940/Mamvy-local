@@ -26,7 +26,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
       sx={{
         marginBottom: '1rem',
         borderRadius: '0.625rem',
-        width: '17.375rem',
+        width:isMobile?'15.375rem': '17.375rem',
         borderColor: palette.dirtyWhite,
         borderWidth: '1px',
         cursor: 'pointer',
@@ -62,7 +62,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
               sx={{
                 display: 'inline',
                 color: 'inherit',
-                fontSize: '2.25rem',
+                fontSize:isMobile? '1.25rem':'2.25rem',
               }}>
               {price.interval === '1 month'
                 ? `$${(price.amount / 100).toFixed(2)}`
@@ -83,7 +83,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
                 sx={{
                   display: 'block',
                   color: 'inherit',
-                  marginTop: '0.5rem',
+                  marginTop:isMobile? '0rem':'0.5rem',
                 }}>
                 (${(price.amount / 100).toFixed(2)} / {price.interval === '12 months' ? 'year' : '3 years'})
               </Typography>

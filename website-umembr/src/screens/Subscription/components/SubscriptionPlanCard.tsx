@@ -42,13 +42,12 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({ price, sele
         }}>
         <Box
           sx={{
-            padding: '1rem 0rem',
+            padding:isMobile ? '0.5rem 0rem': '1rem 0rem',
             borderColor: '#CCCCCC',
           }}>
           <Typography
             variant='h6'
             fontSize='1rem'
-            gutterBottom
             sx={{
               color:'inherit',
             }}>

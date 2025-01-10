@@ -26,6 +26,8 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   const [noRegister, setNoRegister] = useState({});
   const [validatedCollaborators, setValidatedCollaborators] = useState([]);
   const [nonValidatedCollaborators, setNonValidatedCollaborators] = useState([]);
+  const [shownSuggestions, setShownSuggestions] = useState<Map<string, boolean>>(new Map());
+
 
   const handleSubmit = async () => {
     dispatch(inviteCollaborator({ collaborators: values.collaborators, story_id: story?.id }));
@@ -57,64 +59,64 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
     return regex.test(email);
   };
   
-  const isDomainValid = (email: string): boolean => {
-    const domain = email.split('@')[1];
-    if (domain) {
-      const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
-      if (bestMatch.bestMatch.rating > 0.5 && bestMatch.bestMatch.target !== domain) {
-        setErrors({
-          email: t('did_you_mean', {
-            suggestion: `${email.split('@')[0]}@${bestMatch.bestMatch.target}`,
-          }),
-        });
-        return false;
-      }
-    }
-    return true;
-  };
+  // const isDomainValid = (email: string): boolean => {
+  //   const domain = email.split('@')[1];
+  //   if (domain) {
+  //     const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
+  //     if (bestMatch.bestMatch.rating > 0.5 && bestMatch.bestMatch.target !== domain) {
+  //       setErrors({
+  //         email: t('did_you_mean', {
+  //           suggestion: `${email.split('@')[0]}@${bestMatch.bestMatch.target}`,
+  //         }),
+  //       });
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // };
   
-  const addCollaborators = () => {
-    const emails = values.email.split(',').map((email: string) => email.trim());
+  // const addCollaborators = () => {
+  //   const emails = values.email.split(',').map((email: string) => email.trim());
   
-    // Validate email formats
-    const validEmails = emails.filter((email: string) => isEmailValid(email));
-    if (validEmails.length !== emails.length) {
-      setErrors({ email: t('please_enter_valid') });
-      return;
-    }
+  //   // Validate email formats
+  //   const validEmails = emails.filter((email: string) => isEmailValid(email));
+  //   if (validEmails.length !== emails.length) {
+  //     setErrors({ email: t('please_enter_valid') });
+  //     return;
+  //   }
   
-    // Validate email domains
-    const validDomains = validEmails.filter((email: string) => isDomainValid(email));
-    if (validDomains.length !== validEmails.length) {
-      return; // Error already set in isDomainValid
-    }
+  //   // Validate email domains
+  //   const validDomains = validEmails.filter((email: string) => isDomainValid(email));
+  //   if (validDomains.length !== validEmails.length) {
+  //     return; // Error already set in isDomainValid
+  //   }
   
-    // Check for duplicates in the entered emails
-    const duplicates = new Set(emails).size !== emails.length;
-    if (duplicates) {
-      setErrors({ email: t('duplicates_collaborators') });
-      return;
-    }
+  //   // Check for duplicates in the entered emails
+  //   const duplicates = new Set(emails).size !== emails.length;
+  //   if (duplicates) {
+  //     setErrors({ email: t('duplicates_collaborators') });
+  //     return;
+  //   }
   
-    // Check for existing collaborators
-    if (
-      values.collaborators.some((collaborator: any) => emails.includes(collaborator.email)) ||
-      collaborators?.collaborators?.some((collaborator: any) => emails.includes(collaborator.email))
-    ) {
-      setErrors({ email: t('collaborator_already_added') });
-      return;
-    }
+  //   // Check for existing collaborators
+  //   if (
+  //     values.collaborators.some((collaborator: any) => emails.includes(collaborator.email)) ||
+  //     collaborators?.collaborators?.some((collaborator: any) => emails.includes(collaborator.email))
+  //   ) {
+  //     setErrors({ email: t('collaborator_already_added') });
+  //     return;
+  //   }
   
-    // Add new collaborators
-    const newCollaborators = validDomains.map((email: string) => ({
-      email: email.toLowerCase(),
-      type: 'other',
-      role: 'collaborator',
-    }));
-    setFieldValue('collaborators', [...values.collaborators, ...newCollaborators]);
-    setFieldValue('email', '');
-    setErrors({ email: '' });
-  };
+  //   // Add new collaborators
+  //   const newCollaborators = validDomains.map((email: string) => ({
+  //     email: email.toLowerCase(),
+  //     type: 'other',
+  //     role: 'collaborator',
+  //   }));
+  //   setFieldValue('collaborators', [...values.collaborators, ...newCollaborators]);
+  //   setFieldValue('email', '');
+  //   setErrors({ email: '' });
+  // };
   
 
 
@@ -174,10 +176,172 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   //   setFieldValue('email', '');
   //   setErrors({ email: '' });
   // };
+// const shownSuggestions = new Map<string, boolean>(); // Track emails with suggestions shown.
+
+// const isDomainValid = (email: string): boolean => {
+//   const domain = email.split('@')[1];
+//   if (domain) {
+//     const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
+//     if (bestMatch.bestMatch.rating > 0.5 && bestMatch.bestMatch.target !== domain) {
+//       if (!shownSuggestions.has(email)) {
+//         // First time showing suggestion
+//         setErrors({
+//           email: t('did_you_mean', {
+//             suggestion: `${email.split('@')[0]}@${bestMatch.bestMatch.target}`,
+//           }),
+//         });
+//         shownSuggestions.set(email, false); // Mark email as suggestion shown but not valid yet.
+//         return false; // Block progression for now.
+//       } else if (shownSuggestions.get(email) === false) {
+//         // Suggestion already shown, allow adding on second click.
+//         shownSuggestions.set(email, true); // Mark email as valid now.
+//         return true;
+//       }
+//     }
+//   }
+//   return true; // Valid domain or suggestion already handled.
+// };
+
+// const addCollaborators = () => {
+//   const emails = values.email.split(',').map((email: string) => email.trim());
+
+//   // Validate email formats
+//   const validEmails = emails.filter((email: string) => isEmailValid(email));
+//   if (validEmails.length !== emails.length) {
+//     setErrors({ email: t('please_enter_valid') });
+//     return;
+//   }
+
+//   // Validate email domains
+//   const validDomains = validEmails.filter((email: string) => {
+//     if (shownSuggestions.get(email) === true) {
+//       // Allow email if already marked as valid after suggestion.
+//       return true;
+//     }
+//     return isDomainValid(email);
+//   });
+
+//   if (validDomains.length === 0) {
+//     return; // Exit if no valid domains.
+//   }
+
+//   // Check for duplicates in the entered emails
+//   const duplicates = new Set(emails).size !== emails.length;
+//   if (duplicates) {
+//     setErrors({ email: t('duplicates_collaborators') });
+//     return;
+//   }
+
+//   // Check for existing collaborators
+//   if (
+//     values.collaborators.some((collaborator: any) => emails.includes(collaborator.email)) ||
+//     collaborators?.collaborators?.some((collaborator: any) => emails.includes(collaborator.email))
+//   ) {
+//     setErrors({ email: t('collaborator_already_added') });
+//     return;
+//   }
+
+//   console.log('Adding collaborators...'); // Ensure this logs on the second click.
+
+//   // Add new collaborators
+//   const newCollaborators = validDomains.map((email: string) => ({
+//     email: email.toLowerCase(),
+//     type: 'other',
+//     role: 'collaborator',
+//   }));
+
+//   setFieldValue('collaborators', [...values.collaborators, ...newCollaborators]);
+//   setFieldValue('email', ''); // Clear input field.
+//   setErrors({ email: '' }); // Clear any existing errors.
+// };
+const isDomainValid = (email: string): boolean => {
+    const domain = email.split('@')[1];
+    if (domain) {
+      const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
+      if (bestMatch.bestMatch.rating > 0.65 && bestMatch.bestMatch.target !== domain) {
+        if (!shownSuggestions.has(email)) {
+          // First time showing suggestion
+          setErrors({
+            email: t('did_you_mean', {
+              suggestion: `${email.split('@')[0]}@${bestMatch.bestMatch.target}`,
+            }),
+          });
+
+          const updatedMap = new Map(shownSuggestions);
+          updatedMap.set(email, false); // Mark email as suggestion shown but not valid yet
+          setShownSuggestions(updatedMap);
+
+          return false; // Block progression for now
+        } else if (shownSuggestions.get(email) === false) {
+          // Suggestion already shown, allow adding on second click
+          const updatedMap = new Map(shownSuggestions);
+          updatedMap.set(email, true); // Mark email as valid now
+          setShownSuggestions(updatedMap);
+
+          return true;
+        }
+      }
+    }
+    return true; // Valid domain or suggestion already handled
+  };
+const addCollaborators = () => {
+    const emails = values.email.split(',').map((email: string) => email.trim());
+
+    // Validate email formats
+    const validEmails = emails.filter((email: string) => isEmailValid(email));
+    if (validEmails.length !== emails.length) {
+      setErrors({ email: t('please_enter_valid') });
+      return;
+    }
+
+    // Validate email domains
+    const validDomains = validEmails.filter((email: string) => {
+      if (shownSuggestions.get(email) === true) {
+        return true; // Allow email if already marked as valid
+      }
+      return isDomainValid(email);
+    });
+
+    if (validDomains.length === 0) {
+      return; // Exit if no valid domains
+    }
+
+    // Check for duplicates in the entered emails
+    const duplicates = new Set(emails).size !== emails.length;
+    if (duplicates) {
+      setErrors({ email: t('duplicates_collaborators') });
+      return;
+    }
+
+    // Check for existing collaborators
+    if (
+      values.collaborators.some((collaborator: any) => emails.includes(collaborator.email)) ||
+      collaborators?.collaborators?.some((collaborator: any) => emails.includes(collaborator.email))
+    ) {
+      setErrors({ email: t('collaborator_already_added') });
+      return;
+    }
+
+    console.log('Adding collaborators...');
+
+    // Add new collaborators
+    const newCollaborators = validDomains.map((email: string) => ({
+      email: email.toLowerCase(),
+      type: 'other',
+      role: 'collaborator',
+    }));
+
+    setFieldValue('collaborators', [...values.collaborators, ...newCollaborators]);
+  setFieldValue('email', ''); // Clear input field.
+   setErrors({ email: '' }); // Clear any existing errors.
+
+    setErrors({ email: '' }); // Clear any existing errors
+  };
 
   const getEmailInitial = (email: string) => email.charAt(0).toUpperCase();
 
   const handleCollaborator = (user: any, values?: any) => {
+    console.log("i am user removed",user)
     setSelectedUser(user);
     if (values) setNoRegister(values);
     setOpenRemoveCollaborator(true);
@@ -291,7 +455,7 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
                         <Grid item xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                           <Grid display={'flex'} item xs={9} flexDirection={'column'}>
                             <Grid>
-                              <Typography align='left'>{user?.user?.email}</Typography>
+                              {/* <Typography align='left'>{user?.user?.email}</Typography> */}
                             </Grid>
                             <Grid>
                               <Typography align='left'>

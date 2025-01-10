@@ -258,7 +258,7 @@ const isDomainValid = (email: string): boolean => {
     const domain = email.split('@')[1];
     if (domain) {
       const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
-      if (bestMatch.bestMatch.rating > 0.65 && bestMatch.bestMatch.target !== domain) {
+      if (bestMatch.bestMatch.rating > 0.70 && bestMatch.bestMatch.target !== domain) {
         if (!shownSuggestions.has(email)) {
           // First time showing suggestion
           setErrors({
@@ -341,7 +341,7 @@ const addCollaborators = () => {
   const getEmailInitial = (email: string) => email.charAt(0).toUpperCase();
 
   const handleCollaborator = (user: any, values?: any) => {
-    console.log("i am user removed",user)
+    console.log("i am user removed",values)
     setSelectedUser(user);
     if (values) setNoRegister(values);
     setOpenRemoveCollaborator(true);
@@ -459,7 +459,7 @@ const addCollaborators = () => {
                             </Grid>
                             <Grid>
                               <Typography align='left'>
-                                {capitalizeAndRemoveS(user?.user_type)} | {user?.role?.name.replace(/_/g, ' ')}
+                                {capitalizeAndRemoveS(user?.user_type)} | {user?.role?.name.replace(/_/g, ' ')}h
                               </Typography>
                             </Grid>
                           </Grid>
@@ -477,7 +477,7 @@ const addCollaborators = () => {
                       ) : (
                         <>
                           <Grid item xs={6}>
-                            <Typography align='center'>{user?.user?.email}</Typography>
+                            <Typography align='center'>{user?.user?.email}h</Typography>
                           </Grid>
                           <Grid item xs={4}>
                             <Typography align='right'>
@@ -492,7 +492,7 @@ const addCollaborators = () => {
                                 style={{ cursor: 'pointer' }}
                                 width={18}
                                 height={18}
-                                onClick={() => handleCollaborator(user)}
+                                onClick={() => handleCollaborator(user,values)}
                               />
                             )}
                           </Grid>

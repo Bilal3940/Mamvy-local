@@ -66,7 +66,7 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
         width={isMobile ? '90%' : '48.25rem'}
         height={isMobile ? '100%' : 'inherit'}
         maxHeight={isMobile ? '100%' : '95vh'}
-        padding={'1.5rem'}
+        // padding={'1.5rem'}
         borderRadius={isMobile ? 0 : '1.25rem'}
         flexDirection={'column'}
         justifyContent={isMobile ? 'flex-start' : 'space-between'}
@@ -74,16 +74,28 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
         position={'relative'}
         overflow={'auto'}
         bgcolor={palette.cardBackground}
-        sx={{ backdropFilter: 'blur(1.5625rem)', outline: 'none' }}
+        // sx={{ backdropFilter: 'blur(1.5625rem)', outline: 'none' }}
+        sx={{
+    backdropFilter: 'blur(1.5625rem)', // Apply blur effect
+    WebkitBackdropFilter: 'blur(1.5625rem)', // Add WebKit support
+    outline: 'none',
+  }}
         border={`0.063rem solid ${palette.cardBorder}`}>
         <Box
           display={'flex'}
-          position={'sticky'}
+          alignItems={'center'}
+          // position={'sticky'}
           top={0}
-          zIndex={2}
-          bgcolor={palette.cardBackground}
-          sx={{ backdropFilter: 'blur(1.5625rem)', outline: 'none' }}
-          padding='0.5rem' // To avoid overlap
+          zIndex={1000000000}
+          bgcolor={'rgba(0, 0, 0, 0.5)'}
+          // sx={{ backdropFilter: 'blur(1.5625rem)', outline: 'none' }}
+          sx={{
+    backdropFilter: 'blur(1.5625rem)', // Apply the backdrop blur
+    WebkitBackdropFilter: 'blur(1.5625rem)', // Safari compatibility
+    position: 'sticky', // Ensure position in the stacking context
+    outline: 'none', // Remove any outline
+  }}
+          padding='0.8rem' // To avoid overlap
           gap={'1rem'}
           width={'100%'}>
           <Image src='/icons/add-people-white.svg' alt='invite' width={24} height={24} />
@@ -99,7 +111,7 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
             onClick={onClose}
           />
         </Box>
-
+<Box padding={'1rem'}  >
         <Box display={'flex'} flexDirection={'column'} width={'100%'} gap={'1rem'}>
           {story?.story?.private ? (
             <>
@@ -273,7 +285,9 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
             </>
           )}
         </Box>
+
         <Form onClose={onClose} extendedPalette={extendedPalette} />
+        </Box>
       </Box>
     </Modal>
   );

@@ -86,14 +86,15 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
           alignItems={'center'}
           // position={'sticky'}
           top={0}
-          zIndex={1000000000}
-          bgcolor={'rgba(0, 0, 0, 0.5)'}
+          zIndex={9999}
+          // bgcolor={'rgba(0, 0, 0, 0.8)'}
+          bgcolor={extendedPalette.buttonbackgroundIcon}
           // sx={{ backdropFilter: 'blur(1.5625rem)', outline: 'none' }}
           sx={{
-    backdropFilter: 'blur(1.5625rem)', // Apply the backdrop blur
-    WebkitBackdropFilter: 'blur(1.5625rem)', // Safari compatibility
-    position: 'sticky', // Ensure position in the stacking context
-    outline: 'none', // Remove any outline
+    backdropFilter: 'blur(1.5625rem)', 
+    WebkitBackdropFilter: 'blur(1.5625rem)', 
+    position: 'sticky', 
+    outline: 'none',
   }}
           padding='0.8rem' // To avoid overlap
           gap={'1rem'}

@@ -19,7 +19,7 @@ import { fallbackRestUrl } from '@/utils';
 import { useRouter } from 'next/router';
 import { ManageSubscriptionProps } from './types';
 import { MuiTextField2 } from '@/components';
-import { fetchLatestInvoice, openSubscriptionModal, updatePaymentMethod } from '@/store/actions';
+import { clearInvoiceData, fetchLatestInvoice, openSubscriptionModal, updatePaymentMethod } from '@/store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelector, subscriptionSelector } from '@/store/selectors';
 
@@ -60,7 +60,7 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
       },
     };
     dispatch(updatePaymentMethod(data));
-    setOpen(false);
+    handleClose();
   };
   const handleSubscriptionCancel = () => {
     dispatch(openSubscriptionModal());
@@ -68,15 +68,14 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
 
   const handleDownloadInvoice = (userId: number) => {
     const onClick = async () => {
-      
       dispatch(fetchLatestInvoice({ userId: userId }));
       if (latestInvoice?.invoicePdfUrl) {
-        
         const link = document.createElement('a');
         link.href = latestInvoice?.invoicePdfUrl;
-        link.target = '_blank'; 
-        link.download = 'LatestInvoice.pdf'; 
+        link.target = '_blank';
+        link.download = 'LatestInvoice.pdf';
         link.click();
+        dispatch(clearInvoiceData());
       } else {
         console.error('Failed to fetch the latest invoice.');
       }
@@ -85,7 +84,7 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
     return onClick;
   };
   const endDate = new Date(paymentMethodResponse?.subscriptionDetails?.endDate || '');
-  const renewDate = endDate.toLocaleDateString('en-GB');
+  const renewDate = endDate.toLocaleDateString('en-US');
   return (
     <>
       <Box display={'flex'} mt={1} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'flex-start'}>
@@ -103,211 +102,209 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
 
       {/* Section 1: Storage */}
       <Box mb={0.6}>
-        {paymentMethodResponse?.success===true? <Box my={2} mb={4}>
-          <Typography fontSize={'1.4rem'} variant='body2' color={'#131544'}>
-            Payment Method
-          </Typography>
-          <Typography fontSize={'0.87rem'} variant='body2' color={'#131544'}>
-            Your next bill is for ${paymentMethodResponse?.subscriptionDetails.nextInvoiceAmount} USD on {renewDate}
-          </Typography>
-       {paymentMethodResponse.paymentMethod.type ==='card' && <> 
-       
-         <Card
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
-              '&:hover': {
-                backgroundColor: 'transparent',
-                boxShadow: 'none',
-              },
-            }}>
-            <CardMedia
-              component='img'
-              sx={{
-                width: 67,
-                height: 'auto',
-                objectFit: 'contain',
-              }}
-              image={`/images/${paymentMethodResponse?.paymentMethod.card.brand.toLowerCase()}.svg`}
-              alt={`${paymentMethodResponse?.paymentMethod.card.brand} logo`}
-            />
-
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                flex: 1,
-              }}>
-              <CardContent sx={{ flex: '1 0 auto' }}>
-                <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
-                  {`${paymentMethodResponse?.paymentMethod.card.brand.charAt(0).toUpperCase()}` +
-                    `${paymentMethodResponse?.paymentMethod.card.brand.slice(1)}`}
-                  card ending in {paymentMethodResponse?.paymentMethod.card.last4}
-                </Typography>
-                <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
-                  Expires {paymentMethodResponse?.paymentMethod.card.exp_month}/
-                  {paymentMethodResponse?.paymentMethod.card.exp_year}
-                </Typography>
-              </CardContent>
-            </Box>
-          </Card>
-
-          <Button
-            onClick={handleOpen}
-            sx={{
-              backgroundColor: 'white',
-              boxShadow: 'none',
-              '&:hover': {
-                backgroundColor: 'white',
-                boxShadow: 'none',
-              },
-            }}
-            variant='contained'
-            style={{ borderRadius: '19px', border: `1px solid ${palette.cardBorder}` }}>
-            <Typography variant={'button'} color={`#7A859B`} mx={1}>
-              Update Payment Method
+        {paymentMethodResponse?.success === true ? (
+          <Box my={2} mb={4}>
+            <Typography fontSize={'1.4rem'} variant='body2' color={'#131544'}>
+              Payment Method
             </Typography>
-          </Button></>
-        } 
-        {paymentMethodResponse.paymentMethod.type==='link' && <Card
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            backgroundColor: 'transparent',
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
-            },
-          }}>
-          <CardMedia
-            component='img'
-            sx={{
-              width: 67,
-              height: 'auto',
-              objectFit: 'contain',
-            }}
-            image={`/images/${paymentMethodResponse?.paymentMethod.type.toLowerCase()}.svg`}
-            alt={`${paymentMethodResponse?.paymentMethod.type} logo`}
-          />
+            <Typography fontSize={'0.87rem'} variant='body2' color={'#131544'}>
+              Your next bill is for ${paymentMethodResponse?.subscriptionDetails.nextInvoiceAmount} USD on {renewDate}
+            </Typography>
+            {paymentMethodResponse.paymentMethod.type === 'card' && (
+              <>
+                <Card
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                    },
+                  }}>
+                  <CardMedia
+                    component='img'
+                    sx={{
+                      width: 67,
+                      height: 'auto',
+                      objectFit: 'contain',
+                    }}
+                    image={`/images/${paymentMethodResponse?.paymentMethod.card.brand.toLowerCase()}.svg`}
+                    alt={`${paymentMethodResponse?.paymentMethod.card.brand} logo`}
+                  />
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              flex: 1,
-            }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
-              <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
-                {`${paymentMethodResponse?.paymentMethod.type.charAt(0).toUpperCase()}` +
-                  `${paymentMethodResponse?.paymentMethod.type.slice(1)} `}
-                account: {paymentMethodResponse?.paymentMethod.link.email}
-              </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      flex: 1,
+                    }}>
+                    <CardContent sx={{ flex: '1 0 auto' }}>
+                      <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
+                        {`${paymentMethodResponse?.paymentMethod.card.brand.charAt(0).toUpperCase()}` +
+                          `${paymentMethodResponse?.paymentMethod.card.brand.slice(1)}`}{' '}
+                        card ending in {paymentMethodResponse?.paymentMethod.card.last4}
+                      </Typography>
+                      <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
+                        Expires {paymentMethodResponse?.paymentMethod.card.exp_month}/
+                        {paymentMethodResponse?.paymentMethod.card.exp_year}
+                      </Typography>
+                    </CardContent>
+                  </Box>
+                </Card>
 
-            </CardContent>
+                <Button
+                  onClick={handleOpen}
+                  sx={{
+                    backgroundColor: 'white',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: 'white',
+                      boxShadow: 'none',
+                    },
+                  }}
+                  variant='contained'
+                  style={{ borderRadius: '19px', border: `1px solid ${palette.cardBorder}` }}>
+                  <Typography variant={'button'} color={`#7A859B`} mx={1}>
+                    Update Payment Method
+                  </Typography>
+                </Button>
+              </>
+            )}
+            {paymentMethodResponse.paymentMethod.type === 'link' && (
+              <Card
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                  },
+                }}>
+                <CardMedia
+                  component='img'
+                  sx={{
+                    width: 67,
+                    height: 'auto',
+                    objectFit: 'contain',
+                  }}
+                  image={`/images/${paymentMethodResponse?.paymentMethod.type.toLowerCase()}.svg`}
+                  alt={`${paymentMethodResponse?.paymentMethod.type} logo`}
+                />
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    flex: 1,
+                  }}>
+                  <CardContent sx={{ flex: '1 0 auto' }}>
+                    <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
+                      {`${paymentMethodResponse?.paymentMethod.type.charAt(0).toUpperCase()}` +
+                        `${paymentMethodResponse?.paymentMethod.type.slice(1)} `}
+                      account: {paymentMethodResponse?.paymentMethod.link.email}
+                    </Typography>
+                  </CardContent>
+                </Box>
+              </Card>
+            )}
+            {paymentMethodResponse.paymentMethod.type === 'google_pay' && (
+              <>
+                <Card
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                    },
+                  }}>
+                  <CardMedia
+                    component='img'
+                    sx={{
+                      width: 67,
+                      height: 'auto',
+                      objectFit: 'contain',
+                    }}
+                    image={`/images/${paymentMethodResponse?.paymentMethod?.type.toLowerCase()}.svg`}
+                    alt={`${paymentMethodResponse?.paymentMethod?.type} logo`}
+                  />
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      flex: 1,
+                    }}>
+                    <CardContent sx={{ flex: '1 0 auto' }}>
+                      <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
+                        {`${paymentMethodResponse?.paymentMethod?.google_pay?.brand.charAt(0).toUpperCase()}` +
+                          `${paymentMethodResponse?.paymentMethod?.google_pay?.brand.slice(1)}`}
+                        card ending in {paymentMethodResponse?.paymentMethod?.apple_pay?.last4}
+                      </Typography>
+                    </CardContent>
+                  </Box>
+                </Card>
+              </>
+            )}
+            {paymentMethodResponse.paymentMethod.type === 'apple_pay' && (
+              <>
+                <Card
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                    },
+                  }}>
+                  <CardMedia
+                    component='img'
+                    sx={{
+                      width: 67,
+                      height: 'auto',
+                      objectFit: 'contain',
+                    }}
+                    image={`/images/${paymentMethodResponse?.paymentMethod?.type.toLowerCase()}.svg`}
+                    alt={`${paymentMethodResponse?.paymentMethod?.type} logo`}
+                  />
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      flex: 1,
+                    }}>
+                    <CardContent sx={{ flex: '1 0 auto' }}>
+                      <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
+                        {`${paymentMethodResponse?.paymentMethod.apple_pay.brand.charAt(0).toUpperCase()}` +
+                          `${paymentMethodResponse?.paymentMethod.apple_pay.brand.slice(1)}`}
+                        card ending in {paymentMethodResponse?.paymentMethod.apple_pay.last4}
+                      </Typography>
+                    </CardContent>
+                  </Box>
+                </Card>
+              </>
+            )}
           </Box>
-        </Card>}
-        {paymentMethodResponse.paymentMethod.type ==='google_pay'  && <> 
-       
-       <Card
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            backgroundColor: 'transparent',
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
-            },
-          }}>
-          <CardMedia
-            component='img'
-            sx={{
-              width: 67,
-              height: 'auto',
-              objectFit: 'contain',
-            }}
-            image={`/images/${paymentMethodResponse?.paymentMethod?.type.toLowerCase()}.svg`}
-            alt={`${paymentMethodResponse?.paymentMethod?.type} logo`}
-          />
-
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              flex: 1,
-            }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
-              <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
-                {`${paymentMethodResponse?.paymentMethod?.google_pay?.brand.charAt(0).toUpperCase()}` +
-                  `${paymentMethodResponse?.paymentMethod?.google_pay?.brand.slice(1)}`}
-                card ending in {paymentMethodResponse?.paymentMethod?.apple_pay?.last4}
-              </Typography>
-              
-            </CardContent>
+        ) : (
+          <Box my={2} mb={4}>
+            <Typography fontSize={'1.4rem'} variant='body2' color={'#131544'}>
+              Free Subscription
+            </Typography>
           </Box>
-        </Card>
-
-        </>
-      } 
-        {paymentMethodResponse.paymentMethod.type ==='apple_pay'  && <> 
-       
-       <Card
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            backgroundColor: 'transparent',
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
-            },
-          }}>
-          <CardMedia
-            component='img'
-            sx={{
-              width: 67,
-              height: 'auto',
-              objectFit: 'contain',
-            }}
-            image={`/images/${paymentMethodResponse?.paymentMethod?.type.toLowerCase()}.svg`}
-            alt={`${paymentMethodResponse?.paymentMethod?.type} logo`}
-          />
-
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              flex: 1,
-            }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
-              <Typography variant='subtitle1' component='div' sx={{ color: '#131544' }}>
-                {`${paymentMethodResponse?.paymentMethod.apple_pay.brand.charAt(0).toUpperCase()}` +
-                  `${paymentMethodResponse?.paymentMethod.apple_pay.brand.slice(1)}`}
-                card ending in {paymentMethodResponse?.paymentMethod.apple_pay.last4}
-              </Typography>
-              
-            </CardContent>
-          </Box>
-        </Card>
-
-        </>
-      } 
-        </Box>
-        :
-        <Box my={2} mb={4}>
-        <Typography fontSize={'1.4rem'} variant='body2' color={'#131544'}>
-          Free Subscription
-        </Typography>
-
-      </Box>
-        }
+        )}
         <Divider sx={{ border: `0.063rem solid ${palette.divider}`, margin: '0.4rem 0' }} />
       </Box>
 
@@ -320,8 +317,7 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
 
           <Button
             component={Button}
-            
-            onClick={handleDownloadInvoice(user?.id)} 
+            onClick={handleDownloadInvoice(user?.id)}
             sx={{
               backgroundColor: 'white',
               boxShadow: 'none',
@@ -371,7 +367,6 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
         </Box>
         <Divider sx={{ border: `0.063rem solid ${palette.divider}`, margin: '0.4rem 0' }} />
       </Box>
-
       <Modal open={open} onClose={handleClose}>
         <Box
           bgcolor={'rgba(255, 255, 255, 0.9)'}
@@ -389,10 +384,10 @@ export const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ paymentM
                   fullWidth
                   disabled={true}
                   autoComplete='off'
-                  placeholder={`*************** ${paymentMethodResponse?.paymentMethod?.card?.last4|| '****'}`}
+                  placeholder={`*************** ${paymentMethodResponse?.paymentMethod?.card?.last4 || '****'}`}
                   label='Card Number'
                   isDarkTheme={false}
-                  value={`*************** ${paymentMethodResponse?.paymentMethod?.card?.last4||'****'}`}
+                  value={`*************** ${paymentMethodResponse?.paymentMethod?.card?.last4 || '****'}`}
                   helperText='Card number is hidden for security'
                   error={false}
                   sx={{

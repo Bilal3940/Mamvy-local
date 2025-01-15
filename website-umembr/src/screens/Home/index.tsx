@@ -69,7 +69,7 @@ export const Home = () => {
 
   const { user } = useSelector(authSelector);
 
-  
+  // const storageLog = useSelector((state: any) => state.storageLog.storageLog);
   const { status: privateStatus, switchStatus: switchPublication } = UseIntermitence();
   const router = useRouter();
 
@@ -89,11 +89,11 @@ export const Home = () => {
     }
   }, []);
 
-  
-  
-  
-  
-  
+  // useEffect(() => {
+  //   if(PendingStory !== null){
+  //   dispatch(setPendingStory(PendingStory));
+  // }
+  // }, [pendingStory]);
 
   const handleItemClick = (item: any) => {
     if (!item.id) {
@@ -128,7 +128,6 @@ export const Home = () => {
   const handlePublication = () => {
     switchPublication();
   };
-
   return (
     <>
       {homeLoading ? (
@@ -150,6 +149,7 @@ export const Home = () => {
           stories?.collaboratorStories?.length == 0 &&
           stories?.purchasedStories?.length == 0 &&
           criterias?.search?.length == 0 &&
+          PendingStory ===  null &&
           !homeLoading ? (
             <Box
               width={'100%'}
@@ -167,11 +167,12 @@ export const Home = () => {
               criterias?.prompts?.length == 0 &&
               criterias?.collaborators?.length == 0 ? (
                 <>
-                  {PendingStory !== null && PendingStory?.user_id === user?.id && (
+                  
+                  {stories?.purchasedStories?.length > 0 && (
                     <CategoriesContainer
                       {...{
-                        title: 'Pending',
-                        data: PendingStory,
+                        title: 'purchased',
+                        data: stories.purchasedStories,
                         t,
                         isMobile,
                         handleItemClick,
@@ -180,11 +181,11 @@ export const Home = () => {
                       }}
                     />
                   )}
-                  {stories?.purchasedStories?.length > 0 && (
+                  {PendingStory !== null && PendingStory?.user_id === user?.id && (
                     <CategoriesContainer
                       {...{
-                        title: 'purchased',
-                        data: stories.purchasedStories,
+                        title: 'Pending',
+                        data: PendingStory,
                         t,
                         isMobile,
                         handleItemClick,
@@ -244,7 +245,7 @@ export const Home = () => {
         size={isMobile ? 'medium' : 'large'}
         component={Link}
         href={'/app/story/create'}
-        
+        // color={'secondary'}
         sx={{ position: 'fixed', right: { xs: '0.75rem', lg: '1.5rem' }, bottom: { xs: '0.5rem', lg: '1.0rem' } }}>
         <Image
           src={`/icons/add.svg`}

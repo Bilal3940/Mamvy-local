@@ -185,21 +185,42 @@ export const EditStory: FC<any> = () => {
   };
 
   const nextForm = useCallback(() => {
-    const nextFormKey =
-      formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[
-        actualFormNumber + 1
-      ]?.name;
+    
+    const typeOfStory = story?.story_details?.type_of_story || pendingStory?.story_details?.type_of_story || '';
 
-    setSelectedForm(nextFormKey);
-    setActualFormNumber(actualFormNumber + 1);
-    setArrayRun(0);
+    
+    const nextFormIndex = actualFormNumber + 1;
+
+    
+    const nextFormKey = formCategories[typeOfStory]?.[nextFormIndex]?.name || ''; 
+
+    
+    if (nextFormKey) {
+      setSelectedForm(nextFormKey);
+      setActualFormNumber(nextFormIndex);
+      setArrayRun(0);
+    } else {
+      
+      console.warn('No next form available');
+    }
   }, [actualFormNumber, formCategories, pendingStory, story]);
 
   const backForm = useCallback(() => {
-    const prevFormKey = formCategories[pendingStory?.story_details?.type_of_story]?.[actualFormNumber - 1]?.name;
-
-    setSelectedForm(prevFormKey);
-    setActualFormNumber(actualFormNumber - 1);
+    const prevFormIndex = actualFormNumber - 1;
+    if (prevFormIndex >= 0) {
+      const prevFormKey =
+        formCategories[story ? story?.story_details?.type_of_story : pendingStory?.story_details?.type_of_story]?.[
+          actualFormNumber - 1
+        ]?.name;
+      if (prevFormKey) {
+        setSelectedForm(prevFormKey);
+        setActualFormNumber(prevFormIndex);
+      } else {
+        console.warn('No form found at this index:', prevFormIndex);
+      }
+    } else {
+      console.warn('Cannot go back, already at the first form.');
+    }
     setArrayRun(0);
   }, [actualFormNumber, formCategories, pendingStory]);
 
@@ -208,7 +229,6 @@ export const EditStory: FC<any> = () => {
       const formValues = story?.id
         ? formCategories[story?.story_details?.type_of_story]
         : formCategories[pendingStory?.story_details?.type_of_story];
-
       const source = story?.id ? story : pendingStory;
 
       if (source?.cover_image) {
@@ -230,7 +250,6 @@ export const EditStory: FC<any> = () => {
       console.error('Error setting default values:', error);
     }
   };
-
   UseFirstRender(() => {
     if (story?.id) {
       setDefault();
@@ -278,8 +297,7 @@ export const EditStory: FC<any> = () => {
                   idSource?.story_details?.type_of_story,
                 );
                 localStorage.removeItem('pendingStory');
-                dispatch(createStories({valuesFinal, router, flag:true}));
-              
+                dispatch(createStories({ valuesFinal, router, flag: true }));
               }
             }
           } catch (error) {
@@ -332,25 +350,24 @@ export const EditStory: FC<any> = () => {
         userData?.roles,
         'Subscriber_Individual',
         'CLIENT_STORY_CREATE',
-        // 'Client',
+        
         user?.id,
       );
       if (!subsperm) {
-        localStorage.setItem('router_history', `/app/story/${story?.url}`)
+        localStorage.setItem('router_history', `/app/story/${story?.url}`);
         dispatch(openSubscriptionPopup());
       } else {
         processFile(valuesCopy, idSource?.story_details?.prompts, updatedValues);
-
       }
     },
     [values, story, pendingStory],
   );
 
-    const deleteStoryAction = () => {
-      switchDeleteStory();
-      dispatch(deleteStory(story?.id));
-      router.push(`/app/home`);
-    };
+  const deleteStoryAction = () => {
+    switchDeleteStory();
+    dispatch(deleteStory(story?.id));
+    router.push(`/app/home`);
+  };
   const { template } = useSelector(templatesSelector);
   useEffect(() => {
     if (template?.template?.colors) {
@@ -473,16 +490,16 @@ export const EditStory: FC<any> = () => {
               bgcolor={palette.cardBackground}
               sx={{ backdropFilter: 'blur(1.5625rem)' }}>
               <Box display={'flex'} justifyContent={'flex-end'}>
-                              {(checkPermissions(user?.roles || [], 'CLIENT_STORY_DELETE', story?.id) ||
-                                user?.id === story?.user_id) && (
-                                <Box width={'6.5rem'} marginRight={'1rem'}>
-                                  <MuiButton type='button' loading={false} variant={'outlined'} method={switchDeleteStory}>
-                                    <Typography variant='button' color={palette.white}>
-                                      {t('delete')}
-                                    </Typography>
-                                  </MuiButton>
-                                </Box>
-                              )}
+                {(checkPermissions(user?.roles || [], 'CLIENT_STORY_DELETE', story?.id) ||
+                  user?.id === story?.user_id) && (
+                  <Box width={'6.5rem'} marginRight={'1rem'}>
+                    <MuiButton type='button' loading={false} variant={'outlined'} method={switchDeleteStory}>
+                      <Typography variant='button' color={palette.white}>
+                        {t('delete')}
+                      </Typography>
+                    </MuiButton>
+                  </Box>
+                )}
                 <Box width={'5.75rem'} marginRight={'1rem'}>
                   <MuiButton
                     type='submit'
@@ -543,18 +560,22 @@ export const EditStory: FC<any> = () => {
                   <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <MuiButton
                       type='button'
-                      disabled={story?.story_details?.type_of_story == '' ? true : false}
+                      disabled={
+                        story?.story_details?.type_of_story === '' ||
+                        selectedForm === undefined ||
+                        actualFormNumber + 1 == undefined
+                      } 
                       loading={false}
                       variant={'text'}
                       method={() => nextForm()}>
                       <Typography
                         variant='body1'
                         marginRight={'0.5rem'}
-                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : buttontext}>
+                        color={actualFormNumber + 1 == undefined ? palette.faintGray : buttontext}>
                         {t('next_minus')}
                       </Typography>
                       <ChevronRightIconComponent
-                        color={story?.story_details?.type_of_story == '' ? palette.faintGray : buttontext}
+                        color={actualFormNumber + 1 == undefined ? palette.faintGray : buttontext}
                       />
                     </MuiButton>
                   </Box>
@@ -656,7 +677,7 @@ export const EditStory: FC<any> = () => {
         </Box>
       </Box>
       <CancelModal color={accentColor} open={status} onClose={switchStatus} confirmRoute={`/app/story/${story?.url}`} />
-            <DeleteStoryModal open={deleteStatusStory} onClose={switchDeleteStory} confirmMethod={deleteStoryAction} />
+      <DeleteStoryModal open={deleteStatusStory} onClose={switchDeleteStory} confirmMethod={deleteStoryAction} />
     </>
   );
 };

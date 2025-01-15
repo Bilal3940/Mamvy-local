@@ -15,6 +15,7 @@ import {
   GET_PAYMENT_METHOD,
   UPDATE_PAYMENT_METHOD,
   FETCH_LATEST_INVOICE,
+  CLEAR_INVOICE_DATA,
 } from './action-types';
 
 export const updateProduct = (body: any): any =>
@@ -60,4 +61,7 @@ export const updatePaymentMethod = (payload: any): any =>
 
 export const fetchLatestInvoice = (payload: any): any =>
   actionObject(FETCH_LATEST_INVOICE, payload);
+
+export const clearInvoiceData = (): any => 
+  actionObject(CLEAR_INVOICE_DATA);
   

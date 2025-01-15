@@ -292,6 +292,7 @@ export const CreateStory = () => {
 
               if (!subsperm) {
                 setCreating(false);
+                localStorage.setItem('router_history', `/app/home`)
                 localStorage.setItem('pendingStory', JSON.stringify(valuesFinal));
                 dispatch(openSubscriptionPopup());
                 return;

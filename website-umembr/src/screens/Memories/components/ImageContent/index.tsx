@@ -28,7 +28,7 @@ export const ImageContent = ({color, mediaData, boxRef }: any) => {
         {!!elementSelected?.url && (
           <Image
             src={elementSelected?.url || ''}
-            alt={elementSelected?.name}
+            alt={elementSelected?.name || 'image'}
             fill
             sizes='100%'
             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '1.15rem' }}

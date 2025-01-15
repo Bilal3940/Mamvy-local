@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-
 import { useMediaQuery, Theme, Box } from '@mui/material';
 import { Profile } from './components';
 import { useDispatch, useSelector } from 'react-redux';
 import { settingsView, showActualSection } from '@/store/actions';
-
 import Image from 'next/image';
-
 import { intermitenceSelector, authSelector } from '@/store/selectors';
 import { UseFirstRender } from '@/hooks';
+import { useRouter } from 'next/router';
 
 export const Settings = () => {
   const [step, setStep] = useState(1);
-
+  const router = useRouter()
   const dispatch = useDispatch();
   const { user } = useSelector(authSelector);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -36,8 +34,11 @@ export const Settings = () => {
   }, []);
 
   UseFirstRender(() => {
-    if (user) {
+    if (user?.token) {
       dispatch(settingsView(user.id));
+    }
+    else{
+      router?.push('/app/login')
     }
   }, [dispatch]);
 

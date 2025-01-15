@@ -25,6 +25,7 @@ export default function PaymentForm() {
       },
       body: JSON.stringify({
         priceId: selectedTier?.Tier?.stripePriceId, // Replace with actual product ID
+        userEmail: user?.email
       }),
     })
       .then((res) => {

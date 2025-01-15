@@ -232,8 +232,8 @@ export const MemoriesForm: FC<any> = () => {
         <Box
           position={'relative'}
           top={isMobile ? '0' : '1rem'}
-          left={isMobile ? '3rem' :'13rem'}
-          width={'100%'}
+          left={isMobile ? '0rem' :'12rem'}
+          width={'50%'}
           zIndex={10}
           bgcolor={palette.cardBackground}
           padding={'1.1rem'}

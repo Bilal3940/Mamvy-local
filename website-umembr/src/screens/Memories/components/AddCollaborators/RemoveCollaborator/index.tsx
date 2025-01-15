@@ -21,8 +21,6 @@ interface ModalDetailProps {
 export const RemoveCollaborator = ({ color,open, onClose, values, noRegister }: ModalDetailProps) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  console.log("I ma not reg",noRegister)
-  console.log("i ma useradmin",values)
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
@@ -71,7 +69,7 @@ export const RemoveCollaborator = ({ color,open, onClose, values, noRegister }: 
         </Box>
 
         <Typography textAlign={isMobile ? 'center' : 'left'} variant={isMobile ? 'body2' : 'body1'}>
-          { noRegister?.email ? noRegister?.email  : values?.user?.email }
+          {values?.user?.email || noRegister?.email}
         </Typography>
 
         <Typography textAlign={isMobile ? 'center' : 'left'} variant={isMobile ? 'body2' : 'body1'}>

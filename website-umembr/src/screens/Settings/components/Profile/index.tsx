@@ -95,6 +95,11 @@ export const Profile = () => {
     dispatch(updateUserData(data));
   };
 
+  const handleStartMembership = ()=>{
+    localStorage.setItem('router_history', '/app/settings')
+      dispatch(openSubscriptionPopup())
+  }
+
   const handleOnTouched = (key: string) => setTouched({ ...touched, [key]: true });
 
   const {
@@ -166,7 +171,6 @@ export const Profile = () => {
   const manageSub = () => {
     if (!showManageSubscription) {
       dispatch(getPaymentMethod({ userId: user?.id }));
-      console.log(paymentMethod, 'success');
 
       if (paymentMethod) {
         setShowManageSubscription(true);
@@ -700,7 +704,7 @@ export const Profile = () => {
                           boxShadow: 'none',
                         },
                       }}
-                      method={() => dispatch(openSubscriptionPopup())}>
+                      method={handleStartMembership}>
                       <Typography variant='button' color={palette?.inputLabelLight} fontSize={'0.8rem'}>
                         Start membership
                       </Typography>

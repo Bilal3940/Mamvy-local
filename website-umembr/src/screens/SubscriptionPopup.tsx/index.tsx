@@ -20,7 +20,6 @@ export const SubscriptionPopup: React.FC = () => {
     setStep(1);
   };
   const handleClosePopup = () => {
-    console.log("i am clicked")
     dispatch(closeSubscriptionPopup());
   };
 
@@ -30,18 +29,16 @@ export const SubscriptionPopup: React.FC = () => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          padding:'0rem',
+          padding: '0rem',
           alignItems: 'center',
           border: 'none',
-          maxHeight:'100%',
+          maxHeight: '100%',
           width: '100%',
           overflow: 'hidden',
         }}>
-
         {/* Modal Content */}
         {step === 1 && (
           <>
-          
             <Box
               padding={isMobile ? '0rem' : '1.5rem'}
               borderRadius={'1.25rem'}
@@ -56,27 +53,26 @@ export const SubscriptionPopup: React.FC = () => {
                 overflow: 'auto',
                 position: 'relative',
               }}>
-                <Box
-      sx={{
-        position: 'absolute',
-        top: '1rem',
-        right: '0rem',
-        zIndex: 10,
-      }}
-    >
-      <Button onClick={handleClosePopup} color="error">
-        <MuiIconButton
-          icon="/icons/close"
-          background={palette?.cardBackground}
-          borderColor={palette?.cardBorder}
-          iconHeight={14}
-          iconWidth={14}
-          width={32}
-          height={32}
-          altIcon="close"
-        />
-      </Button>
-    </Box>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '1rem',
+                  right: '0rem',
+                  zIndex: 10,
+                }}>
+                <Button onClick={handleClosePopup} color='error'>
+                  <MuiIconButton
+                    icon='/icons/close'
+                    background={palette?.cardBackground}
+                    borderColor={palette?.cardBorder}
+                    iconHeight={14}
+                    iconWidth={14}
+                    width={32}
+                    height={32}
+                    altIcon='close'
+                  />
+                </Button>
+              </Box>
               <Typography variant='h6' fontSize={'1rem'} align='center' mt={4} component='h2' gutterBottom>
                 Welcome to Memvy!
               </Typography>
@@ -84,75 +80,60 @@ export const SubscriptionPopup: React.FC = () => {
             </Box>
           </>
         )}
-{step === 2 && (
-  <Box
-    height={'100%'}
-    sx={{
-      backdropFilter: 'blur(1.5625rem)',
-      height: isMobile ? '100%' : '100%',
-      borderRadius: '1rem',
-      overflow: 'auto',
-      position: 'relative',
-    }}
-    maxHeight={'60%'}
-    display={'flex'}
-    flexDirection={'column'}
-    justifyContent={'center'}
-    alignItems={'center'}
-    width={'100%'}
-  >
+        {step === 2 && (
+          <Box
+            height={'100%'}
+            sx={{
+              backdropFilter: 'blur(1.5625rem)',
+              height: isMobile ? '100%' : '100%',
+              borderRadius: '1rem',
+              overflow: 'auto',
+              position: 'relative',
+            }}
+            maxHeight={'60%'}
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            width={'100%'}>
+            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
+              {step === 2 && (
+                <Button
+                  onClick={() => {
+                    setStep(1);
+                  }}
+                  color='error'>
+                  <MuiIconButton
+                    icon='/icons/left-arrow'
+                    background={palette?.cardBackground}
+                    borderColor={palette?.cardBorder}
+                    iconHeight={16}
+                    iconWidth={16}
+                    width={32}
+                    height={32}
+                    altIcon='left-arrow'
+                  />
+                </Button>
+              )}
 
-    <Box 
-      display={'flex'} 
-      justifyContent={'space-between'} 
-      alignItems={'center'} 
-      width={'100%'} 
+              {/* Close Button */}
+              <Button onClick={handleClosePopup} color='error'>
+                <MuiIconButton
+                  icon='/icons/close'
+                  background={palette?.cardBackground}
+                  borderColor={palette?.cardBorder}
+                  iconHeight={14}
+                  iconWidth={14}
+                  width={32}
+                  height={32}
+                  altIcon='close'
+                />
+              </Button>
+            </Box>
 
-    >
-
-      {step === 2 && (
-        <Button
-          onClick={() => {
-            setStep(1);
-          }}
-          color="error"
-        >
-          <MuiIconButton
-            icon="/icons/left-arrow"
-            background={palette?.cardBackground}
-            borderColor={palette?.cardBorder}
-            iconHeight={16}
-            iconWidth={16}
-            width={32}
-            height={32}
-            altIcon="left-arrow"
-          />
-        </Button>
-      )}
-
-      {/* Close Button */}
-      <Button
-        onClick={handleClosePopup}
-          color="error"
-        >
-          <MuiIconButton
-            icon="/icons/close"
-            background={palette?.cardBackground}
-            borderColor={palette?.cardBorder}
-            iconHeight={14}
-            iconWidth={14}
-            width={32}
-            height={32}
-            altIcon="close"
-          />
-        </Button>
-    </Box>
-
-
-    <Checkout handleClose={handleClose} />
-  </Box>
-)}
-
+            <Checkout handleClose={handleClose} />
+          </Box>
+        )}
       </Container>
     </Modal>
   );

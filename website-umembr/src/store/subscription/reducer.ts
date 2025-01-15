@@ -18,7 +18,8 @@ import {
   UPDATE_SUBSCRIPTION_STATUS_ASYNC,
   GET_PAYMENT_METHOD_ASYNC,
   UPDATE_PAYMENT_METHOD_ASYNC,
-  FETCH_LATEST_INVOICE_ASYNC
+  FETCH_LATEST_INVOICE_ASYNC,
+  CLEAR_INVOICE_DATA
 } from './action-types';
 
 const initialState: any = {
@@ -125,7 +126,11 @@ const subscription = (state = initialState, { type, payload }: any) => {
 
     case CLEAR_DATA_PRODUCTS:
       return initialState;
-
+    case CLEAR_INVOICE_DATA:
+      return {
+        ...state,
+        latestInvoice: null
+      }
     default:
       return state;
   }

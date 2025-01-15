@@ -22,11 +22,16 @@ import {
 } from './action-types';
 
 import { actionObject, SagaCallback } from '@/utils';
+type CreateStoryPayload ={
+  data: any;
+  router?: NextRouter | null;
+  flag?: boolean;
+} | any
 
 export const setCreateSection = (section: string) => actionObject(SET_CREATE_SECTION, section);
 export const setCreateStep = (step: number) => actionObject(SET_STEP_CREATE, step);
 
-export const createStories = (data: any) => actionObject(CREATE_STORIES, data);
+export const createStories = (data: CreateStoryPayload) => actionObject(CREATE_STORIES, data);
 export const createPayload = (data: any) => actionObject(CREATE_PAYLOAD, data);
 type ActualStoryPayload = {
   id: string;

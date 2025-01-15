@@ -260,10 +260,8 @@ const MediaGrid: React.FC<MediaGridProps> = ({ story, extendedPalette, actionSuc
   }, [memoriesLoaded]);
 
   UseFirstRender(() => {
-    if (router?.query?.memoryId && memoriesLoaded.current) {
-      const memory = memoriesLoaded.current
-        .getMemories()
-        .find((memory: any) => Number(memory?.id) === Number(router?.query?.memoryId));
+    if (router?.query?.memoryId && memoriesLoaded) {
+      const memory = memoriesLoaded.find((memory: any) => Number(memory?.id) === Number(router?.query?.memoryId));
       setSelectedMedia(memory);
       switchStatus();
     }

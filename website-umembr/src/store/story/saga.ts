@@ -73,7 +73,7 @@ function* createStory({ payload }: any) {
   try {
     const storagePopup: boolean = yield select(StoragePopupSelector)
     const { user } = yield select(authSelector);
-    const { result } = yield call(FetchService, 'stories', 'POST', payload, user?.token);
+    const { result } = yield call(FetchService, 'stories', 'POST', payload?.flag ? payload?.valuesFinal : payload, user?.token);
     yield put(actionObject(CREATE_STORIES_ASYNC, result));
 
     if (result?.usedStoragePercentage >= 80 && !storagePopup) {
@@ -83,8 +83,13 @@ function* createStory({ payload }: any) {
       if (result?.usedStoragePercentage < 80 && storagePopup)
         yield put(showPopup())
     }
+    if(payload?.flag === true) {
+      payload.router.push(`/app/story/${result?.url}`);
+    }
+    else{
     yield put(actionObject(CLEAN_PREV_PROMPTS));
     yield put(createStoryActionG(result));
+  }
   } catch (error: any) {
     let message = error?.message;
     if (error?.message?.includes('error')) message = JSON.parse(message)?.error;

@@ -63,7 +63,8 @@ export const Form: FC<any> = ({
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const saveComplementarys = async (complements: any) => {
-    const { complementaryMedia, complementaryText } = complements;
+    const { complementaryMedia, complementaryText, richText } = complements;
+
     const newData: any = {};
     newData.memory_details = {};
     const complementaryImage = complementaryMedia.filter((item: any) => item?.type?.includes('image'));
@@ -86,6 +87,10 @@ export const Form: FC<any> = ({
       newData.memory_details.complementaryAudio = await complementaryUpload(dispatch, complementaryAudio, story);
 
     if (complementaryText?.length > 0) newData.memory_details.complementaryText = complementaryText;
+    if (richText?.length > 0) {
+      newData.memory_details.complementaryText = richText;
+    }
+
     return newData;
   };
 
@@ -124,9 +129,8 @@ export const Form: FC<any> = ({
           dispatch(openSubscriptionPopup());
         }
       }, 1000);
-      dispatch(closeModal())
+      dispatch(closeModal());
       return;
-
     }
     if (memoryData?.mediaType === 'text') {
       saveTextData(data);
@@ -425,8 +429,6 @@ export const Form: FC<any> = ({
   // const filteredMediaTypes = isEditing
   // ? mediaTypes.filter((item) => item.icon == memoryData?.mediaType)
   // : mediaTypes;
-  
-  
   return (
     <>
       <form ref={formRef} onSubmit={formikSubmit} style={{ width: '100%', marginRight: '1rem' }}>

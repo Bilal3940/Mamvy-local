@@ -2342,7 +2342,7 @@ describe('Render Create Memory default', () => {
       </AppContainer>,
     );
 
-    cy.get(':nth-child(1) > .css-1ens5we').click();
+    cy.get(':nth-child(1) > .css-10zkfoy').click();
   });
   // it('Render Create Memory form type video', () => {
   //   mount(
@@ -2360,7 +2360,7 @@ describe('Render Create Memory default', () => {
       </AppContainer>,
     );
 
-    cy.get(':nth-child(1) > .css-1ens5we').click();
+    cy.get(':nth-child(1) > .css-10zkfoy').click();
     cy.get('[role="textbox"]').type('test');
   });
   it('Render Create Memory form type audio', () => {

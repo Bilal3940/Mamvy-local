@@ -6,9 +6,28 @@ import configureStore from 'redux-mock-store';
 const mockStore = configureStore([]);
 import 'cypress-file-upload';
 import * as NextRouter from 'next/router';
-
+beforeEach(() => {
+  const pushStub = cy.stub().as('routerPush');
+  cy.stub(NextRouter, 'useRouter').returns({
+    pathname: '/app/home',
+    push: pushStub,
+  });
+});
 describe('Render Create Story Types', () => {
+
   const storeLifeStory: any = mockStore({
+    template: {
+          template: {
+            colors: [
+              { PLabel: 'storyBackground', PValue: '#f0f0f0' },
+              { PLabel: 'TextColor', PValue: '#333333' },
+              { PLabel: 'AccentColor', PValue: '#ff5733' },
+            ],
+          },
+        },
+          storageLog: {
+        storagePopup: false, // this is important to match the structure of your actual state
+      },
     auth: {
       isAuth: true,
     },
@@ -88,11 +107,7 @@ describe('Render Create Story Types', () => {
   });
 
   it('Render life story form and fill first step ', () => {
-    const pushStub = cy.stub().as('routerPush');
-    cy.stub(NextRouter, 'useRouter').returns({
-      pathname: '/app/home',
-      push: pushStub,
-    });
+
     mount(
       <AppContainer store={storeLifeStory}>
         <EditStory />
@@ -118,7 +133,6 @@ describe('Render Create Story Types', () => {
         <EditStory />
       </AppContainer>,
     );
-    cy.stub(require('next/router'), 'useRouter');
     cy.get(':nth-child(2) > .MuiBox-root > .MuiTypography-root').click();
   });
 
@@ -129,6 +143,6 @@ describe('Render Create Story Types', () => {
         <EditStory />
       </AppContainer>,
     );
-    cy.stub(require('next/router'), 'useRouter');
+    // cy.stub(require('next/router'), 'useRouter');
   });
 });

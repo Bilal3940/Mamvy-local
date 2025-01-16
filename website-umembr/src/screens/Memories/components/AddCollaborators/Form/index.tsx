@@ -6,13 +6,20 @@ import { authSelector, collaboratorSelector, storySelector } from '@/store/selec
 import { FC, useEffect, useState } from 'react';
 import { MuiTextField, MuiButton, MuiSelect } from '@/components';
 import { FormikConfig } from './formik';
-import { getCollaboratorStory, inviteCollaborator } from '@/store/collaborator/action';
+import { getCollaboratorStory, inviteCollaborator, updateCollaborator } from '@/store/collaborator/action';
 import Image from 'next/image';
 import { RemoveCollaborator } from '../RemoveCollaborator';
 import { UseFirstRender } from '@/hooks';
 import { styles } from '../styles';
 import stringSimilarity from 'string-similarity';
 import { cdn_url, emailRegex, popularDomains } from '@/utils';
+import EditCollaboratorModal from '../EditCollaborator';
+type Collaborator = {
+  id: number;
+  name: string;
+  type: string;
+  role: string;
+};
 
 export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   const { t } = useTranslation();
@@ -20,17 +27,21 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [openRemoveCollaborator, setOpenRemoveCollaborator] = useState(false);
-  const { collaborators } = useSelector(collaboratorSelector);
-  const auth = useSelector(authSelector);
+  const { actionSuccessColab, collaborators } = useSelector(collaboratorSelector);
+  const { auth, user } = useSelector(authSelector);
   const [selectedUser, setSelectedUser] = useState({});
   const [noRegister, setNoRegister] = useState({});
   const [validatedCollaborators, setValidatedCollaborators] = useState([]);
   const [nonValidatedCollaborators, setNonValidatedCollaborators] = useState([]);
   const [shownSuggestions, setShownSuggestions] = useState<Map<string, boolean>>(new Map());
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | any>(null);
+  const [payload, setPayload] = useState([]);
+
   const typeOfStory = story?.story_details?.type_of_story;
 
   const options_user =
-    typeOfStory === "custom_event"
+    typeOfStory === 'custom_event'
       ? [
           { id: 'other', name: 'Other' },
           { id: 'family', name: 'Family' },
@@ -45,20 +56,20 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
           { id: 'family', name: 'Family' },
           { id: 'friends', name: 'Friends' },
         ];
-  
-        const options_role =
-        typeOfStory === "custom_event"
-          ? [
-            { id: 'owner', name: 'Owner' },
-            { id: 'collaborator', name: 'Collaborator' },
-            { id: 'viewer', name: 'Viewer' },
-            {id:'uga_collaborator', name:'UGA Collaborator'},
-          ]
-          : [
-            { id: 'owner', name: 'Owner' },
-            { id: 'collaborator', name: 'Collaborator' },
-            { id: 'viewer', name: 'Viewer' },
-          ];
+
+  const options_role =
+    typeOfStory === 'custom_event'
+      ? [
+          { id: 'owner', name: 'Owner' },
+          { id: 'collaborator', name: 'Collaborator' },
+          { id: 'viewer', name: 'Viewer' },
+          { id: 'uga_collaborator', name: 'UGA Collaborator' },
+        ]
+      : [
+          { id: 'owner', name: 'Owner' },
+          { id: 'collaborator', name: 'Collaborator' },
+          { id: 'viewer', name: 'Viewer' },
+        ];
 
   const handleSubmit = async () => {
     dispatch(inviteCollaborator({ collaborators: values.collaborators, story_id: story?.id }));
@@ -89,14 +100,13 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
-  
+
   const isDomainValid = (email: string): boolean => {
     const domain = email.split('@')[1];
     if (domain) {
       const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
-      if (bestMatch.bestMatch.rating > 0.70 && bestMatch.bestMatch.target !== domain) {
+      if (bestMatch.bestMatch.rating > 0.7 && bestMatch.bestMatch.target !== domain) {
         if (!shownSuggestions.has(email)) {
-          
           setErrors({
             email: t('did_you_mean', {
               suggestion: `${email.split('@')[0]}@${bestMatch.bestMatch.target}`,
@@ -104,53 +114,48 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
           });
 
           const updatedMap = new Map(shownSuggestions);
-          updatedMap.set(email, false); 
+          updatedMap.set(email, false);
           setShownSuggestions(updatedMap);
 
-          return false; 
+          return false;
         } else if (shownSuggestions.get(email) === false) {
-          
           const updatedMap = new Map(shownSuggestions);
-          updatedMap.set(email, true); 
+          updatedMap.set(email, true);
           setShownSuggestions(updatedMap);
 
           return true;
         }
       }
     }
-    return true; 
+    return true;
   };
-  
+
   const addCollaborators = () => {
     const emails = values.email.split(',').map((email: string) => email.trim());
 
-    
     const validEmails = emails.filter((email: string) => isEmailValid(email));
     if (validEmails.length !== emails.length) {
       setErrors({ email: t('please_enter_valid') });
       return;
     }
 
-    
     const validDomains = validEmails.filter((email: string) => {
       if (shownSuggestions.get(email) === true) {
-        return true; 
+        return true;
       }
       return isDomainValid(email);
     });
 
     if (validDomains.length === 0) {
-      return; 
+      return;
     }
 
-    
     const duplicates = new Set(emails).size !== emails.length;
     if (duplicates) {
       setErrors({ email: t('duplicates_collaborators') });
       return;
     }
 
-    
     if (
       values.collaborators.some((collaborator: any) => emails.includes(collaborator.email)) ||
       collaborators?.collaborators?.some((collaborator: any) => emails.includes(collaborator.email))
@@ -159,7 +164,6 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
       return;
     }
 
-    
     const newCollaborators = validDomains.map((email: string) => ({
       email: email.toLowerCase(),
       type: 'other',
@@ -167,13 +171,11 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
     }));
 
     setFieldValue('collaborators', [...values.collaborators, ...newCollaborators]);
-    setFieldValue('email', ''); 
-    setErrors({ email: '' }); 
+    setFieldValue('email', '');
+    setErrors({ email: '' });
 
-    setErrors({ email: '' }); 
+    setErrors({ email: '' });
   };
-  
-
 
   // const isEmailValid = (email: any) => {
   //   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -181,7 +183,7 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   // };
 
   // const isDomainValid = (email:any)=>{
-  
+
   //               const domain = email.split('@')[1];
   //               if (domain) {
   //                 const bestMatch = stringSimilarity.findBestMatch(domain, popularDomains);
@@ -193,10 +195,6 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
   //                 }
   //               }
   // }
-
-          
-
-  
 
   // const addCollaborators = () => {
   //   const emails = values.email.split(',').map((email: any) => email.trim());
@@ -260,7 +258,79 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
     }
     return result || '';
   };
-  console.log(validatedCollaborators)
+
+  const handleEditClick = (collaborator: any) => {
+    setSelectedCollaborator(collaborator);
+    setIsEditing(true);
+  };
+
+  const handleUpdate = async () => {
+    if (!selectedCollaborator) return;
+
+    const payload = {
+      collaborators: [
+        {
+          id: selectedCollaborator.id,
+          email: selectedCollaborator?.user?.email,
+          role: selectedCollaborator.role?.name,
+          type: selectedCollaborator.user_type,
+        },
+      ],
+      story_id: selectedCollaborator.story_id,
+    };
+
+    dispatch(updateCollaborator(payload));
+
+    setIsEditing(false);
+  };
+
+  // const handleUpdate = async () => {
+  //   alert('I am called');
+  //   if (!selectedCollaborator) return;
+
+  //   const payload = {
+  //     collaborators: [
+  //       {
+  //         id: selectedCollaborator.id,
+  //         email: selectedCollaborator?.user?.email,
+  //         role: selectedCollaborator.role?.name,
+  //         type: selectedCollaborator.user_type,
+  //       },
+  //     ],
+  //     story_id: selectedCollaborator.story_id,
+  //   };
+
+  
+  //   alert('next call');
+
+  //   try {
+  //     const response = await fetch('http://localhost:3001/api/main/stories/update-collaborators', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${user?.token}`, // Assuming `user?.token` is available in the scope
+  //       },
+  //       body: JSON.stringify(payload),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`Error: ${response.status} ${response.statusText}`);
+  //     }
+
+  //     const data = await response.json();
+  
+
+  //     if (data?.result?.message) {
+  //       alert(`Success: ${data.result.message}`);
+  //     }
+
+  //     alert('Very next call');
+  //     setIsEditing(false);
+  //   } catch (error:any) {
+  //     console.error('Error updating collaborator:', error);
+  //     alert(`Error: ${error.message}`);
+  //   }
+  // };
 
   return (
     <form ref={formRef} onSubmit={formikSubmit} style={{ width: '100%' }}>
@@ -277,7 +347,9 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
                     <Grid display={'flex'} item xs={9} flexDirection={'column'}>
                       <Grid>
                         {/* <Image width={50} height={50} style={{borderRadius:'100%'}} src={user?.user?.picture} alt={user?.user?.name} /> */}
-                        <Typography align='left'>{user?.user?.name} {user?.user?.lastname}</Typography>
+                        <Typography align='left'>
+                          {user?.user?.name} {user?.user?.lastname}
+                        </Typography>
                       </Grid>
                       <Grid>
                         <Typography align='left'>{user?.user?.email}</Typography>
@@ -289,6 +361,15 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
                       </Grid>
                     </Grid>
                     <Grid item textAlign={'right'} xs={3}>
+                    <Image
+                            src='/icons/edit-pencil-white.svg'
+                            alt='edit'
+                            style={{ cursor: 'pointer', marginRight: '0.5rem' }}
+                            width={20}
+                            height={20}
+                            onClick={() => handleEditClick(user)}
+                            className='text-white-600 hover:text-blue-800'
+                          />
                       <Image
                         src='/icons/close.svg'
                         alt='close'
@@ -314,14 +395,25 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
                     </Grid>
                     <Grid item textAlign={'center'} xs={2}>
                       {auth?.user?.email !== user?.user?.email && (
-                        <Image
-                          src='/icons/close.svg'
-                          alt='close'
-                          style={{ cursor: 'pointer' }}
-                          width={18}
-                          height={18}
-                          onClick={() => handleCollaborator(user)}
-                        />
+                        <Box>
+                          <Image
+                            src='/icons/edit-pencil-white.svg'
+                            alt='edit'
+                            style={{ cursor: 'pointer', marginRight: '0.5rem' }}
+                            width={20}
+                            height={20}
+                            onClick={() => handleEditClick(user)}
+                            className='text-white-600 hover:text-blue-800'
+                          />
+                          <Image
+                            src='/icons/close.svg'
+                            alt='close'
+                            style={{ cursor: 'pointer' }}
+                            width={18}
+                            height={18}
+                            onClick={() => handleCollaborator(user)}
+                          />
+                        </Box>
                       )}
                     </Grid>
                   </>
@@ -345,7 +437,9 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
                         <Grid item xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                           <Grid display={'flex'} item xs={9} flexDirection={'column'}>
                             <Grid>
-                            <Typography align='left'>{user?.user?.name} {user?.user?.lastname}</Typography>
+                              <Typography align='left'>
+                                {user?.user?.name} {user?.user?.lastname}
+                              </Typography>
                             </Grid>
                             <Grid>
                               <Typography align='left'>{user?.user?.email}</Typography>
@@ -369,11 +463,11 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
                         </Grid>
                       ) : (
                         <>
-                         <Grid item xs={6}>
+                          <Grid item xs={6}>
                             <Typography align='center'>{user?.user?.name}hello</Typography>
                           </Grid>
                           <Grid item xs={6}>
-                            {/* <Typography align='center'>{user?.user?.email}</Typography> */}
+                            <Typography align='center'>{user?.user?.email}</Typography>
                           </Grid>
                           <Grid item xs={4}>
                             <Typography align='right'>
@@ -453,6 +547,17 @@ export const Form: FC<any> = ({ formRef, onClose, extendedPalette }) => {
               })}
           </Grid>
         )}
+
+        <EditCollaboratorModal
+          isEditing={isEditing}
+          typeOfStory={typeOfStory}
+          selectedCollaborator={selectedCollaborator}
+          setSelectedCollaborator={setSelectedCollaborator}
+          setIsEditing={setIsEditing}
+          handleUpdate={handleUpdate}
+          extendedPalette={extendedPalette}
+          optionsUserType={options_user}
+        />
 
         <RemoveCollaborator
           color={extendedPalette.buttonbackgroundIcon}

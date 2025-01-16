@@ -52,6 +52,7 @@ import {
   watchSetInviteAccepted,
   watchSetInviteCollaborator,
   watchSetRemoveCollaborator,
+  watchUpdateCollaborator,
   watchSetRemoveCollaboratorNoRegister,
 } from './collaborator/saga';
 import {
@@ -133,6 +134,7 @@ export default function* allSagas() {
     fork(watchDeleteMemory),
     fork(watchUpdateMemory),
     fork(watchApproveUpdateMemory),
+    fork(watchUpdateCollaborator),
     fork(watchSetInviteCollaborator),
     fork(watchSetInviteAccepted),
     fork(watchUpdateStory),

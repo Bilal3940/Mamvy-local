@@ -66,7 +66,6 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
         width={isMobile ? '90%' : '48.25rem'}
         height={isMobile ? '100%' : 'inherit'}
         maxHeight={isMobile ? '100%' : '95vh'}
-        // padding={'1.5rem'}
         borderRadius={isMobile ? 0 : '1.25rem'}
         flexDirection={'column'}
         justifyContent={isMobile ? 'flex-start' : 'space-between'}
@@ -74,29 +73,25 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
         position={'relative'}
         overflow={'auto'}
         bgcolor={palette.cardBackground}
-        // sx={{ backdropFilter: 'blur(1.5625rem)', outline: 'none' }}
         sx={{
-    backdropFilter: 'blur(1.5625rem)', // Apply blur effect
-    WebkitBackdropFilter: 'blur(1.5625rem)', // Add WebKit support
-    outline: 'none',
-  }}
+          backdropFilter: 'blur(1.5625rem)',
+          WebkitBackdropFilter: 'blur(1.5625rem)',
+          outline: 'none',
+        }}
         border={`0.063rem solid ${palette.cardBorder}`}>
         <Box
           display={'flex'}
           alignItems={'center'}
-          // position={'sticky'}
           top={0}
           zIndex={9999}
-          // bgcolor={'rgba(0, 0, 0, 0.8)'}
           bgcolor={extendedPalette.buttonbackgroundIcon}
-          // sx={{ backdropFilter: 'blur(1.5625rem)', outline: 'none' }}
           sx={{
-    backdropFilter: 'blur(1.5625rem)', 
-    WebkitBackdropFilter: 'blur(1.5625rem)', 
-    position: 'sticky', 
-    outline: 'none',
-  }}
-          padding='0.8rem' // To avoid overlap
+            backdropFilter: 'blur(1.5625rem)',
+            WebkitBackdropFilter: 'blur(1.5625rem)',
+            position: 'sticky',
+            outline: 'none',
+          }}
+          padding='0.8rem'
           gap={'1rem'}
           width={'100%'}>
           <Image src='/icons/add-people-white.svg' alt='invite' width={24} height={24} />
@@ -112,182 +107,180 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
             onClick={onClose}
           />
         </Box>
-<Box padding={'1rem'}  >
-        <Box display={'flex'} flexDirection={'column'} width={'100%'} gap={'1rem'}>
-          {story?.story?.private ? (
-            <>
-              <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
-                {t('published_private')}
-              </Typography>
-              <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
-                {t('code')}:
-              </Typography>
-              <Typography
-                display={'flex'}
-                margin={'auto'}
-                variant={isMobile ? 'body1' : 'h4'}
-                padding={'1rem'}
-                style={{ backgroundColor: palette.opacityGray, borderRadius: '14px', gap: '0.5rem' }}
-                color={palette.white}>
-                {t(`${story?.story?.password}`)}
-                <Image
-                  onClick={() => handlePublication('newCode')}
-                  style={{ cursor: 'pointer' }}
-                  src='/icons/regenerate.svg'
-                  alt='new-code'
-                  width={24}
-                  height={24}
-                />
-              </Typography>
-              <Grid item xs={3}>
-                <Grid
-                  width={'100%'}
+        <Box padding={'1rem'}>
+          <Box display={'flex'} flexDirection={'column'} width={'100%'} gap={'1rem'}>
+            {story?.story?.private ? (
+              <>
+                <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
+                  {t('published_private')}
+                </Typography>
+                <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
+                  {t('code')}:
+                </Typography>
+                <Typography
                   display={'flex'}
-                  flexDirection={isMobile ? 'column' : 'row'}
-                  justifyContent={'space-between'}
-                  gap={'1rem'}>
-                  <MuiButton
-                    type='button'
-                    disabled={false}
-                    loading={loading}
-                    variant={'outlined'}
-                    method={() => handlePublication('public')}
-                    sx={{
-                      '&:hover': {
-                        borderColor: extendedPalette.buttonbackgroundIcon, // Change the border color on hover
-                        // Change the text color on hover
-                      },
-                    }}>
-                    <Typography color={palette.white} variant={isMobile ? 'caption' : 'button'}>
-                      {t('to_public')}
-                    </Typography>
-                  </MuiButton>
-                  <MuiButton
-                    type='button'
-                    disabled={false}
-                    loading={false}
-                    variant={'contained'}
-                    method={() => copyLink()}
-                    sx={{
-                      backgroundColor: extendedPalette.buttonbackgroundIcon,
-                      '&:hover': {
-                        backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
-                      },
-                    }}>
-                    <Typography variant={isMobile ? 'caption' : 'button'}>
-                      {link ? t('copied') : t('copy link')}
-                    </Typography>
-                  </MuiButton>
-                  <MuiButton
-                    type='button'
-                    disabled={false}
-                    loading={false}
-                    backgroundColor={extendedPalette.buttonbackgroundIcon}
-                    variant={'contained'}
-                    method={() => copyLinkCode()}
-                    sx={{
-                      backgroundColor: extendedPalette.buttonbackgroundIcon,
-                      '&:hover': {
-                        backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
-                      },
-                    }}>
-                    <Typography variant={isMobile ? 'caption' : 'button'}>
-                      {linkCode ? t('copied') : t('copy_link_with_code')}
-                    </Typography>
-                  </MuiButton>
+                  margin={'auto'}
+                  variant={isMobile ? 'body1' : 'h4'}
+                  padding={'1rem'}
+                  style={{ backgroundColor: palette.opacityGray, borderRadius: '14px', gap: '0.5rem' }}
+                  color={palette.white}>
+                  {t(`${story?.story?.password}`)}
+                  <Image
+                    onClick={() => handlePublication('newCode')}
+                    style={{ cursor: 'pointer' }}
+                    src='/icons/regenerate.svg'
+                    alt='new-code'
+                    width={24}
+                    height={24}
+                  />
+                </Typography>
+                <Grid item xs={3}>
+                  <Grid
+                    width={'100%'}
+                    display={'flex'}
+                    flexDirection={isMobile ? 'column' : 'row'}
+                    justifyContent={'space-between'}
+                    gap={'1rem'}>
+                    <MuiButton
+                      type='button'
+                      disabled={false}
+                      loading={loading}
+                      variant={'outlined'}
+                      method={() => handlePublication('public')}
+                      sx={{
+                        '&:hover': {
+                          borderColor: extendedPalette.buttonbackgroundIcon,
+                        },
+                      }}>
+                      <Typography color={palette.white} variant={isMobile ? 'caption' : 'button'}>
+                        {t('to_public')}
+                      </Typography>
+                    </MuiButton>
+                    <MuiButton
+                      type='button'
+                      disabled={false}
+                      loading={false}
+                      variant={'contained'}
+                      method={() => copyLink()}
+                      sx={{
+                        backgroundColor: extendedPalette.buttonbackgroundIcon,
+                        '&:hover': {
+                          backgroundColor: extendedPalette.buttonbackgroundIcon,
+                        },
+                      }}>
+                      <Typography variant={isMobile ? 'caption' : 'button'}>
+                        {link ? t('copied') : t('copy link')}
+                      </Typography>
+                    </MuiButton>
+                    <MuiButton
+                      type='button'
+                      disabled={false}
+                      loading={false}
+                      backgroundColor={extendedPalette.buttonbackgroundIcon}
+                      variant={'contained'}
+                      method={() => copyLinkCode()}
+                      sx={{
+                        backgroundColor: extendedPalette.buttonbackgroundIcon,
+                        '&:hover': {
+                          backgroundColor: extendedPalette.buttonbackgroundIcon,
+                        },
+                      }}>
+                      <Typography variant={isMobile ? 'caption' : 'button'}>
+                        {linkCode ? t('copied') : t('copy_link_with_code')}
+                      </Typography>
+                    </MuiButton>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </>
-          ) : !story?.story?.private && story?.story?.password === 'public' ? (
-            <>
-              <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
-                {t('published_public')}
-              </Typography>
-              <Grid item xs={2}>
-                <Box width={'100%'} display={'flex'} justifyContent={'space-between'} gap={'1rem'}>
-                  <MuiButton
-                    type='button'
-                    disabled={false}
-                    loading={loading}
-                    variant={'outlined'}
-                    method={() => handlePublication('private')}
-                    sx={{
-                      '&:hover': {
-                        borderColor: extendedPalette.buttonbackgroundIcon, // Change the border color on hover
-                        // Change the text color on hover
-                      },
-                    }}>
-                    <Typography color={palette.white} variant={isMobile ? 'caption' : 'button'}>
-                      {t('to_private')}
-                    </Typography>
-                  </MuiButton>
-                  <MuiButton
-                    type='button'
-                    disabled={false}
-                    loading={false}
-                    backgroundColor={extendedPalette.buttonbackgroundIcon}
-                    variant={'contained'}
-                    method={() => copyLink()}
-                    sx={{
-                      backgroundColor: extendedPalette.buttonbackgroundIcon,
-                      '&:hover': {
-                        backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
-                      },
-                    }}>
-                    <Typography variant={isMobile ? 'caption' : 'button'}>
-                      {link ? t('copied') : t('copy link')}
-                    </Typography>
-                  </MuiButton>
-                </Box>
-              </Grid>
-            </>
-          ) : (
-            <>
-              <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
-                {t('publish')}
-              </Typography>
-              <Grid item xs={2}>
-                <Grid
-                  width={'100%'}
-                  display={'flex'}
-                  flexDirection={isMobile ? 'column' : 'row'}
-                  justifyContent={'space-between'}
-                  gap={'1rem'}>
-                  <MuiButton
-                    type='button'
-                    disabled={false}
-                    backgroundColor={extendedPalette.buttonbackgroundIcon}
-                    loading={false}
-                    variant={'contained'}
-                    method={() => handlePublication('private')}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
-                      },
-                    }}>
-                    <Typography variant={'button'}>{t('publish as private')}</Typography>
-                  </MuiButton>
-                  <MuiButton
-                    type='button'
-                    disabled={false}
-                    backgroundColor={extendedPalette.buttonbackgroundIcon}
-                    loading={false}
-                    variant={'contained'}
-                    method={() => handlePublication('public')}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: extendedPalette.buttonbackgroundIcon, // Add your hover color
-                      },
-                    }}>
-                    <Typography variant={'button'}>{t('publish as public')}</Typography>
-                  </MuiButton>
+              </>
+            ) : !story?.story?.private && story?.story?.password === 'public' ? (
+              <>
+                <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
+                  {t('published_public')}
+                </Typography>
+                <Grid item xs={2}>
+                  <Box width={'100%'} display={'flex'} justifyContent={'space-between'} gap={'1rem'}>
+                    <MuiButton
+                      type='button'
+                      disabled={false}
+                      loading={loading}
+                      variant={'outlined'}
+                      method={() => handlePublication('private')}
+                      sx={{
+                        '&:hover': {
+                          borderColor: extendedPalette.buttonbackgroundIcon,
+                        },
+                      }}>
+                      <Typography color={palette.white} variant={isMobile ? 'caption' : 'button'}>
+                        {t('to_private')}
+                      </Typography>
+                    </MuiButton>
+                    <MuiButton
+                      type='button'
+                      disabled={false}
+                      loading={false}
+                      backgroundColor={extendedPalette.buttonbackgroundIcon}
+                      variant={'contained'}
+                      method={() => copyLink()}
+                      sx={{
+                        backgroundColor: extendedPalette.buttonbackgroundIcon,
+                        '&:hover': {
+                          backgroundColor: extendedPalette.buttonbackgroundIcon,
+                        },
+                      }}>
+                      <Typography variant={isMobile ? 'caption' : 'button'}>
+                        {link ? t('copied') : t('copy link')}
+                      </Typography>
+                    </MuiButton>
+                  </Box>
                 </Grid>
-              </Grid>
-            </>
-          )}
-        </Box>
+              </>
+            ) : (
+              <>
+                <Typography variant={isMobile ? 'body1' : 'h4'} color={palette.white}>
+                  {t('publish')}
+                </Typography>
+                <Grid item xs={2}>
+                  <Grid
+                    width={'100%'}
+                    display={'flex'}
+                    flexDirection={isMobile ? 'column' : 'row'}
+                    justifyContent={'space-between'}
+                    gap={'1rem'}>
+                    <MuiButton
+                      type='button'
+                      disabled={false}
+                      backgroundColor={extendedPalette.buttonbackgroundIcon}
+                      loading={false}
+                      variant={'contained'}
+                      method={() => handlePublication('private')}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: extendedPalette.buttonbackgroundIcon,
+                        },
+                      }}>
+                      <Typography variant={'button'}>{t('publish as private')}</Typography>
+                    </MuiButton>
+                    <MuiButton
+                      type='button'
+                      disabled={false}
+                      backgroundColor={extendedPalette.buttonbackgroundIcon}
+                      loading={false}
+                      variant={'contained'}
+                      method={() => handlePublication('public')}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: extendedPalette.buttonbackgroundIcon,
+                        },
+                      }}>
+                      <Typography variant={'button'}>{t('publish as public')}</Typography>
+                    </MuiButton>
+                  </Grid>
+                </Grid>
+              </>
+            )}
+          </Box>
 
-        <Form onClose={onClose} extendedPalette={extendedPalette} />
+          <Form onClose={onClose} extendedPalette={extendedPalette} />
         </Box>
       </Box>
     </Modal>

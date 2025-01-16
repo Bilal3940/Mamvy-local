@@ -67,29 +67,29 @@ const { pathname } = useRouter();
   }, [listItem]);
 
   const handleAccept = ({ actions, item }: any) => {
-    // console.log(actions, "actions");
-    // console.log(item, "item");
+    console.log(actions, "actions");
+    console.log(item, "item");
     if (actions?.type === 'COLLABORATION') {
       dispatch(setGuest(actions?.role));
       dispatch(inviteAccepted({ story_id: actions?.story_id, role_name: actions?.role }));
       dispatch(acceptCollaborateNotification(item));
-      router.push(`/app/story/${actions?.story_id}`);
       dispatch(deleteNotification(item.id));
+      router.push(`/app/story/${actions?.story_id}`);
     }
     if (actions?.memory_id && actions?.story_id && actions?.type === 'APPROVAL') {
       dispatch(approveMemory({ id: actions?.memory_id, story_id: actions?.story_id }));
-      router.push(`/app/story/${actions?.story_url}`);
       dispatch(deleteNotification(item.id));
+      router.push(`/app/story/${actions?.story_url}`);
       return;
     }
     if (actions?.type === 'APPROVED') {
-      router.push(`/app/story/${actions?.story_url}`);
       dispatch(deleteNotification(item.id));
+      router.push(`/app/story/${actions?.story_url}`);
       return;
     }
     if (actions?.type === 'COLLABORATION_ACCEPTED') {
-      // router.push(`/app/story/${actions?.story_url}`);
       dispatch(deleteNotification(item.id));
+      // router.push(`/app/story/${actions?.story_url}`);
       return;
     }
   };
@@ -105,6 +105,7 @@ const { pathname } = useRouter();
   const handlePreview = (item: any) => {
     //router.push(`/app/story/${item.actions?.story_url}/memory/create`);
     router.push(`/app/story/${item.actions?.story_url}/?memoryId=${item.actions?.memory_id}`);
+    dispatch(deleteNotification(item?.id));
   };
 
   const handleClearAll = () => {

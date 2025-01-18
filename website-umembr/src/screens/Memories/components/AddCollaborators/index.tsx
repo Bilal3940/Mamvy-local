@@ -84,7 +84,7 @@ export const AddCollaborators = ({ add, onClose, extendedPalette }: ModalDetailP
           alignItems={'center'}
           top={0}
           zIndex={9999}
-          bgcolor={extendedPalette.buttonbackgroundIcon}
+          bgcolor={"rgb(0,0,0,0.75)"}
           sx={{
             backdropFilter: 'blur(1.5625rem)',
             WebkitBackdropFilter: 'blur(1.5625rem)',
